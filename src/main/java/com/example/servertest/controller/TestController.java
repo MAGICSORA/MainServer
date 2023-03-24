@@ -29,11 +29,6 @@ public class TestController {
         return "hi";
     }
 
-    @GetMapping("/zz")
-    public String sec() {
-        return "남이경 호구";
-    }
-
     @GetMapping("/gift/NamLK")
     public String fun() {
         return "속았지 ㅋ";
