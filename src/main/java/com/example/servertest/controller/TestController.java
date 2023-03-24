@@ -34,6 +34,11 @@ public class TestController {
         return "남이경 호구";
     }
 
+    @GetMapping("/gift/NamLK")
+    public String fun() {
+        return "속았지 ㅋ";
+    }
+
     @GetMapping("/showall")
     public List showAll() {
         return testService.showAll();
