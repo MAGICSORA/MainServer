@@ -48,7 +48,7 @@ public class FileUploader {
 //        }
 
         BufferedImage bi = ImageIO.read(file.getInputStream());
-        bi = simpleResizeImage(bi, 450);
+        bi = simpleResizeImage(bi, 614, 614);
         String url = rootLocation + "\\" + userName + saveName + ".jpg";
         ImageIO.write(bi, "jpg", new File(url));
 
@@ -56,8 +56,8 @@ public class FileUploader {
     }
 
     BufferedImage simpleResizeImage(BufferedImage originalImage,
-        int targetWidth) {
-        return Scalr.resize(originalImage, targetWidth);
+        int targetWidth, int targetHeight) {
+        return Scalr.resize(originalImage, targetWidth, targetHeight);
     }
 //    public String uploadFile(String originImgName,MultipartFile file,String postImgLocation) throws Exception{
 //        UUID uuid=UUID.randomUUID();
