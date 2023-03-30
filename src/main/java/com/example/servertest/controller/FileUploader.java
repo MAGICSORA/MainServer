@@ -21,15 +21,16 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileUploader {
 
     List<String> files = new ArrayList<>();
-    private final Path rootLocation = Paths.get(
-        "C:\\dev\\workspace\\serverTest\\src\\main\\resources\\images");
+    private final String rootLocation = "C:\\dev\\workspace\\serverTest\\src\\main\\resources\\images";
+//    private final Path rootLocation = Paths.get(
+//        "C:\\dev\\workspace\\serverTest\\src\\main\\resources\\images");
 
     @PostMapping("/savefile")
     public ResponseEntity<?> handleFileUpload(
         @RequestParam("file") MultipartFile file, @RequestParam String userName,
         @RequestParam String saveName)
         throws IOException {
-        String message;
+//        String message;
 //        try {
 //            try {
 //                Files.copy(file.getInputStream(),
@@ -49,7 +50,11 @@ public class FileUploader {
 
         BufferedImage bi = ImageIO.read(file.getInputStream());
         bi = simpleResizeImage(bi, 614, 614);
-        String url = rootLocation + "\\" + userName + saveName + ".jpg";
+
+        Path directoryPath = Paths.get(rootLocation + "\\" + userName);
+        Files.createDirectory(directoryPath);
+
+        String url = directoryPath + "\\" + saveName + ".jpg";
         ImageIO.write(bi, "jpg", new File(url));
 
         return ResponseEntity.status(HttpStatus.OK).body("success");
