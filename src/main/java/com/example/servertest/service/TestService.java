@@ -22,8 +22,8 @@ import java.util.List;
 public class TestService {
 
     List<String> files = new ArrayList<>();
-    //    private final String rootLocation = "home\\ubuntu\\serverTest2\\src\\main\\resources\\images";
-    private final String rootLocation = "C:\\dev\\workspace\\serverTest\\src\\main\\resources\\images";
+    private final String rootLocation = "home\\ubuntu\\serverTest2\\src\\main\\resources\\images";
+//    private final String rootLocation = "C:\\dev\\workspace\\serverTest\\src\\main\\resources\\images";
 
     private final TestRepository testRepository;
 
