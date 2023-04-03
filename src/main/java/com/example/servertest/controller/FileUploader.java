@@ -53,14 +53,14 @@ public class FileUploader {
         BufferedImage bi = ImageIO.read(file.getInputStream());
         bi = simpleResizeImage(bi, 614, 614);
 
-        Path directoryPath = Paths.get(rootLocation + "\\" + userName);
+        Path directoryPath = Paths.get(rootLocation + "/" + userName);
 
         try {
             Files.createDirectory(directoryPath);
         } catch (FileAlreadyExistsException e) {
 
         } finally {
-            String url = directoryPath + "\\" + saveName + ".jpg";
+            String url = directoryPath + "/" + saveName + ".jpg";
             ImageIO.write(bi, "jpg", new File(url));
         }
 
