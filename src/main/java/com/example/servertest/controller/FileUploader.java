@@ -3,6 +3,7 @@ package com.example.servertest.controller;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -52,10 +53,15 @@ public class FileUploader {
         bi = simpleResizeImage(bi, 614, 614);
 
         Path directoryPath = Paths.get(rootLocation + "\\" + userName);
-        Files.createDirectory(directoryPath);
 
-        String url = directoryPath + "\\" + saveName + ".jpg";
-        ImageIO.write(bi, "jpg", new File(url));
+        try {
+            Files.createDirectory(directoryPath);
+        } catch (FileAlreadyExistsException e) {
+
+        } finally {
+            String url = directoryPath + "\\" + saveName + ".jpg";
+            ImageIO.write(bi, "jpg", new File(url));
+        }
 
         return ResponseEntity.status(HttpStatus.OK).body("success");
     }

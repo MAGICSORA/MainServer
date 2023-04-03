@@ -1,11 +1,8 @@
 package com.example.servertest.controller;
 
 import com.example.servertest.entity.SickList;
-import com.example.servertest.model.SickDetailService;
 import com.example.servertest.model.SickListDto;
-import com.example.servertest.model.SickService;
 import com.example.servertest.service.NaBatBuService;
-import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
