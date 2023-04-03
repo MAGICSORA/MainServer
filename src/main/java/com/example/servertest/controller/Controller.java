@@ -18,26 +18,6 @@ public class Controller {
 
     private final NaBatBuService naBatBuService;
 
-//    @GetMapping("/find/sickList")
-//    public ResponseEntity<?> sickList(@RequestParam String cropName,
-//        @RequestParam String sickNameKor)
-//        throws IOException {
-//
-//        SickService service = naBatBuService.getSickList(cropName,
-//            sickNameKor);
-//
-//        return ResponseEntity.ok(service);
-//    }
-
-//    @GetMapping("/find/sickDetail")
-//    public ResponseEntity<?> sickDetail(@RequestParam String sickKey)
-//        throws IOException {
-//
-//        SickDetailService service = naBatBuService.getSickDetail(sickKey);
-//
-//        return ResponseEntity.ok(service);
-//    }
-
     @PostMapping("/input/sickList")
     public ResponseEntity<?> inputSickList(
         @RequestBody SickListDto sickListDto) {
