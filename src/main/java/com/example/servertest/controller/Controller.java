@@ -63,14 +63,14 @@ public class Controller {
     public ResponseEntity<?> sickDetail(@RequestParam String sickKey) {
 
         return null;
-        //병 상세 정보
+        //농촌진흥청 병 상세 정보
     }
 
     @GetMapping("/find/pesticide")
     public ResponseEntity<?> getPesticide(@RequestParam String sickKey) {
 
         return null;
-        //농약 리스트
+        //농촌진흥청 농약 리스트
     }
 
     @GetMapping("/find/pesticideDetail")
@@ -78,6 +78,6 @@ public class Controller {
         @RequestParam String pesticideKey) {
 
         return null;
-        //농약 상세 정보
+        //농촌진흥청 농약 상세 정보
     }
 }

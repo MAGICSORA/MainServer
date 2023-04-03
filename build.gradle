@@ -34,6 +34,8 @@ dependencies {
 
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:3.0.0'
     implementation 'com.sun.xml.bind:jaxb-impl:3.0.0'
+
+    implementation 'commons-io:commons-io:2.6'
 }
 
 tasks.named('test') {

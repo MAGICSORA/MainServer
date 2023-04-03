@@ -21,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileUploader {
 
     List<String> files = new ArrayList<>();
-    private final String rootLocation = "home\\ubuntu\\serverTest2\\src\\main\\resources\\images";
+    private final String rootLocation = "src\\main\\resources\\images";
 //    private final Path rootLocation = Paths.get(
 //        "C:\\dev\\workspace\\serverTest\\src\\main\\resources\\images");
 
