@@ -33,7 +33,7 @@ public class FileController {
         throws IOException {
 
         BufferedImage bi = ImageIO.read(file.getInputStream());
-        bi = simpleResizeImage(bi, 614, 614);
+        bi = simpleResizeImage(bi, 640, 640);
 
         Path directoryPath = Paths.get(rootLocation + "User/" + userName);
 
