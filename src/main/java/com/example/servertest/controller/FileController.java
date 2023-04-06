@@ -9,6 +9,7 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import javax.imageio.ImageIO;
 import org.apache.commons.io.IOUtils;
 import org.imgscalr.Scalr;
@@ -28,21 +29,22 @@ public class FileController {
 
     @PostMapping("/savefile") //사용자 이미지 저장
     public ResponseEntity<?> handleFileUpload(
-        @RequestParam("file") MultipartFile file, @RequestParam String userName,
-        @RequestParam String saveName)
+        @RequestParam("file") MultipartFile file, @RequestParam String userName)
         throws IOException {
 
         BufferedImage bi = ImageIO.read(file.getInputStream());
         bi = simpleResizeImage(bi, 640, 640);
 
         Path directoryPath = Paths.get(rootLocation + "User/" + userName);
+        String dateTime = LocalDateTime.now().toString();
+        dateTime = dateTime.replace(":", "");
 
         try {
             Files.createDirectory(directoryPath);
         } catch (FileAlreadyExistsException e) {
 
         } finally {
-            String url = directoryPath + "/" + saveName + ".jpg";
+            String url = directoryPath + "/" + userName + dateTime + ".jpg";
             ImageIO.write(bi, "jpg", new File(url));
         }
 
