@@ -1,4 +1,4 @@
-package com.example.servertest.controller;
+package com.example.servertest.main.controller;
 
 import java.awt.image.BufferedImage;
 import java.io.File;

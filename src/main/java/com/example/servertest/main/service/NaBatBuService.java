@@ -1,8 +1,8 @@
-package com.example.servertest.service;
+package com.example.servertest.main.service;
 
-import com.example.servertest.entity.SickList;
-import com.example.servertest.model.SickListDto;
-import com.example.servertest.repository.SickListRepository;
+import com.example.servertest.main.entity.SickList;
+import com.example.servertest.main.model.SickListDto;
+import com.example.servertest.main.repository.SickListRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

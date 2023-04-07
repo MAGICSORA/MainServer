@@ -1,6 +1,6 @@
-package com.example.servertest.repository;
+package com.example.servertest.main.repository;
 
-import com.example.servertest.entity.TestEntity;
+import com.example.servertest.main.entity.TestEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

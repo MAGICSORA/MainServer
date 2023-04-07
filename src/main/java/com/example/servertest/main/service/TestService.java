@@ -1,7 +1,7 @@
-package com.example.servertest.service;
+package com.example.servertest.main.service;
 
-import com.example.servertest.entity.TestEntity;
-import com.example.servertest.repository.TestRepository;
+import com.example.servertest.main.entity.TestEntity;
+import com.example.servertest.main.repository.TestRepository;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

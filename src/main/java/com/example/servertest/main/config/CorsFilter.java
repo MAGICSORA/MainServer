@@ -1,4 +1,4 @@
-package com.example.servertest.config;
+package com.example.servertest.main.config;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;

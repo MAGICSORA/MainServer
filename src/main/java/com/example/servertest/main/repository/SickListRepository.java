@@ -1,6 +1,6 @@
-package com.example.servertest.repository;
+package com.example.servertest.main.repository;
 
-import com.example.servertest.entity.SickList;
+import com.example.servertest.main.entity.SickList;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

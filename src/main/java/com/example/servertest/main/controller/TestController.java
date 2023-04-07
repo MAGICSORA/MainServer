@@ -1,6 +1,6 @@
-package com.example.servertest.controller;
+package com.example.servertest.main.controller;
 
-import com.example.servertest.service.TestService;
+import com.example.servertest.main.service.TestService;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;

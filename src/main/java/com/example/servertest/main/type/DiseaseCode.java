@@ -1,4 +1,4 @@
-package com.example.servertest.type;
+package com.example.servertest.main.type;
 
 import lombok.Getter;
 

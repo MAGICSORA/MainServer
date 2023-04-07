@@ -1,8 +1,8 @@
-package com.example.servertest.controller;
+package com.example.servertest.main.controller;
 
-import com.example.servertest.entity.SickList;
-import com.example.servertest.model.SickListDto;
-import com.example.servertest.service.NaBatBuService;
+import com.example.servertest.main.entity.SickList;
+import com.example.servertest.main.model.SickListDto;
+import com.example.servertest.main.service.NaBatBuService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
