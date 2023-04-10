@@ -13,11 +13,22 @@ spring:
         format_sql: true
     database: mysql
 
+  jwt:
+    secret: ENC(oAMu1VEToExZeXoxYLwhG5hXaC1pvv7WgbfCov4Yh7XvcXrbK4zU1kW0nEUZgm9EdJEYGXBSXYQ=)
+
   servlet:
     multipart:
       enabled: true
       max-file-size: 4MB
       max-request-size: 4MB
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
 
 ncpms:
   baseUrl: http://ncpms.rda.go.kr/npmsAPI/service
