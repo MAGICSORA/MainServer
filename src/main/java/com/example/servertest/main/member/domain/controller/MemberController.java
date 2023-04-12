@@ -26,6 +26,8 @@ public class MemberController {
 
 	@PostMapping("/signUp")
 	public ResponseEntity<RegisterMember.Response> signUp(@RequestBody @Valid RegisterMember.Request request) {
+
+		System.out.println(request.toString());
 		return ResponseEntity.ok(memberService.register(request));
 	}
 
@@ -40,7 +42,7 @@ public class MemberController {
 
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.add(JwtAuthenticationFilter.TOKEN_HEADER,
-			JwtAuthenticationFilter.TOKEN_PREFIX + token);
+				JwtAuthenticationFilter.TOKEN_PREFIX + token);
 
 		return new ResponseEntity<>(new TokenDto(token), httpHeaders, HttpStatus.OK);
 
@@ -52,17 +54,9 @@ public class MemberController {
 		return ResponseEntity.ok(memberService.getMemberInfo(memberId, token));
 	}
 
-	@PatchMapping("{memberId}")
-	@PreAuthorize("hasRole('READWRITE')")
-	public ResponseEntity<ModifyMember.Response> modifyMember(@PathVariable Long memberId,
-		@RequestHeader("Authorization") String token,
-		@RequestBody @Valid ModifyMember.Request request) {
-		return ResponseEntity.ok(memberService.modifyMember(memberId, token, request));
-	}
-
 	@PostMapping("/withdraw/{memberId}")
 	public void withDrawMember(@PathVariable Long memberId,
-		@RequestHeader("Authorization") String token, @RequestBody @Valid WithDrawMember request) {
+							   @RequestHeader("Authorization") String token, @RequestBody @Valid WithDrawMember request) {
 		memberService.withDrawMember(memberId, token, request);
 	}
 }

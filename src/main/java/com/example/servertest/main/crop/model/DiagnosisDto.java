@@ -1,0 +1,19 @@
+package com.example.servertest.main.crop.model;
+
+import lombok.*;
+
+import java.io.File;
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class DiagnosisDto {
+    private int userId;
+    private float userLatitude;
+    private float userLongitude;
+    private LocalDateTime regDate;
+    private int cropType;
+}

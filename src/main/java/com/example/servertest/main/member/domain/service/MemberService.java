@@ -77,26 +77,6 @@ public class MemberService {
         return MemberInfo.from(MemberDto.from(member));
     }
 
-    @Transactional
-    public ModifyMember.Response modifyMember(Long memberId, String token,
-                                              ModifyMember.Request request) {
-
-        Member member = validateMember(token);
-
-        if (!Objects.equals(member.getId(), memberId)) {
-            throw new MemberException((MemberError.MODIFY_MEMBER_UN_MATCH));
-        }
-        String rePw = BCrypt.hashpw(request.getPassword(), BCrypt.gensalt());
-
-        member.setPassword(rePw);
-        member.setPhone(request.getPhone());
-        member.setEmail(request.getEmail());
-        member.setUpdateDt(LocalDateTime.now());
-        memberRepository.save(member);
-
-        return ModifyMember.Response.from(MemberDto.from(member));
-    }
-
     public void withDrawMember(Long memberId, String token, WithDrawMember request) {
         Member member = validateMember(token);
 

@@ -1,16 +1,18 @@
 package com.example.servertest.main.crop.controller;
 
 import com.example.servertest.main.crop.entity.SickList;
+import com.example.servertest.main.crop.model.DiagnosisDto;
+import com.example.servertest.main.crop.model.DiagnosisResponse;
 import com.example.servertest.main.crop.model.SickListDto;
 import com.example.servertest.main.crop.service.NaBatBuService;
+
+import java.io.IOException;
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,7 +22,7 @@ public class Controller {
 
     @PostMapping("/input/sickList")
     public ResponseEntity<?> inputSickList(
-        @RequestBody SickListDto sickListDto) {
+            @RequestBody SickListDto sickListDto) {
         SickList sickList = naBatBuService.saveSickList(sickListDto);
 
         return ResponseEntity.ok(sickList);
@@ -28,10 +30,10 @@ public class Controller {
 
     @GetMapping("/find/sickList")
     public ResponseEntity<?> sickList(@RequestParam String cropName,
-        @RequestParam String sickNameKor) {
+                                      @RequestParam String sickNameKor) {
 
         List<SickList> sickList = naBatBuService.getSickList(cropName,
-            sickNameKor);
+                sickNameKor);
 
         return ResponseEntity.ok(sickList);
     }
@@ -52,9 +54,18 @@ public class Controller {
 
     @GetMapping("/find/pesticideDetail")
     public ResponseEntity<?> getPesticideDetail(
-        @RequestParam String pesticideKey) {
+            @RequestParam String pesticideKey) {
 
         return null;
         //농촌진흥청 농약 상세 정보
+    }
+
+    @GetMapping("/diagnosis")
+    public ResponseEntity<?> returnDiagnosis(
+            @RequestPart(value = "dto") DiagnosisDto diagnosisDto
+            , @RequestPart(value = "image") MultipartFile file) throws IOException {
+        DiagnosisResponse diagnosisResponse = naBatBuService.returnDiagnosisResult(diagnosisDto, file);
+
+        return ResponseEntity.ok(diagnosisResponse);
     }
 }

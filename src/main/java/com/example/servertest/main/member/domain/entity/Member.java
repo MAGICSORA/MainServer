@@ -18,7 +18,8 @@ import org.hibernate.annotations.DynamicUpdate;
 @Setter
 @Entity
 @DynamicUpdate
-public class Member {
+public class
+Member {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

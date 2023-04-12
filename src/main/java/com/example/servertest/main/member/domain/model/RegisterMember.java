@@ -6,11 +6,7 @@ import com.example.servertest.main.member.domain.type.MemberType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 public class RegisterMember {
 
@@ -18,6 +14,7 @@ public class RegisterMember {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @ToString
     public static class Request {
 
 //        @NotBlank(message = "사용자 ID(e-mail)는 필수 항목입니다.")
