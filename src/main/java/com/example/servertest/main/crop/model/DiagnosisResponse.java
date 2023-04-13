@@ -15,5 +15,6 @@ public class DiagnosisResponse {
     private int responseCode;
     private int cropType;
     private LocalDateTime regDate;
-    private List<DiagnosisResult> diagnosisResults;
+    private List<DiagnosisItem> diagnosisItems;
+    private String imagePath;
 }

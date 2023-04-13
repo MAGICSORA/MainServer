@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class DiagnosisResult {
+public class DiagnosisItem {
 
     private int diseaseCode;
     private float accuracy;

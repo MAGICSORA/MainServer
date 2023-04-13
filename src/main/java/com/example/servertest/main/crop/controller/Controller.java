@@ -62,7 +62,7 @@ public class Controller {
 
     @GetMapping("/diagnosis")
     public ResponseEntity<?> returnDiagnosis(
-            @RequestPart(value = "dto") DiagnosisDto diagnosisDto
+            @RequestPart(value = "requestInput") DiagnosisDto diagnosisDto
             , @RequestPart(value = "image") MultipartFile file) throws IOException {
         DiagnosisResponse diagnosisResponse = naBatBuService.returnDiagnosisResult(diagnosisDto, file);
 

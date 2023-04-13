@@ -1,10 +1,7 @@
 package com.example.servertest.main.crop.entity;
 
-import com.example.servertest.main.crop.model.DiagnosisResult;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -12,7 +9,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class DiagnosisResultFromModel {
+public class DiagnosisResult {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

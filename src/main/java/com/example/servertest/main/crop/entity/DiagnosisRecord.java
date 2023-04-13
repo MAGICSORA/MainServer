@@ -18,7 +18,7 @@ public class DiagnosisRecord {
     private long id;
 
     @Column
-    private int userId;
+    private long userId;
 
     @Column
     private long diagnosisResultId;
