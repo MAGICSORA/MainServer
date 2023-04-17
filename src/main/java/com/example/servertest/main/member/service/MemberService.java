@@ -34,7 +34,8 @@ public class MemberService {
         Optional<Member> optionalMember = memberRepository.findByEmail(parameter.getEmail());
 
         if (optionalMember.isPresent()) {
-            return ServiceResult.fail(MemberError.MEMBER_ALREADY_EMAIL.getDescription());
+            MemberError e = MemberError.MEMBER_ALREADY_EMAIL;
+            return ServiceResult.fail(String.valueOf(e), e.getDescription());
         }
 
         String pw = BCrypt.hashpw(parameter.getPassword(), BCrypt.gensalt());

@@ -4,8 +4,8 @@ import org.springframework.http.ResponseEntity;
 
 public class ResponseResult {
 
-    public static ResponseEntity<?> fail(String message) {
-        return ResponseEntity.badRequest().body(ResponseMessage.fail(message));
+    public static ResponseEntity<?> fail(String code, String message) {
+        return ResponseEntity.badRequest().body(ResponseMessage.fail(code, message));
     }
 
     public static ResponseEntity<?> success() {
@@ -14,12 +14,12 @@ public class ResponseResult {
 
     public static ResponseEntity<?> result(ServiceResult result) {
         if (result.isFail()) {
-            return fail(result.getMessage());
+            return fail(result.getCode(), result.getMessage());
         }
         return success(result);
     }
 
-    public static ResponseEntity<?> success(Object data) {
-        return ResponseEntity.ok(ResponseMessage.success(data));
+    public static ResponseEntity<?> success(ServiceResult result) {
+        return ResponseEntity.ok(ResponseMessage.success(result.getObject()));
     }
 }

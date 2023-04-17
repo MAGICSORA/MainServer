@@ -39,7 +39,7 @@ public class MemberController {
 		try {
 			member = memberService.login(loginMember);
 		} catch (MemberException e) {
-			return ResponseResult.fail(e.getMessage());
+			return ResponseResult.fail(String.valueOf(e.getMemberError()), e.getMessage());
 		}
 
 		String email = member.getEmail();

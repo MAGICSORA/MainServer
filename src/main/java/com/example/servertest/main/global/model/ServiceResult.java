@@ -12,12 +12,14 @@ import lombok.NoArgsConstructor;
 public class ServiceResult {
 
     private boolean result;
+    private String code;
     private String message;
     private Object object;
 
-    public static ServiceResult fail(String message) {
+    public static ServiceResult fail(String errorCode, String message) {
         return ServiceResult.builder()
                 .result(false)
+                .code(errorCode)
                 .message(message)
                 .build();
     }
