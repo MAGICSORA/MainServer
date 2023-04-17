@@ -43,6 +43,11 @@ dependencies {
 
 
     implementation 'commons-io:commons-io:2.6'
+
+    //xml 바인딩
+    // https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
+
 }
 
 tasks.named('test') {

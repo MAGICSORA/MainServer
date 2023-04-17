@@ -34,3 +34,7 @@ jasypt:
 ncpms:
   baseUrl: http://ncpms.rda.go.kr/npmsAPI/service
   serviceKey: 2023d6e7b8a2c0598a9537e535c210f3d67a
+
+psis:
+  baseUrl: http://psis.rda.go.kr/openApi/service.do
+  apiKey: 2023041069ASS7FBRPJY0AV2YY9RG
