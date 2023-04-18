@@ -10,8 +10,8 @@ import lombok.*;
 @ToString
 public class RequestPsisList {
 
-    private String cropType;
-    private String diseaseCode;
+    private String cropName;
+    private String diseaseWeedName;
     private String displayCount;
     private String startPoint;
 }
