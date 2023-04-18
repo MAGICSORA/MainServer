@@ -8,10 +8,10 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class RequestPsisList {
+public class RequestPsisInfo {
 
-    private String cropType;
-    private String diseaseCode;
+    private String pestiCode;
+    private String diseaseUseSeq;
     private String displayCount;
     private String startPoint;
 }

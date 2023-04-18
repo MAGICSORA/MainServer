@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.UnsupportedEncodingException;
-
 @Component
 @RequiredArgsConstructor
 public class PsisManager {
@@ -15,7 +13,7 @@ public class PsisManager {
     @Value("${psis.apiKey}")
     private String apiKey;
 
-    public String makePsisListRequestUrl(String cropType, String diseaseCode, String displayCount, String startPoint) throws UnsupportedEncodingException {
+    public String makePsisListRequestUrl(String cropType, String diseaseCode, String displayCount, String startPoint) {
         return BASE_URL + "?" +
                 "apiKey=" + apiKey +
                 "&serviceCode=SVC01&serviceType=AA001&cropName=" + cropType +
@@ -24,11 +22,13 @@ public class PsisManager {
                 "&startPoint=" + startPoint;
     }
 
-    public String makePsisInfoRequestUrl(String pestiCode, String diseaseCode) {
+    public String makePsisInfoRequestUrl(String pestiCode, String diseaseCode, String displayCount, String startPoint) {
         return BASE_URL + "?" +
                 "apiKey=" + apiKey +
                 "&serviceCode=SVC02&pestiCode=" + pestiCode +
-                "&diseaseUseSeq=" + diseaseCode;
+                "&diseaseUseSeq=" + diseaseCode +
+                "&displayCount=" + displayCount +
+                "&startPoint=" + startPoint;
     }
 
 
