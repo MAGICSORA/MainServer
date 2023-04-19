@@ -12,5 +12,9 @@ public class DiagnosisItem {
 
     private int diseaseCode;
     private float accuracy;
-    private float[] bBox;
+    private float boxX1;
+    private float boxX2;
+    private float boxY1;
+    private float boxY2;
+
 }

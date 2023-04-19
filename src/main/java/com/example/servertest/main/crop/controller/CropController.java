@@ -5,14 +5,15 @@ import com.example.servertest.main.crop.model.DiagnosisDto;
 import com.example.servertest.main.crop.model.DiagnosisResponse;
 import com.example.servertest.main.crop.model.SickListDto;
 import com.example.servertest.main.crop.service.NaBatBuService;
-
-import java.io.IOException;
-import java.util.List;
-
+import com.example.servertest.main.global.model.ResponseResult;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -68,5 +69,11 @@ public class CropController {
         DiagnosisResponse diagnosisResponse = naBatBuService.returnDiagnosisResult(diagnosisDto, file);
 
         return ResponseEntity.ok(diagnosisResponse);
+    }
+
+    @GetMapping("/diagnosisRecord")
+    public ResponseEntity<?> diagnosisRecord(@RequestParam Long diagnosisRecordId) throws JsonProcessingException {
+
+        return ResponseResult.result(naBatBuService.getDiagnosisRecord(diagnosisRecordId));
     }
 }

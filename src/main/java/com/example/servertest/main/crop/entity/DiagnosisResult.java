@@ -19,5 +19,5 @@ public class DiagnosisResult {
     private int responseCode;
 
     @Column
-    private String diagnosisResults;
+    private String diagnosisItems;
 }
