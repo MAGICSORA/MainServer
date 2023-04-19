@@ -5,15 +5,15 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+
+import com.example.servertest.main.crop.type.CropType;
+import com.example.servertest.main.crop.type.DiseaseCode;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.IOUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -52,11 +52,25 @@ public class TestController {
     public ResponseEntity<?> test22() throws IOException {
 
         InputStream imageStream = new FileInputStream(
-            "../../src/main/resources/images/" + "User/" + "사용자5" + "/" + "샘플.png");
+                "../../src/main/resources/images/" + "User/" + "사용자5" + "/" + "샘플.png");
 
         byte[] imageByteArray = IOUtils.toByteArray(imageStream);
         imageStream.close();
 
-        return new ResponseEntity<byte[]>(imageByteArray, HttpStatus.OK);
+        return new ResponseEntity<>(imageByteArray, HttpStatus.OK);
+    }
+
+    @GetMapping("/getCropCode/{index}")
+    public ResponseEntity<?> test33(@PathVariable int index) {
+
+        CropType value = CropType.values()[index];
+        return ResponseEntity.ok(value);
+    }
+
+    @GetMapping("/getDiseaseCode/{index}")
+    public ResponseEntity<?> test44(@PathVariable int index) {
+
+        DiseaseCode value = DiseaseCode.values()[index];
+        return ResponseEntity.ok(value);
     }
 }
