@@ -1,6 +1,6 @@
-package com.example.servertest.main.crop.repository;
+package com.example.servertest.main.test.repository;
 
-import com.example.servertest.main.crop.entity.TestEntity;
+import com.example.servertest.main.test.entity.TestEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

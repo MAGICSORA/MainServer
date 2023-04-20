@@ -1,6 +1,6 @@
-package com.example.servertest.main.crop.controller;
+package com.example.servertest.main.test.controller;
 
-import com.example.servertest.main.crop.service.TestService;
+import com.example.servertest.main.test.service.TestService;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;

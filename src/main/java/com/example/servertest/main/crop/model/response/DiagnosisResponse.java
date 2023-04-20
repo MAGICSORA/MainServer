@@ -1,5 +1,6 @@
-package com.example.servertest.main.crop.model;
+package com.example.servertest.main.crop.model.response;
 
+import com.example.servertest.main.crop.model.response.DiagnosisItem;
 import lombok.*;
 
 import java.time.LocalDateTime;

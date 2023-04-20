@@ -1,7 +1,7 @@
-package com.example.servertest.main.crop.service;
+package com.example.servertest.main.test.service;
 
-import com.example.servertest.main.crop.entity.TestEntity;
-import com.example.servertest.main.crop.repository.TestRepository;
+import com.example.servertest.main.test.entity.TestEntity;
+import com.example.servertest.main.test.repository.TestRepository;
 
 import java.util.ArrayList;
 import java.util.List;

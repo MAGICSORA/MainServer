@@ -1,4 +1,4 @@
-package com.example.servertest.main.crop.entity;
+package com.example.servertest.main.test.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

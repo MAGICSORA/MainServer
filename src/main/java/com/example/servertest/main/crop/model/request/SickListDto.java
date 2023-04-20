@@ -1,4 +1,4 @@
-package com.example.servertest.main.crop.model;
+package com.example.servertest.main.crop.model.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

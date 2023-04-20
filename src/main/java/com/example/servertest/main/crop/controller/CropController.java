@@ -1,11 +1,16 @@
 package com.example.servertest.main.crop.controller;
 
 import com.example.servertest.main.crop.entity.SickList;
-import com.example.servertest.main.crop.model.DiagnosisDto;
-import com.example.servertest.main.crop.model.DiagnosisResponse;
-import com.example.servertest.main.crop.model.SickListDto;
+import com.example.servertest.main.crop.model.request.DiagnosisDto;
+import com.example.servertest.main.crop.model.response.DiagnosisResponse;
+import com.example.servertest.main.crop.model.request.SickListDto;
 import com.example.servertest.main.crop.service.NaBatBuService;
+import com.example.servertest.main.crop.type.DiseaseCode;
 import com.example.servertest.main.global.model.ResponseResult;
+import com.example.servertest.main.psis.component.PsisManager;
+import com.example.servertest.main.psis.model.request.RequestPsisInfo;
+import com.example.servertest.main.psis.model.request.RequestPsisList;
+import com.example.servertest.main.psis.service.PsisService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,6 +27,8 @@ import java.util.List;
 public class CropController {
 
     private final NaBatBuService naBatBuService;
+    private final PsisManager psisManager;
+    private final PsisService psisService;
 
     @PostMapping("/input/sickList")
     public ResponseEntity<?> inputSickList(
@@ -40,29 +48,27 @@ public class CropController {
         return ResponseEntity.ok(sickList);
     }
 
-    @GetMapping("/find/sickDetail")
-    public ResponseEntity<?> sickDetail(@RequestParam String sickKey) {
+    @GetMapping("/sickDetail") //병 상세정보 조회
+    public ResponseEntity<?> sickDetail(@RequestParam int cropCode) {
 
         return null;
-        //농촌진흥청 병 상세 정보
     }
 
-    @GetMapping("/find/pesticide")
-    public ResponseEntity<?> getPesticide(@RequestParam String sickKey) {
+    @GetMapping("/psisList") //농약 리스트 조회
+    public Map<String, ?> krxParser2(@RequestBody RequestPsisList request) throws IOException {
+        String urlBuilder = psisManager.makePsisListRequestUrl(request.getCropName(), request.getDiseaseWeedName(), request.getDisplayCount(), request.getStartPoint());
 
-        return null;
-        //농촌진흥청 농약 리스트
+        return psisService.returnResult(urlBuilder, true);
     }
 
-    @GetMapping("/find/pesticideDetail")
-    public ResponseEntity<?> getPesticideDetail(
-            @RequestParam String pesticideKey) {
+    @GetMapping("/psisDetail") //농약 상세정보 조회
+    public Map<String, ?> krxParser3(@RequestBody RequestPsisInfo request) throws IOException {
+        String urlBuilder = psisManager.makePsisInfoRequestUrl(request.getPestiCode(), request.getDiseaseUseSeq(), request.getDisplayCount(), request.getStartPoint());
 
-        return null;
-        //농촌진흥청 농약 상세 정보
+        return psisService.returnResult(urlBuilder, false);
     }
 
-    @GetMapping("/diagnosis")
+    @GetMapping("/diagnosis") //진단 요청
     public ResponseEntity<?> returnDiagnosis(
             @RequestPart(value = "requestInput") DiagnosisDto diagnosisDto
             , @RequestPart(value = "image") MultipartFile file) throws IOException {
@@ -71,7 +77,7 @@ public class CropController {
         return ResponseEntity.ok(diagnosisResponse);
     }
 
-    @GetMapping("/diagnosisRecord")
+    @GetMapping("/diagnosisRecord") //사용자 진단 기록 조회
     public ResponseEntity<?> diagnosisRecord(@RequestParam Long diagnosisRecordId) throws JsonProcessingException {
 
         return ResponseResult.result(naBatBuService.getDiagnosisRecord(diagnosisRecordId));

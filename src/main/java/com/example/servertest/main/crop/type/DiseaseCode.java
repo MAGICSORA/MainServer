@@ -6,7 +6,7 @@ import lombok.Getter;
 public enum DiseaseCode {
 
     PEPPER_NORMAL("고추 정상"),
-    PEPPER_MILD_MOTTLE("고추마일드모틀바이러스"),
+    PEPPER_MILD_MOTTLE("고추모자이크병"),
     PEPPER_BACTERIAL_SPOT("고추점무늬병"),
     STRAWBERRY_NORMAL("딸기정상"),
     STRAWBERRY_GRAY_MOLD("딸기잿빛곰팡이병"),

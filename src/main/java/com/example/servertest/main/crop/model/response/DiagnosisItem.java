@@ -1,4 +1,4 @@
-package com.example.servertest.main.crop.model;
+package com.example.servertest.main.crop.model.response;
 
 import lombok.*;
 
