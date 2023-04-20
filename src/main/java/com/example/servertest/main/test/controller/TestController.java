@@ -1,10 +1,14 @@
 package com.example.servertest.main.test.controller;
 
+import com.example.servertest.main.crop.entity.DiseaseDetail;
+import com.example.servertest.main.crop.repository.DiseaseDetailRepository;
+import com.example.servertest.main.test.model.InputDiseaseDetail;
 import com.example.servertest.main.test.service.TestService;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Optional;
 
 import com.example.servertest.main.crop.type.CropType;
 import com.example.servertest.main.crop.type.DiseaseCode;
@@ -21,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 public class TestController {
 
     private final TestService testService;
+    private final DiseaseDetailRepository diseaseDetailRepository;
 
     @GetMapping("/save")
     public void testDb(@RequestParam String input) {
@@ -72,5 +77,18 @@ public class TestController {
 
         DiseaseCode value = DiseaseCode.values()[index];
         return ResponseEntity.ok(value);
+    }
+
+    @PutMapping("/input/diseaseDetail")
+    public ResponseEntity<?> test55(@RequestBody InputDiseaseDetail inputDiseaseDetail) {
+
+        Optional<DiseaseDetail> optionalDiseaseDetail = diseaseDetailRepository.findById(inputDiseaseDetail.getId());
+        DiseaseDetail diseaseDetail = optionalDiseaseDetail.get();
+        diseaseDetail.setEnvironment(inputDiseaseDetail.getEnvironment());
+        diseaseDetail.setControlMethod(inputDiseaseDetail.getControlMethod());
+        diseaseDetail.setSymptom(inputDiseaseDetail.getSymptom());
+        diseaseDetailRepository.save(diseaseDetail);
+
+        return ResponseEntity.ok(diseaseDetail);
     }
 }
