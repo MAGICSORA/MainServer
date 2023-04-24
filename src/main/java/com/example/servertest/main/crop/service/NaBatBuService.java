@@ -2,7 +2,10 @@ package com.example.servertest.main.crop.service;
 
 import com.example.servertest.main.crop.entity.DiagnosisRecord;
 import com.example.servertest.main.crop.entity.DiagnosisResult;
+import com.example.servertest.main.crop.entity.DiseaseDetail;
 import com.example.servertest.main.crop.entity.SickList;
+import com.example.servertest.main.crop.exception.CropError;
+import com.example.servertest.main.crop.exception.CropException;
 import com.example.servertest.main.crop.model.request.DiagnosisDto;
 import com.example.servertest.main.crop.model.response.DiagnosisItem;
 import com.example.servertest.main.crop.model.response.DiagnosisResponse;
@@ -10,6 +13,7 @@ import com.example.servertest.main.crop.model.request.SickListDto;
 import com.example.servertest.main.crop.model.response.ResponseDiagnosisRecord;
 import com.example.servertest.main.crop.repository.DiagnosisRecordRepository;
 import com.example.servertest.main.crop.repository.DiagnosisResultRepository;
+import com.example.servertest.main.crop.repository.DiseaseDetailRepository;
 import com.example.servertest.main.crop.repository.SickListRepository;
 import com.example.servertest.main.global.model.ServiceResult;
 import com.example.servertest.main.member.entity.Member;
@@ -38,6 +42,7 @@ public class NaBatBuService {
     private final DiagnosisResultRepository diagnosisResultRepository;
     private final MemberRepository memberRepository;
     private final FileService fileService;
+    private final DiseaseDetailRepository diseaseDetailRepository;
 
     public SickList saveSickList(SickListDto sickListDto) {
         SickList sickList = SickList.builder()
@@ -172,5 +177,17 @@ public class NaBatBuService {
                 .build();
 
         return ServiceResult.success(result);
+    }
+
+    public ServiceResult getSickDetail(int cropCode) {
+
+        Optional<DiseaseDetail> optionalDiseaseDetail = diseaseDetailRepository.findById((long) cropCode);
+        if (!optionalDiseaseDetail.isPresent()) {
+            CropException e = new CropException(CropError.DISEASE_NOT_FOUND);
+            return ServiceResult.fail(String.valueOf(e.getCropError()), e.getMessage());
+        }
+
+        DiseaseDetail diseaseDetail = optionalDiseaseDetail.get();
+        return ServiceResult.success(diseaseDetail);
     }
 }

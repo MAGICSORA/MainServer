@@ -2,10 +2,9 @@ package com.example.servertest.main.crop.controller;
 
 import com.example.servertest.main.crop.entity.SickList;
 import com.example.servertest.main.crop.model.request.DiagnosisDto;
-import com.example.servertest.main.crop.model.response.DiagnosisResponse;
 import com.example.servertest.main.crop.model.request.SickListDto;
+import com.example.servertest.main.crop.model.response.DiagnosisResponse;
 import com.example.servertest.main.crop.service.NaBatBuService;
-import com.example.servertest.main.crop.type.DiseaseCode;
 import com.example.servertest.main.global.model.ResponseResult;
 import com.example.servertest.main.psis.component.PsisManager;
 import com.example.servertest.main.psis.model.request.RequestPsisInfo;
@@ -51,7 +50,7 @@ public class CropController {
     @GetMapping("/sickDetail") //병 상세정보 조회
     public ResponseEntity<?> sickDetail(@RequestParam int cropCode) {
 
-        return null;
+        return ResponseResult.result(naBatBuService.getSickDetail(cropCode));
     }
 
     @GetMapping("/psisList") //농약 리스트 조회
