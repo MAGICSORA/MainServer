@@ -4,6 +4,7 @@ import com.example.servertest.main.crop.entity.SickList;
 import com.example.servertest.main.crop.model.request.DiagnosisDto;
 import com.example.servertest.main.crop.model.request.SickListDto;
 import com.example.servertest.main.crop.model.response.DiagnosisResponse;
+import com.example.servertest.main.crop.service.CrawlingService;
 import com.example.servertest.main.crop.service.NaBatBuService;
 import com.example.servertest.main.global.model.ResponseResult;
 import com.example.servertest.main.psis.component.PsisManager;
@@ -80,5 +81,16 @@ public class CropController {
     public ResponseEntity<?> diagnosisRecord(@RequestParam Long diagnosisRecordId) throws JsonProcessingException {
 
         return ResponseResult.result(naBatBuService.getDiagnosisRecord(diagnosisRecordId));
+    }
+
+    @GetMapping("/noticeList")
+    public ResponseEntity<?> noticeList() {
+        CrawlingService crawlingService = new CrawlingService();
+
+        String idx = crawlingService.getUrl(crawlingService.getIndex());
+
+        return ResponseResult.result(crawlingService.getAllData(idx));
+
+//        System.out.println(crawlingService.getAllData(idx));
     }
 }

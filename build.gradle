@@ -42,11 +42,14 @@ dependencies {
     implementation 'javax.xml.bind:jaxb-api:2.3.0'
 
 
-    implementation 'commons-io:commons-io:2.6'
+    implementation 'commons-io:commons-io:2.7'
 
     //xml 바인딩
     // https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
+
+    // https://mvnrepository.com/artifact/org.jsoup/jsoup
+    implementation 'org.jsoup:jsoup:1.15.4'
 
     // gson (string -> object)
     // https://mvnrepository.com/artifact/com.google.code.gson/gson
