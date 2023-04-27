@@ -7,7 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DiagnosisRecordRepository extends JpaRepository<DiagnosisRecord, Long> {
 
-    DiagnosisRecord findTopByOrderById();
-
     DiagnosisRecord findTopByOrderByIdDesc();
 }

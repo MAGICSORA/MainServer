@@ -29,6 +29,7 @@ public class CropController {
     private final NaBatBuService naBatBuService;
     private final PsisManager psisManager;
     private final PsisService psisService;
+    private final CrawlingService crawlingService;
 
     @PostMapping("/input/sickList")
     public ResponseEntity<?> inputSickList(
@@ -83,14 +84,19 @@ public class CropController {
         return ResponseResult.result(naBatBuService.getDiagnosisRecord(diagnosisRecordId));
     }
 
-    @GetMapping("/noticeList")
-    public ResponseEntity<?> noticeList() {
-        CrawlingService crawlingService = new CrawlingService();
+    @PutMapping("/save/noticeList")//메인페이지 병해발생정보 리스트 저장
+    public void saveNoticeList() {
 
         String idx = crawlingService.getUrl(crawlingService.getIndex());
 
-        return ResponseResult.result(crawlingService.getAllData(idx));
+        crawlingService.updateAllData(idx);
 
 //        System.out.println(crawlingService.getAllData(idx));
+    }
+
+    @GetMapping("/noticeList")
+    public ResponseEntity<?> noticeList() throws JsonProcessingException {
+
+        return ResponseResult.result(crawlingService.getNoticeList());
     }
 }

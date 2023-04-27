@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class CrawlingDto {
+public class CropOccurInfoDto {
 
     int warningListSize;
     List warningList;
