@@ -19,6 +19,7 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,6 +80,7 @@ public class CrawlingService {
                 .warningList(new Gson().toJson(dto.getWarningList()))
                 .watchListSize(dto.getWatchListSize())
                 .watchList(new Gson().toJson(dto.getWatchList()))
+                .updateDt(LocalDateTime.now())
                 .build();
 
         cropOccurInfoRepository.deleteAll();

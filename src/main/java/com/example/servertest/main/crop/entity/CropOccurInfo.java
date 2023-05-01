@@ -3,6 +3,8 @@ package com.example.servertest.main.crop.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Builder
 @AllArgsConstructor
@@ -32,4 +34,7 @@ public class CropOccurInfo {
 
     @Column
     private String forecastList;
+
+    @Column
+    private LocalDateTime updateDt;
 }
