@@ -11,7 +11,7 @@ public class Scheduler {
 
     private final CrawlingService crawlingService;
 
-    @Scheduled(cron = "0 0 0 ? * MON *")
+    @Scheduled(cron = "0 0 0 ? * MON")
     public void saveNotice() {
 
         String idx = crawlingService.getUrl(crawlingService.getIndex());
