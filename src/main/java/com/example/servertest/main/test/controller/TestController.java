@@ -4,6 +4,7 @@ import com.example.servertest.main.crop.entity.DiseaseDetail;
 import com.example.servertest.main.crop.repository.DiseaseDetailRepository;
 import com.example.servertest.main.test.model.InputDiseaseDetail;
 import com.example.servertest.main.test.service.TestService;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,10 +15,9 @@ import com.example.servertest.main.crop.type.CropType;
 import com.example.servertest.main.crop.type.DiseaseCode;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.IOUtils;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 @RestController
 @RequiredArgsConstructor
@@ -90,5 +90,17 @@ public class TestController {
         diseaseDetailRepository.save(diseaseDetail);
 
         return ResponseEntity.ok(diseaseDetail);
+    }
+
+    @GetMapping("/flask")
+    public ResponseEntity<?> test66() {
+        HttpHeaders header = new HttpHeaders();
+        HttpEntity<?> entity = new HttpEntity<>(header);
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> responseEntity = restTemplate.exchange("http://15.164.23.13:8080/test/hi"
+                , HttpMethod.GET, entity, String.class);
+
+        return responseEntity;
     }
 }

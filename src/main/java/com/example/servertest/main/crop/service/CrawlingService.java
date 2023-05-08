@@ -45,7 +45,7 @@ public class CrawlingService {
     }
 
     private String getIdxData(Document document) {
-        Elements selects = document.getElementsByClass("ce").select("td");    //⭐⭐⭐
+        Elements selects = document.getElementsByClass("ce").select("td");
         return selects.get(0).text();
     }
 

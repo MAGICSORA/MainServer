@@ -73,14 +73,15 @@ public class NaBatBuService {
         } else {
             cnt = 1L;
         }
-        imgCode.append(cnt);
+        imgCode.append(cnt); //저장 이미지 파일 명 설정
 
         Optional<Member> optionalMember = memberRepository.findById(diagnosisDto.getUserId());
-        Member member = optionalMember.get();
+        Member member = optionalMember.get(); //이미지 경로를 위한 member
 
-        BufferedImage image = fileService.handleFileUpload(file, member.getName(), String.valueOf(imgCode));
+        BufferedImage image = fileService.handleFileUpload(file, member.getName(), String.valueOf(imgCode));//이미지 저장
 
         //DiagnosisResultFromModel diagnosisResultFromModel = flaskService.request(imageCode, diagnosisDto.getCropType(), image);
+        //진단 요청
 
         DiagnosisItem tmpDiagnosisItem1 = DiagnosisItem.builder()
                 .diseaseCode(0)
