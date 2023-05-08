@@ -69,7 +69,7 @@ public class CropController {
         return psisService.returnResult(urlBuilder, false);
     }
 
-    @GetMapping("/diagnosis") //진단 요청
+    @PostMapping("/diagnosis") //진단 요청
     public ResponseEntity<?> returnDiagnosis(
             @RequestPart(value = "requestInput") DiagnosisDto diagnosisDto
             , @RequestPart(value = "image") MultipartFile file) throws IOException {
