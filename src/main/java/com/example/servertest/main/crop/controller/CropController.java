@@ -99,4 +99,9 @@ public class CropController {
 
         return ResponseResult.result(crawlingService.getNoticeList());
     }
+
+    @GetMapping("/formTest")
+    public String test(@RequestPart(value = "id") String id, @RequestPart(value = "name") String name) {
+        return id + "_" + name;
+    }
 }
