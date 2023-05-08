@@ -3,9 +3,9 @@ package com.example.servertest.main.crop.cron;
 import com.example.servertest.main.crop.service.CrawlingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class Scheduler {
 
