@@ -119,7 +119,7 @@ public class NaBatBuService {
         diagnosisResultRepository.save(diagnosisResult);
 
         StringBuilder imagePath = new StringBuilder();
-        imagePath.append("http://localhost:8080/image/");
+        imagePath.append("http://15.164.23.13:8080/image/");
         imagePath.append(member.getName());
         imagePath.append("/");
         imagePath.append(imgCode);
