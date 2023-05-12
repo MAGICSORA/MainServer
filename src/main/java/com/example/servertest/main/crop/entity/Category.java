@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
-public class DiagnosisRecord {
+public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,24 +21,9 @@ public class DiagnosisRecord {
     private long userId;
 
     @Column
-    private long diagnosisResultId;
+    private String name;
 
     @Column
-    private float userLatitude;
-
-    @Column
-    private float userLongitude;
-
-    @Column
-    private LocalDateTime regDate;
-
-    @Column
-    private int cropType;
-
-    @Column
-    private String imagePath;
-
-    @Column
-    private long categoryId;
+    private LocalDateTime regDt;
 }
 

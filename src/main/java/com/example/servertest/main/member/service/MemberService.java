@@ -1,5 +1,7 @@
 package com.example.servertest.main.member.service;
 
+import com.example.servertest.main.crop.entity.Category;
+import com.example.servertest.main.crop.repository.CategoryRepository;
 import com.example.servertest.main.global.jwt.TokenProvider;
 import com.example.servertest.main.global.model.ServiceResult;
 import com.example.servertest.main.member.entity.Member;
@@ -28,6 +30,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
+    private final CategoryRepository categoryRepository;
 
     public ServiceResult register(RegisterMember.Request parameter) {
 

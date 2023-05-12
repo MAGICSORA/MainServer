@@ -4,6 +4,7 @@ import com.example.servertest.main.crop.entity.SickList;
 import com.example.servertest.main.crop.model.request.DiagnosisDto;
 import com.example.servertest.main.crop.model.request.SickListDto;
 import com.example.servertest.main.crop.model.response.DiagnosisResponse;
+import com.example.servertest.main.crop.service.CategoryService;
 import com.example.servertest.main.crop.service.CrawlingService;
 import com.example.servertest.main.crop.service.NaBatBuService;
 import com.example.servertest.main.global.model.ResponseResult;
@@ -31,6 +32,7 @@ public class CropController {
     private final PsisManager psisManager;
     private final PsisService psisService;
     private final CrawlingService crawlingService;
+    private final CategoryService categoryService;
 
     @PostMapping("/input/sickList")
     public ResponseEntity<?> inputSickList(
@@ -109,5 +111,27 @@ public class CropController {
     @GetMapping("/nearDisease") //반경 1km
     public ResponseEntity getNearDiseases(@RequestParam float latitude, @RequestParam float longitude, @RequestHeader("Authorization") String token) {
         return ResponseResult.result(naBatBuService.getNearDiseases(latitude, longitude, token));
+    }
+
+    @PostMapping("/category/create")
+    public ResponseEntity<?> createCategory(@RequestParam String name, @RequestHeader("Authorization") String token) {
+        return ResponseResult.result(categoryService.registerCategory(name, token));
+    }
+
+    @GetMapping("/category/list")
+    public ResponseEntity<?> getCategoryList(@RequestHeader("Authorization") String token) {
+        return ResponseResult.result(categoryService.getCategoryList(token));
+    }
+
+    @PutMapping("/category/update")
+    public ResponseEntity<?> updateCategory(@RequestParam String originalName, @RequestParam String changeName, @RequestHeader("Authorization") String token) {
+
+        return ResponseResult.result(categoryService.updateCategory(originalName, changeName, token));
+    }
+
+    @DeleteMapping("/category/delete")
+    public ResponseEntity<?> deleteCategory(@RequestHeader("Authorization") String token, @RequestParam Long categoryId) {
+
+        return ResponseResult.result(categoryService.deleteCategory(token, categoryId));
     }
 }

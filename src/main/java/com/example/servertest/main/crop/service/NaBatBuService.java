@@ -1,9 +1,6 @@
 package com.example.servertest.main.crop.service;
 
-import com.example.servertest.main.crop.entity.DiagnosisRecord;
-import com.example.servertest.main.crop.entity.DiagnosisResult;
-import com.example.servertest.main.crop.entity.DiseaseDetail;
-import com.example.servertest.main.crop.entity.SickList;
+import com.example.servertest.main.crop.entity.*;
 import com.example.servertest.main.crop.exception.CropError;
 import com.example.servertest.main.crop.exception.CropException;
 import com.example.servertest.main.crop.model.request.DiagnosisDto;
@@ -11,10 +8,7 @@ import com.example.servertest.main.crop.model.response.DiagnosisItem;
 import com.example.servertest.main.crop.model.response.DiagnosisResponse;
 import com.example.servertest.main.crop.model.request.SickListDto;
 import com.example.servertest.main.crop.model.response.ResponseDiagnosisRecord;
-import com.example.servertest.main.crop.repository.DiagnosisRecordRepository;
-import com.example.servertest.main.crop.repository.DiagnosisResultRepository;
-import com.example.servertest.main.crop.repository.DiseaseDetailRepository;
-import com.example.servertest.main.crop.repository.SickListRepository;
+import com.example.servertest.main.crop.repository.*;
 import com.example.servertest.main.global.model.ServiceResult;
 import com.example.servertest.main.member.entity.Member;
 import com.example.servertest.main.member.exception.MemberError;
@@ -32,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.security.SignatureException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -46,6 +41,7 @@ public class NaBatBuService {
     private final FileService fileService;
     private final MemberService memberService;
     private final DiseaseDetailRepository diseaseDetailRepository;
+    private final CategoryRepository categoryRepository;
 
     public SickList saveSickList(SickListDto sickListDto) {
         SickList sickList = SickList.builder()
@@ -77,13 +73,20 @@ public class NaBatBuService {
         imgCode.append(member.getId());
         imgCode.append("-");
 
+        System.out.println("테스트1");
+        //테스트1
+
+
         Long cnt;
         if (diagnosisRecordRepository.count() != 0) {
             cnt = diagnosisRecordRepository.findTopByOrderByIdDesc().getId() + 1;
         } else {
             cnt = 1L;
         }
+
         imgCode.append(cnt); //저장 이미지 파일 명 설정
+
+
 
 //        Optional<Member> optionalMember = memberRepository.findById(diagnosisDto.getUserId());
 //        Member member = optionalMember.get(); //이미지 경로를 위한 member
@@ -128,6 +131,9 @@ public class NaBatBuService {
 
         diagnosisResultRepository.save(diagnosisResult);
 
+        System.out.println("테스트2");
+        //테스트1
+
         StringBuilder imagePath = new StringBuilder();
         imagePath.append("http://15.164.23.13:8080/image/");
         imagePath.append(member.getName());
@@ -142,6 +148,13 @@ public class NaBatBuService {
                 .imagePath(imagePath.toString())
                 .build();
 
+        Category category = categoryRepository.findByNameAndUserId("unclassified", member.getId());
+
+        if (category == null) {
+            Exception e = new Exception("실패");
+            return ServiceResult.fail(e.getMessage(), e.getMessage());
+        }
+
         diagnosisRecordRepository.save(DiagnosisRecord.builder()
                 .userId(member.getId())
                 .diagnosisResultId(diagnosisResult.getId())
@@ -150,6 +163,7 @@ public class NaBatBuService {
                 .regDate(diagnosisDto.getRegDate())
                 .cropType(diagnosisDto.getCropType())
                 .imagePath(imagePath.toString())
+                .categoryId(category.getId())
                 .build());
 
 //        DiagnosisResponse diagnosisResponse = DiagnosisResponse.builder()
