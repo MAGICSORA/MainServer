@@ -1,6 +1,8 @@
 package com.example.servertest.main.crop.controller;
 
 import com.example.servertest.main.crop.entity.SickList;
+import com.example.servertest.main.crop.exception.NcpmsError;
+import com.example.servertest.main.crop.exception.NcpmsException;
 import com.example.servertest.main.crop.model.request.DiagnosisDto;
 import com.example.servertest.main.crop.model.request.SickListDto;
 import com.example.servertest.main.crop.model.response.DiagnosisResponse;
@@ -9,6 +11,10 @@ import com.example.servertest.main.crop.service.CrawlingService;
 import com.example.servertest.main.crop.service.NaBatBuService;
 import com.example.servertest.main.global.model.ResponseResult;
 import com.example.servertest.main.global.model.ServiceResult;
+import com.example.servertest.main.ncpms.component.NcpmsManager;
+import com.example.servertest.main.ncpms.model.request.RequestNcpmsSick;
+import com.example.servertest.main.ncpms.model.request.RequestNcpmsSickDetail;
+import com.example.servertest.main.ncpms.service.NcpmsService;
 import com.example.servertest.main.psis.component.PsisManager;
 import com.example.servertest.main.psis.model.request.RequestPsisInfo;
 import com.example.servertest.main.psis.model.request.RequestPsisList;
@@ -31,6 +37,8 @@ public class CropController {
     private final NaBatBuService naBatBuService;
     private final PsisManager psisManager;
     private final PsisService psisService;
+    private final NcpmsManager ncpmsManager;
+    private final NcpmsService ncpmsService;
     private final CrawlingService crawlingService;
     private final CategoryService categoryService;
 
@@ -40,22 +48,6 @@ public class CropController {
         SickList sickList = naBatBuService.saveSickList(sickListDto);
 
         return ResponseEntity.ok(sickList);
-    }
-
-    @GetMapping("/find/sickList")
-    public ResponseEntity<?> sickList(@RequestParam String cropName,
-                                      @RequestParam String sickNameKor) {
-
-        List<SickList> sickList = naBatBuService.getSickList(cropName,
-                sickNameKor);
-
-        return ResponseEntity.ok(sickList);
-    }
-
-    @GetMapping("/sickDetail") //병 상세정보 조회
-    public ResponseEntity<?> sickDetail(@RequestParam int cropCode) {
-
-        return ResponseResult.result(naBatBuService.getSickDetail(cropCode));
     }
 
     @GetMapping("/psisList") //농약 리스트 조회
@@ -133,5 +125,33 @@ public class CropController {
     public ResponseEntity<?> deleteCategory(@RequestHeader("Authorization") String token, @RequestParam Long categoryId) {
 
         return ResponseResult.result(categoryService.deleteCategory(token, categoryId));
+    }
+
+    @GetMapping("/sickList") //농약 리스트 조회
+    public ResponseEntity<?> ncpmcParser(@RequestBody RequestNcpmsSick request) {
+        String urlBuilder = ncpmsManager.makeNcpmsSickSearchRequestUrl(request.getCropName(), request.getSickNameKor(), request.getDisplayCount(), request.getStartPoint());
+
+        ServiceResult result;
+        try{
+            result = ncpmsService.returnResult(urlBuilder, true);
+        } catch (Exception e) {
+            NcpmsException exception = new NcpmsException(NcpmsError.NO_DATA_EXIST);
+            result = ServiceResult.fail(String.valueOf(exception.getNcpmsError()), exception.getMessage());
+        }
+        return ResponseResult.result(result);
+    }
+
+    @GetMapping("/sickDetail") //농약 리스트 조회
+    public ResponseEntity<?> ncpmcParser2(@RequestBody RequestNcpmsSickDetail request) {
+        String urlBuilder = ncpmsManager.makeNcpmsSickDetailSearchRequestUrl(request.getSickKey());
+
+        ServiceResult result;
+        try{
+            result = ncpmsService.returnResult(urlBuilder, false);
+        } catch (Exception e) {
+            NcpmsException exception = new NcpmsException(NcpmsError.NO_DATA_EXIST);
+            result = ServiceResult.fail(String.valueOf(exception.getNcpmsError()), exception.getMessage());
+        }
+        return ResponseResult.result(result);
     }
 }
