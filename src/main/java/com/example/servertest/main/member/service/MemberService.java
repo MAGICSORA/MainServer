@@ -93,7 +93,7 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    private Member validateMember(String token) {
+    public Member validateMember(String token) {
 
         String subToken = token.substring(TOKEN_PREFIX.length());
 

@@ -37,5 +37,8 @@ public class DiagnosisRecord {
 
     @Column
     private String imagePath;
+
+    @Column
+    private String category;
 }
 

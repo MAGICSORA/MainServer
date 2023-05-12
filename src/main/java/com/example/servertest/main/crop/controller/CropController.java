@@ -7,6 +7,7 @@ import com.example.servertest.main.crop.model.response.DiagnosisResponse;
 import com.example.servertest.main.crop.service.CrawlingService;
 import com.example.servertest.main.crop.service.NaBatBuService;
 import com.example.servertest.main.global.model.ResponseResult;
+import com.example.servertest.main.global.model.ServiceResult;
 import com.example.servertest.main.psis.component.PsisManager;
 import com.example.servertest.main.psis.model.request.RequestPsisInfo;
 import com.example.servertest.main.psis.model.request.RequestPsisList;
@@ -72,10 +73,10 @@ public class CropController {
     @PostMapping("/diagnosis") //진단 요청
     public ResponseEntity<?> returnDiagnosis(
             @RequestPart(value = "requestInput") DiagnosisDto diagnosisDto
-            , @RequestPart(value = "image") MultipartFile file) throws IOException {
-        DiagnosisResponse diagnosisResponse = naBatBuService.returnDiagnosisResult(diagnosisDto, file);
+            , @RequestPart(value = "image") MultipartFile file, @RequestHeader("Authorization") String token) throws IOException {
+        ServiceResult result = naBatBuService.returnDiagnosisResult(diagnosisDto, file, token);
 
-        return ResponseEntity.ok(diagnosisResponse);
+        return ResponseResult.result(result);
     }
 
     @GetMapping("/diagnosisRecord") //사용자 진단 기록 조회
@@ -103,5 +104,10 @@ public class CropController {
     @GetMapping("/formTest")
     public String test(@RequestPart(value = "id") String id, @RequestPart(value = "name") String name) {
         return id + "_" + name;
+    }
+
+    @GetMapping("/nearDisease") //반경 1km
+    public ResponseEntity getNearDiseases(@RequestParam float latitude, @RequestParam float longitude, @RequestHeader("Authorization") String token) {
+        return ResponseResult.result(naBatBuService.getNearDiseases(latitude, longitude, token));
     }
 }

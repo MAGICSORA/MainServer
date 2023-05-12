@@ -11,7 +11,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DiagnosisDto {
-    private long userId;
+//    private long userId;
+    // -> token
     private float userLatitude;
     private float userLongitude;
     private LocalDateTime regDate;

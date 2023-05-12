@@ -17,7 +17,10 @@ import com.example.servertest.main.crop.repository.DiseaseDetailRepository;
 import com.example.servertest.main.crop.repository.SickListRepository;
 import com.example.servertest.main.global.model.ServiceResult;
 import com.example.servertest.main.member.entity.Member;
+import com.example.servertest.main.member.exception.MemberError;
+import com.example.servertest.main.member.exception.MemberException;
 import com.example.servertest.main.member.repository.MemberRepository;
+import com.example.servertest.main.member.service.MemberService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -28,9 +31,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.security.SignatureException;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -42,6 +44,7 @@ public class NaBatBuService {
     private final DiagnosisResultRepository diagnosisResultRepository;
     private final MemberRepository memberRepository;
     private final FileService fileService;
+    private final MemberService memberService;
     private final DiseaseDetailRepository diseaseDetailRepository;
 
     public SickList saveSickList(SickListDto sickListDto) {
@@ -61,10 +64,17 @@ public class NaBatBuService {
         return sickListDtoList;
     }
 
-    public DiagnosisResponse returnDiagnosisResult(DiagnosisDto diagnosisDto, MultipartFile file) throws IOException {
+    public ServiceResult returnDiagnosisResult(DiagnosisDto diagnosisDto, MultipartFile file, String token) throws IOException {
+
+        Member member;
+        try {
+            member = memberService.validateMember(token);
+        } catch (MemberException e) {
+            return ServiceResult.fail(String.valueOf(e.getMemberError()), e.getMessage());
+        }
 
         StringBuilder imgCode = new StringBuilder();
-        imgCode.append(diagnosisDto.getUserId());
+        imgCode.append(member.getId());
         imgCode.append("-");
 
         Long cnt;
@@ -75,8 +85,8 @@ public class NaBatBuService {
         }
         imgCode.append(cnt); //저장 이미지 파일 명 설정
 
-        Optional<Member> optionalMember = memberRepository.findById(diagnosisDto.getUserId());
-        Member member = optionalMember.get(); //이미지 경로를 위한 member
+//        Optional<Member> optionalMember = memberRepository.findById(diagnosisDto.getUserId());
+//        Member member = optionalMember.get(); //이미지 경로를 위한 member
 
         BufferedImage image = fileService.handleFileUpload(file, member.getName(), String.valueOf(imgCode));//이미지 저장
 
@@ -133,7 +143,7 @@ public class NaBatBuService {
                 .build();
 
         diagnosisRecordRepository.save(DiagnosisRecord.builder()
-                .userId(diagnosisDto.getUserId())
+                .userId(member.getId())
                 .diagnosisResultId(diagnosisResult.getId())
                 .userLatitude(diagnosisDto.getUserLatitude())
                 .userLongitude(diagnosisDto.getUserLongitude())
@@ -148,7 +158,7 @@ public class NaBatBuService {
 //                .regDate()
 //                .diagnosisResult().build();
 
-        return diagnosisResponse;
+        return ServiceResult.success(diagnosisResponse);
     }
 
     public ServiceResult getDiagnosisRecord(Long diagnosisRecordId) throws JsonProcessingException {
@@ -190,5 +200,21 @@ public class NaBatBuService {
 
         DiseaseDetail diseaseDetail = optionalDiseaseDetail.get();
         return ServiceResult.success(diseaseDetail);
+    }
+
+    public ServiceResult getNearDiseases(float latitude, float longitude, String token) {
+
+        try {
+            Member member = memberService.validateMember(token);
+        } catch (MemberException e) {
+            return ServiceResult.fail(String.valueOf(e.getMemberError()), e.getMessage());
+        }
+
+        List<DiagnosisRecord> diagnosisRecordList1 = diagnosisRecordRepository.findAllByUserLatitudeBetween(latitude - 1, latitude + 1);
+        List<DiagnosisRecord> diagnosisRecordList2 = diagnosisRecordRepository.findAllByUserLongitudeBetween(longitude - 1, longitude + 1);
+        diagnosisRecordList1.addAll(diagnosisRecordList2);
+
+        Set<DiagnosisRecord> diagnosisRecordSet = new HashSet<>(diagnosisRecordList1);
+        return ServiceResult.success(diagnosisRecordSet);
     }
 }
