@@ -21,18 +21,18 @@ import org.hibernate.annotations.DynamicUpdate;
 public class
 Member {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	private String name;
-	private String email;
-	private String password;
+    private String name;
+    private String email;
+    private String password;
 
-	@Enumerated(EnumType.STRING)
-	private MemberType type;
+    @Enumerated(EnumType.STRING)
+    private MemberType type;
 
-	private LocalDateTime regDt;
-	private LocalDateTime updateDt;
+    private LocalDateTime regDt;
+    private LocalDateTime updateDt;
 
 }

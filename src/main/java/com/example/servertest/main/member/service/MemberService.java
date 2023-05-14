@@ -30,7 +30,6 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
-    private final CategoryRepository categoryRepository;
 
     public ServiceResult register(RegisterMember.Request parameter) {
 
@@ -38,6 +37,12 @@ public class MemberService {
 
         if (optionalMember.isPresent()) {
             MemberError e = MemberError.MEMBER_ALREADY_EMAIL;
+            return ServiceResult.fail(String.valueOf(e), e.getDescription());
+        }
+
+        Optional<Member> optionalMember1 = memberRepository.findByName(parameter.getName());
+        if (optionalMember1.isPresent()) {
+            MemberError e = MemberError.MEMBER_ALREADY_NAME;
             return ServiceResult.fail(String.valueOf(e), e.getDescription());
         }
 

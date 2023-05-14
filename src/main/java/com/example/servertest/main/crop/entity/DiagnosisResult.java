@@ -18,6 +18,25 @@ public class DiagnosisResult {
     @Column
     private int responseCode;
 
+    @ManyToOne
+    @JoinColumn
+    private DiagnosisRecord diagnosisRecord;
+
     @Column
-    private String diagnosisItems;
+    private int diseaseCode;
+
+    @Column
+    private float accuracy;
+
+    @Column
+    private float boxX1;
+
+    @Column
+    private float boxX2;
+
+    @Column
+    private float boxY1;
+
+    @Column
+    private float boxY2;
 }

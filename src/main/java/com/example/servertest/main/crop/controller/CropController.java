@@ -54,6 +54,7 @@ public class CropController {
     public Map<String, ?> krxParser2(@RequestBody RequestPsisList request) throws IOException {
         String urlBuilder = psisManager.makePsisListRequestUrl(request.getCropName(), request.getDiseaseWeedName(), request.getDisplayCount(), request.getStartPoint());
 
+        System.out.println(urlBuilder);
         return psisService.returnResult(urlBuilder, true);
     }
 
@@ -61,6 +62,7 @@ public class CropController {
     public Map<String, ?> krxParser3(@RequestBody RequestPsisInfo request) throws IOException {
         String urlBuilder = psisManager.makePsisInfoRequestUrl(request.getPestiCode(), request.getDiseaseUseSeq(), request.getDisplayCount(), request.getStartPoint());
 
+        System.out.println(urlBuilder);
         return psisService.returnResult(urlBuilder, false);
     }
 
@@ -127,7 +129,7 @@ public class CropController {
         return ResponseResult.result(categoryService.deleteCategory(token, categoryId));
     }
 
-    @GetMapping("/sickList") //농약 리스트 조회
+    @GetMapping("/sickList") //병 리스트 검색
     public ResponseEntity<?> ncpmcParser(@RequestBody RequestNcpmsSick request) {
         String urlBuilder = ncpmsManager.makeNcpmsSickSearchRequestUrl(request.getCropName(), request.getSickNameKor(), request.getDisplayCount(), request.getStartPoint());
 
@@ -141,7 +143,7 @@ public class CropController {
         return ResponseResult.result(result);
     }
 
-    @GetMapping("/sickDetail") //농약 리스트 조회
+    @GetMapping("/sickDetail") //병 상세 검색
     public ResponseEntity<?> ncpmcParser2(@RequestBody RequestNcpmsSickDetail request) {
         String urlBuilder = ncpmsManager.makeNcpmsSickDetailSearchRequestUrl(request.getSickKey());
 

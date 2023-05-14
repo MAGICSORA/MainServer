@@ -1,6 +1,6 @@
 package com.example.servertest.main.crop.model.response;
 
-import com.example.servertest.main.crop.model.response.DiagnosisItem;
+import com.example.servertest.main.crop.entity.DiagnosisResult;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -16,6 +16,6 @@ public class DiagnosisResponse {
     private int responseCode;
     private int cropType;
     private LocalDateTime regDate;
-    private List<DiagnosisItem> diagnosisItems;
+    private List<DiagnosisOutput> diagnosisResults;
     private String imagePath;
 }

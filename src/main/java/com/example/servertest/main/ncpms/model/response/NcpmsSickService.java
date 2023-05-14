@@ -16,21 +16,21 @@ public class NcpmsSickService {
 
     private int totalCount;
     private String buildTime;
-    private List list;
+    private ListB list;
 
     @XmlRootElement(name = "list")
     @Getter
     @Setter
     @ToString
-    public static class List {
+    public static class ListB {
 
-        private java.util.List<Item> item;
+        private java.util.List<ItemN> item;
 
         @XmlRootElement(name = "item")
         @Getter
         @Setter
         @ToString
-        public static class Item {
+        public static class ItemN {
 
             private String oriImg;
             private String thumbImg;

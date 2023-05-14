@@ -16,13 +16,13 @@ public class PsisListService {
 
     private int totalCount;
     private String buildTime;
-    private List list;
+    private ListA list;
 
     @XmlRootElement(name = "list")
     @Getter
     @Setter
     @ToString
-    public static class List {
+    public static class ListA {
 
         private java.util.List<Item> item;
 
@@ -54,4 +54,7 @@ public class PsisListService {
             private String wafindex;
         }
     }
+
+    private int displayCount;
+    private int startPoint;
 }

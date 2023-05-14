@@ -1,23 +1,20 @@
 package com.example.servertest.main.crop.service;
 
-import com.example.servertest.main.crop.entity.*;
-import com.example.servertest.main.crop.exception.CropError;
-import com.example.servertest.main.crop.exception.CropException;
+import com.example.servertest.main.crop.entity.Category;
+import com.example.servertest.main.crop.entity.DiagnosisRecord;
+import com.example.servertest.main.crop.entity.DiagnosisResult;
+import com.example.servertest.main.crop.entity.SickList;
 import com.example.servertest.main.crop.model.request.DiagnosisDto;
-import com.example.servertest.main.crop.model.response.DiagnosisItem;
-import com.example.servertest.main.crop.model.response.DiagnosisResponse;
 import com.example.servertest.main.crop.model.request.SickListDto;
+import com.example.servertest.main.crop.model.response.DiagnosisOutput;
+import com.example.servertest.main.crop.model.response.DiagnosisResponse;
 import com.example.servertest.main.crop.model.response.ResponseDiagnosisRecord;
 import com.example.servertest.main.crop.repository.*;
 import com.example.servertest.main.global.model.ServiceResult;
 import com.example.servertest.main.member.entity.Member;
-import com.example.servertest.main.member.exception.MemberError;
 import com.example.servertest.main.member.exception.MemberException;
-import com.example.servertest.main.member.repository.MemberRepository;
 import com.example.servertest.main.member.service.MemberService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.security.SignatureException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -37,10 +33,8 @@ public class NaBatBuService {
     private final SickListRepository sickListRepository;
     private final DiagnosisRecordRepository diagnosisRecordRepository;
     private final DiagnosisResultRepository diagnosisResultRepository;
-    private final MemberRepository memberRepository;
     private final FileService fileService;
     private final MemberService memberService;
-    private final DiseaseDetailRepository diseaseDetailRepository;
     private final CategoryRepository categoryRepository;
 
     public SickList saveSickList(SickListDto sickListDto) {
@@ -73,10 +67,6 @@ public class NaBatBuService {
         imgCode.append(member.getId());
         imgCode.append("-");
 
-        System.out.println("테스트1");
-        //테스트1
-
-
         Long cnt;
         if (diagnosisRecordRepository.count() != 0) {
             cnt = diagnosisRecordRepository.findTopByOrderByIdDesc().getId() + 1;
@@ -86,8 +76,6 @@ public class NaBatBuService {
 
         imgCode.append(cnt); //저장 이미지 파일 명 설정
 
-
-
 //        Optional<Member> optionalMember = memberRepository.findById(diagnosisDto.getUserId());
 //        Member member = optionalMember.get(); //이미지 경로를 위한 member
 
@@ -96,57 +84,11 @@ public class NaBatBuService {
         //DiagnosisResultFromModel diagnosisResultFromModel = flaskService.request(imageCode, diagnosisDto.getCropType(), image);
         //진단 요청
 
-        DiagnosisItem tmpDiagnosisItem1 = DiagnosisItem.builder()
-                .diseaseCode(0)
-                .accuracy(0.81F)
-                .boxX1(0.5F)
-                .boxX2(0.5F)
-                .boxY1(0.5F)
-                .boxY2(0.5F)
-                .build();
-
-        DiagnosisItem tmpDiagnosisItem2 = DiagnosisItem.builder()
-                .diseaseCode(2)
-                .accuracy(0.86F)
-                .boxX1(0.5F)
-                .boxX2(0.5F)
-                .boxY1(0.5F)
-                .boxY2(0.5F)
-                .build();
-
-        DiagnosisItem tmpDiagnosisItem3 = new DiagnosisItem();
-
-        List<DiagnosisItem> list = new ArrayList<>();
-        list.add(tmpDiagnosisItem1);
-        list.add(tmpDiagnosisItem2);
-        list.add(tmpDiagnosisItem3);
-
-        String str = new Gson().toJson(list);
-
-        DiagnosisResult diagnosisResult =
-                DiagnosisResult.builder()
-                        .responseCode(1)
-                        .diagnosisItems(str)
-                        .build();
-
-        diagnosisResultRepository.save(diagnosisResult);
-
-        System.out.println("테스트2");
-        //테스트1
-
         StringBuilder imagePath = new StringBuilder();
         imagePath.append("http://15.164.23.13:8080/image/");
         imagePath.append(member.getName());
         imagePath.append("/");
         imagePath.append(imgCode);
-
-        DiagnosisResponse diagnosisResponse = DiagnosisResponse.builder()
-                .responseCode(diagnosisResult.getResponseCode())
-                .cropType(diagnosisDto.getCropType())
-                .regDate(diagnosisDto.getRegDate())
-                .diagnosisItems(List.of(tmpDiagnosisItem1, tmpDiagnosisItem2))
-                .imagePath(imagePath.toString())
-                .build();
 
         Category category = categoryRepository.findByNameAndUserId("unclassified", member.getId());
 
@@ -155,22 +97,56 @@ public class NaBatBuService {
             return ServiceResult.fail(e.getMessage(), e.getMessage());
         }
 
-        diagnosisRecordRepository.save(DiagnosisRecord.builder()
+        DiagnosisRecord diagnosisRecord = DiagnosisRecord.builder()
                 .userId(member.getId())
-                .diagnosisResultId(diagnosisResult.getId())
                 .userLatitude(diagnosisDto.getUserLatitude())
                 .userLongitude(diagnosisDto.getUserLongitude())
-                .regDate(diagnosisDto.getRegDate())
+                .regDate(LocalDateTime.now())
                 .cropType(diagnosisDto.getCropType())
                 .imagePath(imagePath.toString())
                 .categoryId(category.getId())
-                .build());
+                .build();
 
-//        DiagnosisResponse diagnosisResponse = DiagnosisResponse.builder()
-//                .responseCode()
-//                .cropType()
-//                .regDate()
-//                .diagnosisResult().build();
+        diagnosisRecordRepository.save(diagnosisRecord);
+
+        DiagnosisResult diagnosisResult1 = DiagnosisResult.builder()
+                .responseCode(1)
+                .diagnosisRecord(diagnosisRecord)
+                .diseaseCode(0)
+                .accuracy(0.81F)
+                .boxX1(0.5F)
+                .boxX2(0.5F)
+                .boxY1(0.5F)
+                .boxY2(0.5F)
+                .build();
+
+        DiagnosisResult diagnosisResult2 = DiagnosisResult.builder()
+                .responseCode(1)
+                .diagnosisRecord(diagnosisRecord)
+                .diseaseCode(2)
+                .accuracy(0.86F)
+                .boxX1(0.5F)
+                .boxX2(0.5F)
+                .boxY1(0.5F)
+                .boxY2(0.5F)
+                .build();
+
+        DiagnosisResult diagnosisResult3 = DiagnosisResult.builder()
+                .responseCode(1)
+                .diagnosisRecord(diagnosisRecord)
+                .build();
+
+        DiagnosisResponse diagnosisResponse = DiagnosisResponse.builder()
+                .responseCode(1)
+                .cropType(diagnosisDto.getCropType())
+                .regDate(diagnosisDto.getRegDate())
+                .diagnosisResults(List.of(DiagnosisOutput.to(diagnosisResult1), DiagnosisOutput.to(diagnosisResult2), DiagnosisOutput.to(diagnosisResult3)))
+                .imagePath(imagePath.toString())
+                .build();
+
+        diagnosisResultRepository.save(diagnosisResult1);
+        diagnosisResultRepository.save(diagnosisResult2);
+        diagnosisResultRepository.save(diagnosisResult3);
 
         return ServiceResult.success(diagnosisResponse);
     }
@@ -179,41 +155,32 @@ public class NaBatBuService {
 
         Optional<DiagnosisRecord> optionalDiagnosisRecord = diagnosisRecordRepository.findById(diagnosisRecordId);
         DiagnosisRecord diagnosisRecord = optionalDiagnosisRecord.get();
-        long diagnosisResultId = diagnosisRecord.getDiagnosisResultId();
 
-        Optional<DiagnosisResult> optionalDiagnosisResult = diagnosisResultRepository.findById(diagnosisResultId);
-        DiagnosisResult diagnosisResult = optionalDiagnosisResult.get();
+        List<DiagnosisResult> diagnosisResults = diagnosisResultRepository.findAllByDiagnosisRecord(diagnosisRecord);
 
-        String diagnosisItems = diagnosisResult.getDiagnosisItems();
-        diagnosisItems = diagnosisItems.replace("DiagnosisItem", "");
-        System.out.println(diagnosisItems);
+        List<DiagnosisOutput> diagnosisOutputs = new ArrayList<>();
+        for (DiagnosisResult diagnosisResult : diagnosisResults) {
+            diagnosisOutputs.add(DiagnosisOutput.to(diagnosisResult));
+        }
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        DiagnosisItem[] items = objectMapper.readValue(diagnosisItems, DiagnosisItem[].class);
+//        String diagnosisItems = diagnosisResult.getDiagnosisItems();
+//        diagnosisItems = diagnosisItems.replace("DiagnosisItem", "");
+//        System.out.println(diagnosisItems);
+
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        DiagnosisItemtmp[] items = objectMapper.readValue(diagnosisItems, DiagnosisItemtmp[].class);
 
         ResponseDiagnosisRecord result = ResponseDiagnosisRecord.builder()
                 .userLatitude(diagnosisRecord.getUserLatitude())
                 .userLongitude(diagnosisRecord.getUserLongitude())
                 .regDate(diagnosisRecord.getRegDate())
-                .diagnosisItems(items)
+                .diagnosisResults(diagnosisOutputs)
                 .userId((int) diagnosisRecord.getUserId())
                 .imagePath(diagnosisRecord.getImagePath())
                 .cropType(diagnosisRecord.getCropType())
                 .build();
 
         return ServiceResult.success(result);
-    }
-
-    public ServiceResult getSickDetail(int cropCode) {
-
-        Optional<DiseaseDetail> optionalDiseaseDetail = diseaseDetailRepository.findById((long) cropCode);
-        if (!optionalDiseaseDetail.isPresent()) {
-            CropException e = new CropException(CropError.DISEASE_NOT_FOUND);
-            return ServiceResult.fail(String.valueOf(e.getCropError()), e.getMessage());
-        }
-
-        DiseaseDetail diseaseDetail = optionalDiseaseDetail.get();
-        return ServiceResult.success(diseaseDetail);
     }
 
     public ServiceResult getNearDiseases(float latitude, float longitude, String token) {

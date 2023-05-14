@@ -21,9 +21,6 @@ public class DiagnosisRecord {
     private long userId;
 
     @Column
-    private long diagnosisResultId;
-
-    @Column
     private float userLatitude;
 
     @Column
