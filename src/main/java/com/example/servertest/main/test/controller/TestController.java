@@ -1,9 +1,23 @@
 package com.example.servertest.main.test.controller;
 
 import com.example.servertest.main.crop.entity.DiseaseDetail;
+import com.example.servertest.main.crop.model.request.DiagnosisDto;
 import com.example.servertest.main.crop.repository.DiseaseDetailRepository;
+import com.example.servertest.main.crop.service.NaBatBuService;
+import com.example.servertest.main.crop.type.CropType;
+import com.example.servertest.main.crop.type.DiseaseCode;
+import com.example.servertest.main.global.model.ResponseResult;
+import com.example.servertest.main.global.model.ServiceResult;
+import com.example.servertest.main.test.model.AIResponse;
 import com.example.servertest.main.test.model.InputDiseaseDetail;
 import com.example.servertest.main.test.service.TestService;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.IOUtils;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -11,20 +25,13 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 
-import com.example.servertest.main.crop.type.CropType;
-import com.example.servertest.main.crop.type.DiseaseCode;
-import lombok.RequiredArgsConstructor;
-import org.apache.commons.io.IOUtils;
-import org.springframework.http.*;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/test")
 public class TestController {
 
     private final TestService testService;
+    private final NaBatBuService naBatBuService;
     private final DiseaseDetailRepository diseaseDetailRepository;
 
     @GetMapping("/save")
@@ -104,15 +111,15 @@ public class TestController {
         return responseEntity;
     }
 
-    @GetMapping("/test/flask")
-    public ResponseEntity<?> test77() {
-        HttpHeaders header = new HttpHeaders();
-        HttpEntity<?> entity = new HttpEntity<>(header);
+    @GetMapping("/diagnosis/flask")
+    public ResponseEntity<?> test77(
+            @RequestPart(value = "requestInput") DiagnosisDto diagnosisDto
+            , @RequestPart(value = "image") MultipartFile file, @RequestHeader("Authorization") String token) throws IOException {
 
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> responseEntity = restTemplate.exchange("http://3.35.146.68:5000/predict"
-                , HttpMethod.GET, entity, String.class);
 
-        return responseEntity;
+
+        ServiceResult result = testService.returnDiagnosisResult(diagnosisDto, file, token);
+
+        return ResponseResult.result(result);
     }
 }
