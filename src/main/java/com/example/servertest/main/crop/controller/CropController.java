@@ -19,6 +19,7 @@ import com.example.servertest.main.psis.component.PsisManager;
 import com.example.servertest.main.psis.model.request.RequestPsisInfo;
 import com.example.servertest.main.psis.model.request.RequestPsisList;
 import com.example.servertest.main.psis.service.PsisService;
+import com.example.servertest.main.test.service.TestService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +40,7 @@ public class CropController {
     private final PsisService psisService;
     private final NcpmsManager ncpmsManager;
     private final NcpmsService ncpmsService;
+    private final TestService testService;
     private final CrawlingService crawlingService;
     private final CategoryService categoryService;
 
@@ -70,7 +72,7 @@ public class CropController {
     public ResponseEntity<?> returnDiagnosis(
             @RequestPart(value = "requestInput") DiagnosisDto diagnosisDto
             , @RequestPart(value = "image") MultipartFile file, @RequestHeader("Authorization") String token) throws IOException {
-        ServiceResult result = naBatBuService.returnDiagnosisResult(diagnosisDto, file, token);
+        ServiceResult result = testService.returnDiagnosisResult(diagnosisDto, file, token);
 
         return ResponseResult.result(result);
     }

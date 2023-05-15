@@ -111,7 +111,7 @@ public class TestController {
         return responseEntity;
     }
 
-    @GetMapping("/diagnosis/flask")
+    @PostMapping("/diagnosis/flask")
     public ResponseEntity<?> test77(
             @RequestPart(value = "requestInput") DiagnosisDto diagnosisDto
             , @RequestPart(value = "image") MultipartFile file, @RequestHeader("Authorization") String token) throws IOException {
