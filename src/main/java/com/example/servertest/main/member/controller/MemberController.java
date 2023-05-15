@@ -75,16 +75,14 @@ public class MemberController {
 		return new ResponseEntity<>(new TokenDto(token), httpHeaders, HttpStatus.OK);
 	}
 
-	@GetMapping("{memberId}")
-	public ResponseEntity<MemberInfo> getMemberInfo(@PathVariable Long memberId,
-													@RequestHeader("Authorization") String token) {
-
-		return ResponseEntity.ok(memberService.getMemberInfo(memberId, token));
-	}
-
 	@PostMapping("/withdraw/{memberId}")
 	public void withDrawMember(@PathVariable Long memberId,
 							   @RequestHeader("Authorization") String token, @RequestBody @Valid WithDrawMember request) {
 		memberService.withDrawMember(memberId, token, request);
+	}
+
+	@GetMapping("/currentUser")
+	public ResponseEntity<?> UserInfo(@RequestHeader("Authorization") String token) {
+		return ResponseResult.result(memberService.getMemberInfo(token));
 	}
 }

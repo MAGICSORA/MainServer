@@ -75,15 +75,11 @@ public class MemberService {
         return member;
     }
 
-    public MemberInfo getMemberInfo(Long memberId, String token) {
+    public ServiceResult getMemberInfo(String token) {
 
         Member member = validateMember(token);
 
-        if (!Objects.equals(member.getId(), memberId)) {
-            throw new MemberException((MemberError.INFO_MEMBER_UN_MATCH));
-        }
-
-        return MemberInfo.from(MemberDto.from(member));
+        return ServiceResult.success(MemberInfo.from(MemberDto.from(member)));
     }
 
     public void withDrawMember(Long memberId, String token, WithDrawMember request) {

@@ -16,14 +16,14 @@ public class MemberInfo {
 
     private String name;
     private String email;
-    private MemberType type;
+//    private MemberType type;
 
     public static MemberInfo from(MemberDto memberDto) {
 
         return MemberInfo.builder()
                 .name(memberDto.getName())
                 .email(memberDto.getEmail())
-                .type(memberDto.getType())
+//                .type(memberDto.getType())
                 .build();
     }
 
