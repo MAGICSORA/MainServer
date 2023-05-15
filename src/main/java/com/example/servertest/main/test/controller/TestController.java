@@ -117,7 +117,6 @@ public class TestController {
             , @RequestPart(value = "image") MultipartFile file, @RequestHeader("Authorization") String token) throws IOException {
 
 
-
         ServiceResult result = testService.returnDiagnosisResult(diagnosisDto, file, token);
 
         return ResponseResult.result(result);
