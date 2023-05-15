@@ -103,4 +103,16 @@ public class TestController {
 
         return responseEntity;
     }
+
+    @GetMapping("/test/flask")
+    public ResponseEntity<?> test77() {
+        HttpHeaders header = new HttpHeaders();
+        HttpEntity<?> entity = new HttpEntity<>(header);
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> responseEntity = restTemplate.exchange("http://3.35.146.68:5000/predict"
+                , HttpMethod.GET, entity, String.class);
+
+        return responseEntity;
+    }
 }

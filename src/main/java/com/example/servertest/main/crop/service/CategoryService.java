@@ -6,6 +6,7 @@ import com.example.servertest.main.crop.exception.CategoryError;
 import com.example.servertest.main.crop.exception.CategoryException;
 import com.example.servertest.main.crop.exception.CropError;
 import com.example.servertest.main.crop.exception.CropException;
+import com.example.servertest.main.crop.model.response.CategoryResponse;
 import com.example.servertest.main.crop.repository.CategoryRepository;
 import com.example.servertest.main.crop.repository.DiagnosisRecordRepository;
 import com.example.servertest.main.global.model.ServiceResult;
@@ -63,8 +64,14 @@ public class CategoryService {
         }
 
         List<Category> categoryList = categoryRepository.findAllByUserId(member.getId());
+        List<CategoryResponse> categoryResponseList = new ArrayList<>();
+        for (Category item : categoryList) {
+            CategoryResponse categoryResponse = CategoryResponse.to(item);
+            categoryResponse.setCnt(diagnosisRecordRepository.countDiagnosisRecordByCategoryId(item.getId()));
+            categoryResponseList.add(categoryResponse);
+        }
 
-        return ServiceResult.success(categoryList);
+        return ServiceResult.success(categoryResponseList);
     }
 
     public ServiceResult updateCategory(String originalName, String changeName, String token) {
