@@ -131,6 +131,17 @@ public class CropController {
         return ResponseResult.result(categoryService.deleteCategory(token, categoryId));
     }
 
+    @GetMapping("/category/rdcord")
+    public ResponseEntity<?> getDiagnosisOfCategory(@RequestHeader("Authorization") String token, @RequestParam Long categoryId) {
+
+        return ResponseResult.result(categoryService.getDiagnosisOfCategory(token, categoryId));
+    }
+
+    @PostMapping("/diagnosisRecord/{recordId}/category/update")
+    public ResponseEntity<?> updateRecordCategory(@RequestHeader("Authorization") String token, @PathVariable Long recordId, @RequestParam Long categoryId) {
+        return ResponseResult.result(categoryService.updateRecordCategory(token, recordId, categoryId));
+    }
+
     @GetMapping("/sickList") //병 리스트 검색
     public ResponseEntity<?> ncpmcParser(@RequestBody RequestNcpmsSick request) {
         String urlBuilder = ncpmsManager.makeNcpmsSickSearchRequestUrl(request.getCropName(), request.getSickNameKor(), request.getDisplayCount(), request.getStartPoint());

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -119,5 +120,36 @@ public class CategoryService {
         categoryRepository.delete(category);
 
         return ServiceResult.success();
+    }
+
+    public ServiceResult updateRecordCategory(String token, Long recordId, Long categoryId) {
+
+        Member member;
+        try {
+            member = memberService.validateMember(token);
+        } catch (MemberException e) {
+            return ServiceResult.fail(String.valueOf(e.getMemberError()), e.getMessage());
+        }
+
+        Optional<DiagnosisRecord> optionalDiagnosisRecord = diagnosisRecordRepository.findById(recordId);
+        DiagnosisRecord diagnosisRecord = optionalDiagnosisRecord.get();
+        diagnosisRecord.setCategoryId(categoryId);
+        diagnosisRecordRepository.save(diagnosisRecord);
+
+        return ServiceResult.success();
+    }
+
+    public ServiceResult getDiagnosisOfCategory(String token, Long categoryId) {
+
+        Member member;
+        try {
+            member = memberService.validateMember(token);
+        } catch (MemberException e) {
+            return ServiceResult.fail(String.valueOf(e.getMemberError()), e.getMessage());
+        }
+
+        List<DiagnosisRecord> diagnosisRecordList = diagnosisRecordRepository.findAllByCategoryId(categoryId);
+
+        return ServiceResult.success(diagnosisRecordList);
     }
 }
