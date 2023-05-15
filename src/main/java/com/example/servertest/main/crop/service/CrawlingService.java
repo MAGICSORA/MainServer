@@ -6,6 +6,9 @@ import com.example.servertest.main.crop.exception.CropException;
 import com.example.servertest.main.crop.model.response.CropOccurInfoDto;
 import com.example.servertest.main.crop.repository.CropOccurInfoRepository;
 import com.example.servertest.main.global.model.ServiceResult;
+import com.example.servertest.main.member.entity.Member;
+import com.example.servertest.main.member.exception.MemberException;
+import com.example.servertest.main.member.service.MemberService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,6 +32,7 @@ public class CrawlingService {
 
     private static final String url = "https://ncpms.rda.go.kr/npms/NewIndcUserListR.np";
     private final CropOccurInfoRepository cropOccurInfoRepository;
+    private final MemberService memberService;
 
     public String getIndex() {
         Connection conn = Jsoup.connect(url);
@@ -125,7 +129,13 @@ public class CrawlingService {
         }
     }
 
-    public ServiceResult getNoticeList() throws JsonProcessingException {
+    public ServiceResult getNoticeList(String token) throws JsonProcessingException {
+
+        try {
+            Member member = memberService.validateMember(token);
+        } catch (MemberException e) {
+            return ServiceResult.fail(String.valueOf(e.getMemberError()), e.getMessage());
+        }
 
         ObjectMapper objectMapper = new ObjectMapper();
 

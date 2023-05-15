@@ -92,9 +92,9 @@ public class CropController {
     }
 
     @GetMapping("/noticeList")
-    public ResponseEntity<?> noticeList() throws JsonProcessingException {
+    public ResponseEntity<?> noticeList(@RequestHeader("Authorization") String token) throws JsonProcessingException {
 
-        return ResponseResult.result(crawlingService.getNoticeList());
+        return ResponseResult.result(crawlingService.getNoticeList(token));
     }
 
     @GetMapping("/formTest")
@@ -134,7 +134,7 @@ public class CropController {
         String urlBuilder = ncpmsManager.makeNcpmsSickSearchRequestUrl(request.getCropName(), request.getSickNameKor(), request.getDisplayCount(), request.getStartPoint());
 
         ServiceResult result;
-        try{
+        try {
             result = ncpmsService.returnResult(urlBuilder, true);
         } catch (Exception e) {
             NcpmsException exception = new NcpmsException(NcpmsError.NO_DATA_EXIST);
@@ -148,7 +148,7 @@ public class CropController {
         String urlBuilder = ncpmsManager.makeNcpmsSickDetailSearchRequestUrl(request.getSickKey());
 
         ServiceResult result;
-        try{
+        try {
             result = ncpmsService.returnResult(urlBuilder, false);
         } catch (Exception e) {
             NcpmsException exception = new NcpmsException(NcpmsError.NO_DATA_EXIST);
