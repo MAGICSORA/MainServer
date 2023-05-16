@@ -5,7 +5,6 @@ import com.example.servertest.main.crop.exception.NcpmsError;
 import com.example.servertest.main.crop.exception.NcpmsException;
 import com.example.servertest.main.crop.model.request.DiagnosisDto;
 import com.example.servertest.main.crop.model.request.SickListDto;
-import com.example.servertest.main.crop.model.response.DiagnosisResponse;
 import com.example.servertest.main.crop.service.CategoryService;
 import com.example.servertest.main.crop.service.CrawlingService;
 import com.example.servertest.main.crop.service.NaBatBuService;
@@ -27,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -104,7 +102,7 @@ public class CropController {
         return id + "_" + name;
     }
 
-    @GetMapping("/nearDisease") //반경 1km
+    @GetMapping("/nearDisease") //반경 2km
     public ResponseEntity getNearDiseases(@RequestParam float latitude, @RequestParam float longitude, @RequestHeader("Authorization") String token) {
         return ResponseResult.result(naBatBuService.getNearDiseases(latitude, longitude, token));
     }

@@ -11,6 +11,7 @@ import com.example.servertest.main.crop.model.response.DiagnosisResponse;
 import com.example.servertest.main.crop.model.response.ResponseDiagnosisRecord;
 import com.example.servertest.main.crop.repository.*;
 import com.example.servertest.main.global.model.ServiceResult;
+import com.example.servertest.main.global.service.StaticMethod;
 import com.example.servertest.main.member.entity.Member;
 import com.example.servertest.main.member.exception.MemberException;
 import com.example.servertest.main.member.service.MemberService;
@@ -191,11 +192,23 @@ public class NaBatBuService {
             return ServiceResult.fail(String.valueOf(e.getMemberError()), e.getMessage());
         }
 
-        List<DiagnosisRecord> diagnosisRecordList1 = diagnosisRecordRepository.findAllByUserLatitudeBetween(latitude - 1, latitude + 1);
-        List<DiagnosisRecord> diagnosisRecordList2 = diagnosisRecordRepository.findAllByUserLongitudeBetween(longitude - 1, longitude + 1);
+        /*
+        0.1099585
+        0.08874
+        */
+
+        List<DiagnosisRecord> diagnosisRecordList1 = diagnosisRecordRepository.findAllByUserLatitudeBetween(latitude - 0.1099585F, latitude + 0.1099585F);
+        List<DiagnosisRecord> diagnosisRecordList2 = diagnosisRecordRepository.findAllByUserLongitudeBetween(longitude - 0.08874F, longitude + 0.08874F);
         diagnosisRecordList1.addAll(diagnosisRecordList2);
 
         Set<DiagnosisRecord> diagnosisRecordSet = new HashSet<>(diagnosisRecordList1);
+
+        for (DiagnosisRecord item : diagnosisRecordSet) {
+            if (StaticMethod.distance(item.getUserLatitude(), item.getUserLongitude(), latitude, longitude) > 1000) {
+                diagnosisRecordSet.remove(item);
+            }
+        }
+
         return ServiceResult.success(diagnosisRecordSet);
     }
 }
