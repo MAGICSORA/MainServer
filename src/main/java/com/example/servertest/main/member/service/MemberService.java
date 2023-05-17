@@ -1,8 +1,6 @@
 package com.example.servertest.main.member.service;
 
-import com.example.servertest.main.crop.entity.Category;
-import com.example.servertest.main.crop.repository.CategoryRepository;
-import com.example.servertest.main.global.jwt.TokenProvider;
+import com.example.servertest.main.global.jwtManage.jwt.TokenProvider;
 import com.example.servertest.main.global.model.ServiceResult;
 import com.example.servertest.main.member.entity.Member;
 import com.example.servertest.main.member.exception.MemberError;
@@ -20,7 +18,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
-import static com.example.servertest.main.global.jwt.JwtAuthenticationFilter.TOKEN_PREFIX;
+import static com.example.servertest.main.global.jwtManage.jwt.JwtAuthenticationFilter.TOKEN_PREFIX;
 
 @Slf4j
 @Service

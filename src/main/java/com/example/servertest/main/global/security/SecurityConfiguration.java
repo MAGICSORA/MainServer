@@ -1,6 +1,6 @@
 package com.example.servertest.main.global.security;
 
-import com.example.servertest.main.global.jwt.JwtAuthenticationFilter;
+import com.example.servertest.main.global.jwtManage.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
