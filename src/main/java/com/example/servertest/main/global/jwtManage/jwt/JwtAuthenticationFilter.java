@@ -1,4 +1,4 @@
-package com.example.servertest.main.global.jwt;
+package com.example.servertest.main.global.jwtManage.jwt;
 
 import java.io.IOException;
 

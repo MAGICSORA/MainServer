@@ -2,8 +2,11 @@ package com.example.servertest.main.member.controller;
 
 import com.example.servertest.main.crop.entity.Category;
 import com.example.servertest.main.crop.repository.CategoryRepository;
-import com.example.servertest.main.global.jwt.JwtAuthenticationFilter;
-import com.example.servertest.main.global.jwt.TokenProvider;
+import com.example.servertest.main.global.jwtManage.jwt.JwtAuthenticationFilter;
+import com.example.servertest.main.global.jwtManage.jwt.TokenProvider;
+import com.example.servertest.main.global.jwtManage.model.RefreshApiResponseMessage;
+import com.example.servertest.main.global.jwtManage.model.Token;
+import com.example.servertest.main.global.jwtManage.service.JwtService;
 import com.example.servertest.main.global.model.ResponseResult;
 import com.example.servertest.main.global.model.ServiceResult;
 import com.example.servertest.main.member.entity.Member;
@@ -21,6 +24,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -31,6 +36,7 @@ public class MemberController {
 
 	private final MemberService memberService;
 	private final TokenProvider tokenProvider;
+	private final JwtService jwtService;
 
 	private final MemberRepository memberRepository;
 	private final CategoryRepository categoryRepository;
@@ -64,15 +70,18 @@ public class MemberController {
 		}
 
 		String email = member.getEmail();
-		MemberType role = member.getType();
+		String role = member.getType().toString();
 
-		String token = tokenProvider.generatedToken(email, role);
+		Token token = tokenProvider.createAccessToken(email, role);
 
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.add(JwtAuthenticationFilter.TOKEN_HEADER,
 				JwtAuthenticationFilter.TOKEN_PREFIX + token);
 
-		return new ResponseEntity<>(new TokenDto(token), httpHeaders, HttpStatus.OK);
+		jwtService.login(token);
+
+
+		return new ResponseEntity<>(token, httpHeaders, HttpStatus.OK);
 	}
 
 	@PostMapping("/withdraw/{memberId}")
@@ -84,5 +93,21 @@ public class MemberController {
 	@GetMapping("/currentUser")
 	public ResponseEntity<?> UserInfo(@RequestHeader("Authorization") String token) {
 		return ResponseResult.result(memberService.getMemberInfo(token));
+	}
+
+	@PostMapping("/refresh")
+	public ResponseEntity<RefreshApiResponseMessage> validateRefreshToken(@RequestBody HashMap<String, String> bodyJson){
+
+		log.info("refresh controller 실행");
+		Map<String, String> map = jwtService.validateRefreshToken(bodyJson.get("refreshToken"));
+//		System.out.println(map);
+
+		if(map.get("status").equals("402")){
+			log.info("RefreshController - Refresh Token이 만료.");
+			return new ResponseEntity(map, HttpStatus.UNAUTHORIZED);
+		}
+
+		log.info("RefreshController - Refresh Token이 유효.");
+		return new ResponseEntity(map, HttpStatus.OK);
 	}
 }

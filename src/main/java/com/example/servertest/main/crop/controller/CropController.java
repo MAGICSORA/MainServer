@@ -129,7 +129,7 @@ public class CropController {
         return ResponseResult.result(categoryService.deleteCategory(token, categoryId));
     }
 
-    @GetMapping("/category/rdcord")
+    @GetMapping("/category/record")
     public ResponseEntity<?> getDiagnosisOfCategory(@RequestHeader("Authorization") String token, @RequestParam Long categoryId) {
 
         return ResponseResult.result(categoryService.getDiagnosisOfCategory(token, categoryId));
