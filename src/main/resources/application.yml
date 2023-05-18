@@ -38,3 +38,19 @@ ncpms:
 psis:
   baseUrl: http://psis.rda.go.kr/openApi/service.do
   apiKey: 2023041069ASS7FBRPJY0AV2YY9RG
+
+springdoc:
+  packages-to-scan: com.example.servertest
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+  api-docs:
+    path: /api-docs/json
+    groups:
+      enabled: true
+  cache:
+    disabled: true
+  swagger-ui:
+    doc-expansion: none
+    path: swaggerDocs
+    tags-sorter: alpha            # alpha: 알파벳 순 태그 정렬, method: HTTP Method 순 정렬
+    operations-sorter: alpha      # alpha: 알파벳 순 태그 정렬, method: HTTP Method 순 정렬

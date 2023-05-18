@@ -16,6 +16,7 @@ import com.example.servertest.main.member.model.RegisterMember;
 import com.example.servertest.main.member.model.WithDrawMember;
 import com.example.servertest.main.member.repository.MemberRepository;
 import com.example.servertest.main.member.service.MemberService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +43,7 @@ public class MemberController {
 	private final MemberRepository memberRepository;
 	private final CategoryRepository categoryRepository;
 
+	@Operation(summary = "회원가입")
 	@PostMapping("/signUp")
 	public ResponseEntity<?> signUp(@RequestBody @Valid RegisterMember.Request request) {
 
@@ -60,6 +62,7 @@ public class MemberController {
 		return ResponseResult.result(result);
 	}
 
+	@Operation(summary = "로그인")
 	@PostMapping("/signIn")
 	public ResponseEntity<?> signIn(@RequestBody @Valid LoginMember loginMember) {
 
@@ -85,17 +88,20 @@ public class MemberController {
 		return new ResponseEntity<>(token, httpHeaders, HttpStatus.OK);
 	}
 
+	@Operation(hidden = true)
 	@PostMapping("/withdraw/{memberId}")
 	public void withDrawMember(@PathVariable Long memberId,
 							   @RequestHeader("Authorization") String token, @RequestBody @Valid WithDrawMember request) {
 		memberService.withDrawMember(memberId, token, request);
 	}
 
+	@Operation(summary = "토큰으로 회원정보 조회")
 	@GetMapping("/currentUser")
 	public ResponseEntity<?> UserInfo(@RequestHeader("Authorization") String token) {
 		return ResponseResult.result(memberService.getMemberInfo(token));
 	}
 
+	@Operation(summary = "토큰 재발급")
 	@PostMapping("/refresh")
 	public ResponseEntity<RefreshApiResponseMessage> validateRefreshToken(@RequestBody HashMap<String, String> bodyJson){
 

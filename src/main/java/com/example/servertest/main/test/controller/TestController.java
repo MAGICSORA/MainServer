@@ -3,17 +3,15 @@ package com.example.servertest.main.test.controller;
 import com.example.servertest.main.crop.entity.DiseaseDetail;
 import com.example.servertest.main.crop.model.request.DiagnosisDto;
 import com.example.servertest.main.crop.repository.DiseaseDetailRepository;
-import com.example.servertest.main.crop.service.NaBatBuService;
 import com.example.servertest.main.crop.type.CropType;
 import com.example.servertest.main.crop.type.DiseaseCode;
 import com.example.servertest.main.global.model.ResponseResult;
 import com.example.servertest.main.global.model.ServiceResult;
-import com.example.servertest.main.test.model.AIResponse;
 import com.example.servertest.main.test.model.InputDiseaseDetail;
 import com.example.servertest.main.test.service.TestService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.IOUtils;
-import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -31,10 +29,10 @@ import java.util.Optional;
 public class TestController {
 
     private final TestService testService;
-    private final NaBatBuService naBatBuService;
     private final DiseaseDetailRepository diseaseDetailRepository;
 
     @GetMapping("/save")
+//    @Operation(summary = "템플릿 화면", description = "템플릿 화면을 출력합니다.", tags = {"View"})
     public void testDb(@RequestParam String input) {
 
         testService.test(input);
@@ -45,21 +43,13 @@ public class TestController {
         return "hi";
     }
 
+    @Operation(hidden = true)
     @GetMapping("/gift/NamLK")
     public String fun() {
         return "속았지 ㅋ";
     }
 
-    @GetMapping("/showall")
-    public List showAll() {
-        return testService.showAll();
-    }
-
-    @GetMapping("/delete")
-    public void delete(@RequestParam String input) {
-        testService.deleteTest(input);
-    }
-
+    @Operation(hidden = true)
     @GetMapping(value = "/gift/NamLK/22", produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<?> test22() throws IOException {
 
@@ -70,6 +60,16 @@ public class TestController {
         imageStream.close();
 
         return new ResponseEntity<>(imageByteArray, HttpStatus.OK);
+    }
+
+    @GetMapping("/showall")
+    public List showAll() {
+        return testService.showAll();
+    }
+
+    @GetMapping("/delete")
+    public void delete(@RequestParam String input) {
+        testService.deleteTest(input);
     }
 
     @GetMapping("/getCropCode/{index}")

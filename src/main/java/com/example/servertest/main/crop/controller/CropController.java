@@ -21,6 +21,7 @@ import com.example.servertest.main.api.psis.model.request.RequestPsisList;
 import com.example.servertest.main.api.psis.service.PsisService;
 import com.example.servertest.main.test.service.TestService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,6 +44,7 @@ public class CropController {
     private final CrawlingService crawlingService;
     private final CategoryService categoryService;
 
+    @Operation(summary = "테스트-병해목록저장")
     @PostMapping("/input/sickList")
     public ResponseEntity<?> inputSickList(
             @RequestBody SickListDto sickListDto) {
@@ -51,6 +53,7 @@ public class CropController {
         return ResponseEntity.ok(sickList);
     }
 
+    @Operation(summary = "농약 리스트 조회")
     @GetMapping("/psisList") //농약 리스트 조회
     public Map<String, ?> krxParser2(@RequestBody RequestPsisList request) throws IOException {
         String urlBuilder = psisManager.makePsisListRequestUrl(request.getCropName(), request.getDiseaseWeedName(), request.getDisplayCount(), request.getStartPoint());
@@ -59,6 +62,7 @@ public class CropController {
         return psisService.returnResult(urlBuilder, true);
     }
 
+    @Operation(summary = "농약 상세정보 조회")
     @GetMapping("/psisDetail") //농약 상세정보 조회
     public Map<String, ?> krxParser3(@RequestBody RequestPsisInfo request) throws IOException {
         String urlBuilder = psisManager.makePsisInfoRequestUrl(request.getPestiCode(), request.getDiseaseUseSeq(), request.getDisplayCount(), request.getStartPoint());
@@ -67,6 +71,7 @@ public class CropController {
         return psisService.returnResult(urlBuilder, false);
     }
 
+    @Operation(summary = "진단요청")
     @PostMapping("/diagnosis") //진단 요청
     public ResponseEntity<?> returnDiagnosis(
             @RequestPart(value = "requestInput") DiagnosisDto diagnosisDto
@@ -76,12 +81,14 @@ public class CropController {
         return ResponseResult.result(result);
     }
 
+    @Operation(summary = "사용자 진단 기록 조회")
     @GetMapping("/diagnosisRecord") //사용자 진단 기록 조회
     public ResponseEntity<?> diagnosisRecord(@RequestParam Long diagnosisRecordId) throws JsonProcessingException {
 
         return ResponseResult.result(naBatBuService.getDiagnosisRecord(diagnosisRecordId));
     }
 
+    @Operation(summary = "메인페이지 병해발생정보 리스트 저장 (스케줄러 자동화)")
     @PutMapping("/save/noticeList")//메인페이지 병해발생정보 리스트 저장
     public void saveNoticeList() {
 
@@ -92,55 +99,65 @@ public class CropController {
 //        System.out.println(crawlingService.getAllData(idx));
     }
 
+    @Operation(summary = "메인페이지 병해발생정보 리스트 조회")
     @GetMapping("/noticeList")
     public ResponseEntity<?> noticeList(@RequestHeader("Authorization") String token) throws JsonProcessingException {
 
         return ResponseResult.result(crawlingService.getNoticeList(token));
     }
 
+    @Operation(hidden = true)
     @GetMapping("/formTest")
     public String test(@RequestPart(value = "id") String id, @RequestPart(value = "name") String name) {
         return id + "_" + name;
     }
 
+    @Operation(summary = "반경 2km 병해 진단 기록 조회 -> 구현중")
     @GetMapping("/nearDisease") //반경 2km
     public ResponseEntity getNearDiseases(@RequestBody MapRequest mapRequest, @RequestHeader("Authorization") String token) {
         return ResponseResult.result(naBatBuService.getNearDiseases(mapRequest, token));
     }
 
+    @Operation(summary = "카테고리 생성")
     @PostMapping("/category/create")
     public ResponseEntity<?> createCategory(@RequestParam String name, @RequestHeader("Authorization") String token) {
         return ResponseResult.result(categoryService.registerCategory(name, token));
     }
 
+    @Operation(summary = "카테고리 목록 조회")
     @GetMapping("/category/list")
     public ResponseEntity<?> getCategoryList(@RequestHeader("Authorization") String token) {
         return ResponseResult.result(categoryService.getCategoryList(token));
     }
 
+    @Operation(summary = "카테고리 변경")
     @PutMapping("/category/update")
     public ResponseEntity<?> updateCategory(@RequestParam String originalName, @RequestParam String changeName, @RequestHeader("Authorization") String token) {
 
         return ResponseResult.result(categoryService.updateCategory(originalName, changeName, token));
     }
 
+    @Operation(summary = "카테고리 삭제")
     @DeleteMapping("/category/delete")
     public ResponseEntity<?> deleteCategory(@RequestHeader("Authorization") String token, @RequestParam Long categoryId) {
 
         return ResponseResult.result(categoryService.deleteCategory(token, categoryId));
     }
 
+    @Operation(summary = "카테고리에 해당하는 진단 기록 조회")
     @GetMapping("/category/record")
     public ResponseEntity<?> getDiagnosisOfCategory(@RequestHeader("Authorization") String token, @RequestParam Long categoryId) {
 
         return ResponseResult.result(categoryService.getDiagnosisOfCategory(token, categoryId));
     }
 
+    @Operation(summary = "진단 기록의 카테고리 변경")
     @PostMapping("/diagnosisRecord/{recordId}/category/update")
     public ResponseEntity<?> updateRecordCategory(@RequestHeader("Authorization") String token, @PathVariable Long recordId, @RequestParam Long categoryId) {
         return ResponseResult.result(categoryService.updateRecordCategory(token, recordId, categoryId));
     }
 
+    @Operation(summary = "병 리스트 검색")
     @GetMapping("/sickList") //병 리스트 검색
     public ResponseEntity<?> ncpmcParser(@RequestBody RequestNcpmsSick request) {
         String urlBuilder = ncpmsManager.makeNcpmsSickSearchRequestUrl(request.getCropName(), request.getSickNameKor(), request.getDisplayCount(), request.getStartPoint());
@@ -155,6 +172,7 @@ public class CropController {
         return ResponseResult.result(result);
     }
 
+    @Operation(summary = "병 상세정보 검색")
     @GetMapping("/sickDetail") //병 상세 검색
     public ResponseEntity<?> ncpmcParser2(@RequestBody RequestNcpmsSickDetail request) {
         String urlBuilder = ncpmsManager.makeNcpmsSickDetailSearchRequestUrl(request.getSickKey());

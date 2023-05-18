@@ -1,6 +1,7 @@
 package com.example.servertest.main.global.security;
 
 import com.example.servertest.main.global.jwtManage.jwt.JwtAuthenticationFilter;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,42 +19,44 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
+//@AllArgsConstructor
 public class SecurityConfiguration {
 
-	private final JwtAuthenticationFilter authenticationFilter;
-	private static final String[] PERMIT_URL_ARRAY = {"/", "/member/signUp", "/member/signIn",
-		"/notice/list/**", "/notice/detail/**", "/notice/info/**",
-		/* swagger v2 */
-		"/v2/api-docs", "/swagger-resources", "/swagger-resources/**", "/configuration/ui",
-		"/configuration/security", "/swagger-ui.html", "/webjars/**",
-		/* swagger v3 */
-		"/v3/api-docs/**", "/swagger-ui/**"};
+    private final JwtAuthenticationFilter authenticationFilter;
+    private static final String[] PERMIT_URL_ARRAY = {"/", "/member/signUp", "/member/signIn",
+            "/notice/list/**", "/notice/detail/**", "/notice/info/**",
+            /* swagger v2 */
+            "/v2/api-docs", "/swagger-resources", "/swagger-resources/**", "/configuration/ui",
+            "/configuration/security", "/swagger-ui.html", "/webjars/**",
+            /* swagger v3 */
+            "/v3/api-docs/**", "/swagger-ui/**",
+            "/demo-ui.html/**", "/demo-ui.html"};
 
-	@Bean
-	public WebSecurityCustomizer configure() {
+    @Bean
+    public WebSecurityCustomizer configure() {
 
-		return (web) -> web.ignoring().requestMatchers("/ignore1");
-	}
+        return (web) -> web.ignoring().requestMatchers("/ignore1");
+    }
 
-	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		//프론트엔드가 별도로 존재하여 rest Api로 구성한다고 가정
-		http.httpBasic().disable();
-		//csrf 사용안함
-		http.csrf().disable();
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        //프론트엔드가 별도로 존재하여 rest Api로 구성한다고 가정
+        http.httpBasic().disable();
+        //csrf 사용안함
+        http.csrf().disable();
 
-		//URL 인증여부 설정.
-		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-			.authorizeRequests().requestMatchers(PERMIT_URL_ARRAY).permitAll()
-			//JwtFilter 추가
-			.and()
-			.addFilterBefore(this.authenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        //URL 인증여부 설정.
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .authorizeRequests().requestMatchers(PERMIT_URL_ARRAY).permitAll()
+                //JwtFilter 추가
+                .and()
+                .addFilterBefore(this.authenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-		return http.build();
-	}
+        return http.build();
+    }
 
-	@Bean
-	public static PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+    @Bean
+    public static PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }
