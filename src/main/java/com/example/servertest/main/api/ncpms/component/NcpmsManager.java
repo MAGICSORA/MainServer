@@ -1,4 +1,4 @@
-package com.example.servertest.main.ncpms.component;
+package com.example.servertest.main.api.ncpms.component;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

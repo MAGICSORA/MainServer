@@ -1,4 +1,4 @@
-package com.example.servertest.main.ncpms.model.response;
+package com.example.servertest.main.api.ncpms.model.response;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;

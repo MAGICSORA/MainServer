@@ -1,4 +1,4 @@
-package com.example.servertest.main.psis.component;
+package com.example.servertest.main.api.psis.component;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

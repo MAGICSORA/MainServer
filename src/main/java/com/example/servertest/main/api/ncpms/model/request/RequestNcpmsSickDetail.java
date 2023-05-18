@@ -1,4 +1,4 @@
-package com.example.servertest.main.ncpms.model.request;
+package com.example.servertest.main.api.ncpms.model.request;
 
 import lombok.*;
 

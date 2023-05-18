@@ -1,4 +1,4 @@
-package com.example.servertest.main.psis.model.request;
+package com.example.servertest.main.api.psis.model.request;
 
 import lombok.*;
 

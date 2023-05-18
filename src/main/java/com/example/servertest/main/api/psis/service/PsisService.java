@@ -1,7 +1,7 @@
-package com.example.servertest.main.psis.service;
+package com.example.servertest.main.api.psis.service;
 
-import com.example.servertest.main.psis.model.response.PsisInfoService;
-import com.example.servertest.main.psis.model.response.PsisListService;
+import com.example.servertest.main.api.psis.model.response.PsisInfoService;
+import com.example.servertest.main.api.psis.model.response.PsisListService;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;

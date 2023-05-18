@@ -1,4 +1,4 @@
-package com.example.servertest.main.ncpms.model.request;
+package com.example.servertest.main.api.psis.model.request;
 
 import lombok.*;
 
@@ -8,10 +8,10 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class RequestNcpmsSick {
+public class RequestPsisList {
 
     private String cropName;
-    private String sickNameKor;
+    private String diseaseWeedName;
     private String displayCount;
     private String startPoint;
 }
