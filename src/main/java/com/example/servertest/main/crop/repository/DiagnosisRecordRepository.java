@@ -12,8 +12,8 @@ public interface DiagnosisRecordRepository extends JpaRepository<DiagnosisRecord
 //    List<DiagnosisRecord> findBy
 
     DiagnosisRecord findTopByOrderByIdDesc();
-    List<DiagnosisRecord> findAllByUserLatitudeBetween(float latitude1, float latitude2);
-    List<DiagnosisRecord> findAllByUserLongitudeBetween(float longitude1, float longitude2);
+    List<DiagnosisRecord> findAllByUserLatitudeBetween(double latitude1, double latitude2);
+    List<DiagnosisRecord> findAllByUserLongitudeBetween(double longitude1, double longitude2);
     List<DiagnosisRecord> findAllByCategoryId(Long categoryId);
 
     int countDiagnosisRecordByCategoryId(Long categoryId);

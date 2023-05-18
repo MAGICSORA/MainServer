@@ -2,19 +2,12 @@ package com.example.servertest.main.global.jwtManage.jwt;
 
 import com.example.servertest.main.global.jwtManage.entity.RefreshToken;
 import com.example.servertest.main.global.jwtManage.model.Token;
-import com.example.servertest.main.global.jwtManage.repository.RefreshTokenRepository;
 import com.example.servertest.main.member.service.AuthorityService;
 import com.example.servertest.main.member.type.MemberType;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-
-import java.time.Duration;
-import java.util.Base64;
-import java.util.Date;
-import java.util.List;
-
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +17,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
+import java.util.Base64;
+import java.util.Date;
+
 @Component
 @RequiredArgsConstructor
 public class TokenProvider {
 
     private final AuthorityService authorityService;
-    private final RefreshTokenRepository refreshTokenRepository;
 
     @Value("{spring.jwt.secret}")
     private String secretKey;

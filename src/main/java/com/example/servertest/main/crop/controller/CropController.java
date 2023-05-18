@@ -4,6 +4,7 @@ import com.example.servertest.main.crop.entity.SickList;
 import com.example.servertest.main.crop.exception.NcpmsError;
 import com.example.servertest.main.crop.exception.NcpmsException;
 import com.example.servertest.main.crop.model.request.DiagnosisDto;
+import com.example.servertest.main.crop.model.request.MapRequest;
 import com.example.servertest.main.crop.model.request.SickListDto;
 import com.example.servertest.main.crop.service.CategoryService;
 import com.example.servertest.main.crop.service.CrawlingService;
@@ -103,8 +104,8 @@ public class CropController {
     }
 
     @GetMapping("/nearDisease") //반경 2km
-    public ResponseEntity getNearDiseases(@RequestParam float latitude, @RequestParam float longitude, @RequestHeader("Authorization") String token) {
-        return ResponseResult.result(naBatBuService.getNearDiseases(latitude, longitude, token));
+    public ResponseEntity getNearDiseases(@RequestBody MapRequest mapRequest, @RequestHeader("Authorization") String token) {
+        return ResponseResult.result(naBatBuService.getNearDiseases(mapRequest, token));
     }
 
     @PostMapping("/category/create")

@@ -1,7 +1,6 @@
 package com.example.servertest.main.crop.repository;
 
 import com.example.servertest.main.crop.entity.Category;
-import com.example.servertest.main.crop.entity.CropOccurInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

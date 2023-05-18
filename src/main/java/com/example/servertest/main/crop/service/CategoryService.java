@@ -4,8 +4,6 @@ import com.example.servertest.main.crop.entity.Category;
 import com.example.servertest.main.crop.entity.DiagnosisRecord;
 import com.example.servertest.main.crop.exception.CategoryError;
 import com.example.servertest.main.crop.exception.CategoryException;
-import com.example.servertest.main.crop.exception.CropError;
-import com.example.servertest.main.crop.exception.CropException;
 import com.example.servertest.main.crop.model.response.CategoryResponse;
 import com.example.servertest.main.crop.repository.CategoryRepository;
 import com.example.servertest.main.crop.repository.DiagnosisRecordRepository;

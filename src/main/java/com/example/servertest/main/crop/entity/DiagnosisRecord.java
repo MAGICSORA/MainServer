@@ -21,10 +21,10 @@ public class DiagnosisRecord {
     private long userId;
 
     @Column
-    private float userLatitude;
+    private double userLatitude;
 
     @Column
-    private float userLongitude;
+    private double userLongitude;
 
     @Column
     private LocalDateTime regDate;

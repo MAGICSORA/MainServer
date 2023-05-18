@@ -2,7 +2,6 @@ package com.example.servertest.main.crop.model.request;
 
 import lombok.*;
 
-import java.io.File;
 import java.time.LocalDateTime;
 
 @Getter
@@ -13,8 +12,8 @@ import java.time.LocalDateTime;
 public class DiagnosisDto {
 //    private long userId;
     // -> token
-    private float userLatitude;
-    private float userLongitude;
+    private double userLatitude;
+    private double userLongitude;
     private LocalDateTime regDate;
     private int cropType;
 }

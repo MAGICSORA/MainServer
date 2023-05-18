@@ -12,8 +12,8 @@ import java.util.List;
 @NoArgsConstructor
 public class MapRequest {
 
-    float latitude;
-    float longitude;
+    double latitude;
+    double longitude;
     List<MapSheepCrop> mapSheepCropList;
     Date date;
 }

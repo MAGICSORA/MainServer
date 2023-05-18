@@ -14,8 +14,8 @@ import java.util.List;
 public class ResponseDiagnosisRecord {
 
     private int userId;
-    private float userLatitude;
-    private float userLongitude;
+    private double userLatitude;
+    private double userLongitude;
     private int cropType;
     private List<DiagnosisOutput> diagnosisResults;
     private String imagePath;

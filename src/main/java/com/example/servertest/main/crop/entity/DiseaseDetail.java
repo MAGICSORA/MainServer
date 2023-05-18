@@ -3,7 +3,6 @@ package com.example.servertest.main.crop.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import lombok.*;
 
 @Entity
