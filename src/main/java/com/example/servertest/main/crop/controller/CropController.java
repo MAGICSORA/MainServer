@@ -8,6 +8,7 @@ import com.example.servertest.main.crop.model.request.MapRequest;
 import com.example.servertest.main.crop.model.request.SickListDto;
 import com.example.servertest.main.crop.service.CategoryService;
 import com.example.servertest.main.crop.service.CrawlingService;
+import com.example.servertest.main.crop.service.MyCropService;
 import com.example.servertest.main.crop.service.NaBatBuService;
 import com.example.servertest.main.global.model.ResponseResult;
 import com.example.servertest.main.global.model.ServiceResult;
@@ -43,6 +44,7 @@ public class CropController {
     private final TestService testService;
     private final CrawlingService crawlingService;
     private final CategoryService categoryService;
+    private final MyCropService myCropService;
 
     @Operation(summary = "테스트-병해목록저장")
     @PostMapping("/input/sickList")
@@ -83,9 +85,9 @@ public class CropController {
 
     @Operation(summary = "사용자 진단 기록 조회")
     @GetMapping("/diagnosisRecord") //사용자 진단 기록 조회
-    public ResponseEntity<?> diagnosisRecord(@RequestParam Long diagnosisRecordId) throws JsonProcessingException {
+    public ResponseEntity<?> diagnosisRecord(@RequestParam Long diagnosisRecordId, @RequestHeader String token) throws JsonProcessingException {
 
-        return ResponseResult.result(naBatBuService.getDiagnosisRecord(diagnosisRecordId));
+        return ResponseResult.result(naBatBuService.getDiagnosisRecord(diagnosisRecordId, token));
     }
 
     @Operation(summary = "메인페이지 병해발생정보 리스트 저장 (스케줄러 자동화)")
@@ -185,5 +187,30 @@ public class CropController {
             result = ServiceResult.fail(String.valueOf(exception.getNcpmsError()), exception.getMessage());
         }
         return ResponseResult.result(result);
+    }
+
+    @Operation(summary = "작물 관리 메모 추가")
+    @PostMapping("/manage/create")
+    public ResponseEntity<?> createManage(@RequestHeader String token, @RequestParam Long diagnosisId, @RequestParam String contents) {
+
+        return ResponseResult.result(myCropService.registerContents(token, diagnosisId, contents));
+    }
+
+    @Operation(summary = "작물 관리 메모 조회")
+    @GetMapping("/manage/read")
+    public ResponseEntity<?> readManage(@RequestHeader String token, @RequestParam String contents) {
+        return null;
+    }
+
+    @Operation(summary = "작물 관리 메모 변경")
+    @PutMapping("/manage/update")
+    public ResponseEntity<?> updateManage(@RequestHeader String token, @RequestParam String contents) {
+        return null;
+    }
+
+    @Operation(summary = "작물 관리 메모 삭제")
+    @DeleteMapping("/manage/delete")
+    public ResponseEntity<?> deleteManage(@RequestHeader String token, @RequestParam String contents) {
+        return null;
     }
 }

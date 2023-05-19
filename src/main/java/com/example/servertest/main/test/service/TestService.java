@@ -29,6 +29,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -88,17 +90,38 @@ public class TestService {
 
         BufferedImage image = fileService.handleFileUpload(file, member.getName(), String.valueOf(imgCode));//이미지 저장
 
-        HttpHeaders header = new HttpHeaders();
-        HttpEntity<?> entity = new HttpEntity<>(header);
-
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<AIResponse> responseEntity = restTemplate.exchange("http://3.35.146.68:5000/predict"
+        String url = "http://3.35.146.68:5000/predict";
+
+        HttpHeaders header = new HttpHeaders();
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("cropImage", file);
+        body.add("cropType", diagnosisDto.getCropType());
+        body.add("cropImageId", imgCode);
+//        String requestBody = "{}";
+
+        HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(body, header);
+
+        ResponseEntity<AIResponse> responseEntity = restTemplate.exchange(url
                 , HttpMethod.POST, entity, AIResponse.class);
+
+        // 응답 처리
+        if (responseEntity.getStatusCode().is2xxSuccessful()) {
+            AIResponse responseBody = responseEntity.getBody();
+            // 응답 처리 로직 작성
+        } else {
+            // 에러 처리 로직 작성
+        }
+
+        /*
+
+         */
 
         AIResponse aiResponse = responseEntity.getBody();
 
         StringBuilder imagePath = new StringBuilder();
-        imagePath.append("http://15.164.23.13:8080/image/");
+//        imagePath.append("http://15.164.23.13:8080/image/");
+        imagePath.append("http://localhost:8080/image/");
         imagePath.append(member.getName());
         imagePath.append("/");
         imagePath.append(imgCode);

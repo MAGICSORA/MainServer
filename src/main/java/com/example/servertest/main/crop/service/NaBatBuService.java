@@ -163,7 +163,19 @@ public class NaBatBuService {
         return ServiceResult.success(diagnosisResponse);
     }
 
-    public ServiceResult getDiagnosisRecord(Long diagnosisRecordId) throws JsonProcessingException {
+    public ServiceResult getDiagnosisRecord(Long diagnosisRecordId, String token) throws JsonProcessingException {
+
+        Member member = new Member();
+        try {
+            member = memberService.validateMember(token);
+        } catch (ExpiredJwtException e) {
+            MemberError error = MemberError.EXPIRED_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+//            e.printStackTrace();
+        } catch (Exception e) {
+            MemberError error = MemberError.INVALID_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+        }
 
         Optional<DiagnosisRecord> optionalDiagnosisRecord = diagnosisRecordRepository.findById(diagnosisRecordId);
         DiagnosisRecord diagnosisRecord = optionalDiagnosisRecord.get();
