@@ -166,6 +166,7 @@ public class TestService {
 
 
         DiagnosisResponse diagnosisResponse = DiagnosisResponse.builder()
+                .diagnosisRecordId(diagnosisRecord.getId())
                 .responseCode(1)
                 .cropType(diagnosisDto.getCropType())
                 .regDate(diagnosisDto.getRegDate())

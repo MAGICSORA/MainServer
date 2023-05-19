@@ -12,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 public class DiagnosisResponse {
 
+    private long diagnosisRecordId;
     private int responseCode;
     private int cropType;
     private LocalDateTime regDate;
