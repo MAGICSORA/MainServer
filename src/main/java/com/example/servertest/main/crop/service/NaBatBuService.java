@@ -20,6 +20,7 @@ import com.example.servertest.main.member.exception.MemberError;
 import com.example.servertest.main.member.exception.MemberException;
 import com.example.servertest.main.member.service.MemberService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -62,9 +63,13 @@ public class NaBatBuService {
 
     public ServiceResult returnDiagnosisResult(DiagnosisDto diagnosisDto, MultipartFile file, String token) throws IOException {
 
-        Member member;
+        Member member = new Member();
         try {
             member = memberService.validateMember(token);
+        } catch (ExpiredJwtException e) {
+            MemberError error = MemberError.EXPIRED_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+//            e.printStackTrace();
         } catch (Exception e) {
             MemberError error = MemberError.INVALID_TOKEN;
             return ServiceResult.fail(String.valueOf(error), error.getDescription());
@@ -192,9 +197,13 @@ public class NaBatBuService {
 
     public ServiceResult getNearDiseases(MapRequest mapRequest, String token) {
 
-        Member member;
+        Member member = new Member();
         try {
             member = memberService.validateMember(token);
+        } catch (ExpiredJwtException e) {
+            MemberError error = MemberError.EXPIRED_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+//            e.printStackTrace();
         } catch (Exception e) {
             MemberError error = MemberError.INVALID_TOKEN;
             return ServiceResult.fail(String.valueOf(error), error.getDescription());

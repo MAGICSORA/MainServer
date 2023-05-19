@@ -12,6 +12,7 @@ import com.example.servertest.main.member.entity.Member;
 import com.example.servertest.main.member.exception.MemberError;
 import com.example.servertest.main.member.exception.MemberException;
 import com.example.servertest.main.member.service.MemberService;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,9 +31,13 @@ public class CategoryService {
 
     public ServiceResult registerCategory(String name, String token) {
 
-        Member member;
+        Member member = new Member();
         try {
             member = memberService.validateMember(token);
+        } catch (ExpiredJwtException e) {
+            MemberError error = MemberError.EXPIRED_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+//            e.printStackTrace();
         } catch (Exception e) {
             MemberError error = MemberError.INVALID_TOKEN;
             return ServiceResult.fail(String.valueOf(error), error.getDescription());
@@ -57,9 +62,13 @@ public class CategoryService {
 
     public ServiceResult getCategoryList(String token) {
 
-        Member member;
+        Member member = new Member();
         try {
             member = memberService.validateMember(token);
+        } catch (ExpiredJwtException e) {
+            MemberError error = MemberError.EXPIRED_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+//            e.printStackTrace();
         } catch (Exception e) {
             MemberError error = MemberError.INVALID_TOKEN;
             return ServiceResult.fail(String.valueOf(error), error.getDescription());
@@ -78,9 +87,13 @@ public class CategoryService {
 
     public ServiceResult updateCategory(String originalName, String changeName, String token) {
 
-        Member member;
+        Member member = new Member();
         try {
             member = memberService.validateMember(token);
+        } catch (ExpiredJwtException e) {
+            MemberError error = MemberError.EXPIRED_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+//            e.printStackTrace();
         } catch (Exception e) {
             MemberError error = MemberError.INVALID_TOKEN;
             return ServiceResult.fail(String.valueOf(error), error.getDescription());
@@ -103,9 +116,13 @@ public class CategoryService {
 
     public ServiceResult deleteCategory(String token, Long categoryId) {
 
-        Member member;
+        Member member = new Member();
         try {
             member = memberService.validateMember(token);
+        } catch (ExpiredJwtException e) {
+            MemberError error = MemberError.EXPIRED_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+//            e.printStackTrace();
         } catch (Exception e) {
             MemberError error = MemberError.INVALID_TOKEN;
             return ServiceResult.fail(String.valueOf(error), error.getDescription());
@@ -127,9 +144,13 @@ public class CategoryService {
 
     public ServiceResult updateRecordCategory(String token, Long recordId, Long categoryId) {
 
-        Member member;
+        Member member = new Member();
         try {
             member = memberService.validateMember(token);
+        } catch (ExpiredJwtException e) {
+            MemberError error = MemberError.EXPIRED_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+//            e.printStackTrace();
         } catch (Exception e) {
             MemberError error = MemberError.INVALID_TOKEN;
             return ServiceResult.fail(String.valueOf(error), error.getDescription());
@@ -145,9 +166,13 @@ public class CategoryService {
 
     public ServiceResult getDiagnosisOfCategory(String token, Long categoryId) {
 
-        Member member;
+        Member member = new Member();
         try {
             member = memberService.validateMember(token);
+        } catch (ExpiredJwtException e) {
+            MemberError error = MemberError.EXPIRED_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+//            e.printStackTrace();
         } catch (Exception e) {
             MemberError error = MemberError.INVALID_TOKEN;
             return ServiceResult.fail(String.valueOf(error), error.getDescription());
