@@ -48,13 +48,13 @@ public class MemberService {
 
         return ServiceResult.success(
                 RegisterMember.Response.from(MemberDto.from(memberRepository.save(
-                Member.builder()
-                        .email(parameter.getEmail())
-                        .password(pw)
-                        .name(parameter.getName())
-                        .regDt(LocalDateTime.now())
-                        .type(MemberType.ROLE_READWRITE)
-                        .build()))));
+                        Member.builder()
+                                .email(parameter.getEmail())
+                                .password(pw)
+                                .name(parameter.getName())
+                                .regDt(LocalDateTime.now())
+                                .type(MemberType.ROLE_READWRITE)
+                                .build()))));
     }
 
     public Member login(LoginMember parameter) {
@@ -75,7 +75,13 @@ public class MemberService {
 
     public ServiceResult getMemberInfo(String token) {
 
-        Member member = validateMember(token);
+        Member member;
+        try {
+            member = validateMember(token);
+        } catch (Exception e) {
+            MemberError error = MemberError.INVALID_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+        }
 
         return ServiceResult.success(MemberInfo.from(MemberDto.from(member)));
     }

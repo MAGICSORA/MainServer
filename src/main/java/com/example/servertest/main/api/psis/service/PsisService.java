@@ -2,9 +2,12 @@ package com.example.servertest.main.api.psis.service;
 
 import com.example.servertest.main.api.psis.model.response.PsisInfoService;
 import com.example.servertest.main.api.psis.model.response.PsisListService;
+import com.example.servertest.main.member.entity.Member;
+import com.example.servertest.main.member.service.MemberService;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -16,10 +19,13 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+@RequiredArgsConstructor
 @Service
 public class PsisService {
+    private final MemberService memberService;
 
-    public Map<String,?> returnResult(String urlBuilder, boolean type) throws IOException {
+    public Map<String,?> returnResult(String urlBuilder, boolean type, String token) throws IOException {
+        Member member = memberService.validateMember(token);
         URL url = new URL(urlBuilder);
 
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
