@@ -32,7 +32,8 @@ public class TokenProvider {
 
     //토큰 유효시간 설정
     private Long tokenValidTime = 240 * 60 * 1000L;
-    private Long accessTokenValidTime = Duration.ofMinutes(30).toMillis(); //30분
+//    private Long accessTokenValidTime = Duration.ofMinutes(30).toMillis(); //30분
+    private Long accessTokenValidTime = Duration.ofMinutes(2).toMillis(); //2분
     private Long refreshTokenValidTime = Duration.ofDays(14).toMillis(); //2주
 
     //secretkey를 미리 인코딩 해준다.
@@ -110,8 +111,8 @@ public class TokenProvider {
         //Access Token
         String accessToken = Jwts.builder()
                 .setClaims(claims1) // 정보 저장
-                .setIssuedAt(now) // 토큰 발행 시간 정보
-                .setExpiration(new Date(now.getTime() + accessTokenValidTime)) // set Expire Time
+//                .setIssuedAt(now) // 토큰 발행 시간 정보
+//                .setExpiration(new Date(now.getTime() + accessTokenValidTime)) // set Expire Time
                 .signWith(SignatureAlgorithm.HS256, secretKey)  // 사용할 암호화 알고리즘과
                 // signature 에 들어갈 secret값 세팅
                 .compact();
@@ -119,8 +120,8 @@ public class TokenProvider {
         //Refresh Token
         String refreshToken = Jwts.builder()
                 .setClaims(claims2) // 정보 저장
-                .setIssuedAt(now) // 토큰 발행 시간 정보
-                .setExpiration(new Date(now.getTime() + refreshTokenValidTime)) // set Expire Time
+//                .setIssuedAt(now) // 토큰 발행 시간 정보
+//                .setExpiration(new Date(now.getTime() + refreshTokenValidTime)) // set Expire Time
                 .signWith(SignatureAlgorithm.HS256, secretKey)  // 사용할 암호화 알고리즘과
                 // signature 에 들어갈 secret값 세팅
                 .compact();
