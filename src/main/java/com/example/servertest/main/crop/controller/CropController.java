@@ -8,7 +8,7 @@ import com.example.servertest.main.crop.model.request.MapRequest;
 import com.example.servertest.main.crop.model.request.SickListDto;
 import com.example.servertest.main.crop.service.CategoryService;
 import com.example.servertest.main.crop.service.CrawlingService;
-import com.example.servertest.main.crop.service.MyCropService;
+import com.example.servertest.main.crop.service.MyCropHistoryService;
 import com.example.servertest.main.crop.service.NaBatBuService;
 import com.example.servertest.main.global.model.ResponseResult;
 import com.example.servertest.main.global.model.ServiceResult;
@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,7 +43,7 @@ public class CropController {
     private final TestService testService;
     private final CrawlingService crawlingService;
     private final CategoryService categoryService;
-    private final MyCropService myCropService;
+    private final MyCropHistoryService myCropHistoryService;
 
     @Operation(summary = "테스트-병해목록저장")
     @PostMapping("/input/sickList")
@@ -57,7 +56,7 @@ public class CropController {
 
     @Operation(summary = "농약 리스트 조회")
     @GetMapping("/psisList") //농약 리스트 조회
-    public ResponseEntity<?> krxParser2(@RequestBody RequestPsisList request, @RequestHeader String token) throws IOException {
+    public ResponseEntity<?> krxParser2(@RequestBody RequestPsisList request, @RequestHeader("Authorization") String token) throws IOException {
         String urlBuilder = psisManager.makePsisListRequestUrl(request.getCropName(), request.getDiseaseWeedName(), request.getDisplayCount(), request.getStartPoint());
 
         System.out.println(urlBuilder);
@@ -66,7 +65,7 @@ public class CropController {
 
     @Operation(summary = "농약 상세정보 조회")
     @GetMapping("/psisDetail") //농약 상세정보 조회
-    public ResponseEntity<?> krxParser3(@RequestBody RequestPsisInfo request, @RequestHeader String token) throws IOException {
+    public ResponseEntity<?> krxParser3(@RequestBody RequestPsisInfo request, @RequestHeader("Authorization") String token) throws IOException {
         String urlBuilder = psisManager.makePsisInfoRequestUrl(request.getPestiCode(), request.getDiseaseUseSeq(), request.getDisplayCount(), request.getStartPoint());
 
         System.out.println(urlBuilder);
@@ -85,7 +84,7 @@ public class CropController {
 
     @Operation(summary = "사용자 진단 기록 조회")
     @GetMapping("/diagnosisRecord") //사용자 진단 기록 조회
-    public ResponseEntity<?> diagnosisRecord(@RequestParam Long diagnosisRecordId, @RequestHeader String token) throws JsonProcessingException {
+    public ResponseEntity<?> diagnosisRecord(@RequestParam Long diagnosisRecordId, @RequestHeader("Authorization") String token) throws JsonProcessingException {
 
         return ResponseResult.result(naBatBuService.getDiagnosisRecord(diagnosisRecordId, token));
     }
@@ -189,28 +188,38 @@ public class CropController {
         return ResponseResult.result(result);
     }
 
-    @Operation(summary = "작물 관리 메모 추가")
+    @Operation(summary = "작물 관리 일지 추가")
     @PostMapping("/manage/create")
-    public ResponseEntity<?> createManage(@RequestHeader String token, @RequestParam Long diagnosisId, @RequestParam String contents) {
+    public ResponseEntity<?> createManage(@RequestHeader("Authorization") String token, @RequestParam Long diagnosisId, @RequestParam String contents) {
 
-        return ResponseResult.result(myCropService.registerContents(token, diagnosisId, contents));
+        return ResponseResult.result(myCropHistoryService.registerContents(token, diagnosisId, contents));
     }
 
-    @Operation(summary = "작물 관리 메모 조회")
-    @GetMapping("/manage/read")
-    public ResponseEntity<?> readManage(@RequestHeader String token, @RequestParam String contents) {
-        return null;
+    @Operation(summary = "작물 관리 일지 리스트 조회")
+    @GetMapping("/manage/read/list")
+    public ResponseEntity<?> listManage(@RequestHeader("Authorization") String token, @RequestParam Long diagnosisRecordId) {
+
+        return ResponseResult.result(myCropHistoryService.contentsList(token, diagnosisRecordId));
     }
 
-    @Operation(summary = "작물 관리 메모 변경")
+    @Operation(summary = "작물 관리 일지 상세 조회")
+    @GetMapping("/manage/read/detail")
+    public ResponseEntity<?> readManage(@RequestHeader("Authorization") String token, @RequestParam Long myCropId) {
+
+        return ResponseResult.result(myCropHistoryService.contentsDetail(token, myCropId));
+    }
+
+    @Operation(summary = "작물 관리 일지 변경")
     @PutMapping("/manage/update")
-    public ResponseEntity<?> updateManage(@RequestHeader String token, @RequestParam String contents) {
-        return null;
+    public ResponseEntity<?> updateManage(@RequestHeader("Authorization") String token, @RequestParam Long myCropId, @RequestParam String contents) {
+
+        return ResponseResult.result(myCropHistoryService.updateMemo(token, myCropId, contents));
     }
 
-    @Operation(summary = "작물 관리 메모 삭제")
+    @Operation(summary = "작물 관리 일지 삭제")
     @DeleteMapping("/manage/delete")
-    public ResponseEntity<?> deleteManage(@RequestHeader String token, @RequestParam String contents) {
-        return null;
+    public ResponseEntity<?> deleteManage(@RequestHeader("Authorization") String token, @RequestParam Long myCropId) {
+
+        return ResponseResult.result(myCropHistoryService.deleteMemo(token, myCropId));
     }
 }

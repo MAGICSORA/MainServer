@@ -2,7 +2,6 @@ package com.example.servertest.main.crop.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
 
@@ -12,7 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MyCrop {
+public class MyCropHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

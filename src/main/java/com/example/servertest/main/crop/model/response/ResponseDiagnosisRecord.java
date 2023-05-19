@@ -1,6 +1,5 @@
 package com.example.servertest.main.crop.model.response;
 
-import com.example.servertest.main.crop.entity.DiagnosisResult;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -20,5 +19,4 @@ public class ResponseDiagnosisRecord {
     private List<DiagnosisOutput> diagnosisResults;
     private String imagePath;
     private LocalDateTime regDate;
-
 }
