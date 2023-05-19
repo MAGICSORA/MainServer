@@ -16,6 +16,7 @@ import com.example.servertest.main.crop.repository.DiagnosisResultRepository;
 import com.example.servertest.main.crop.repository.SickListRepository;
 import com.example.servertest.main.global.model.ServiceResult;
 import com.example.servertest.main.member.entity.Member;
+import com.example.servertest.main.member.exception.MemberError;
 import com.example.servertest.main.member.exception.MemberException;
 import com.example.servertest.main.member.service.MemberService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -64,8 +65,9 @@ public class NaBatBuService {
         Member member;
         try {
             member = memberService.validateMember(token);
-        } catch (MemberException e) {
-            return ServiceResult.fail(String.valueOf(e.getMemberError()), e.getMessage());
+        } catch (Exception e) {
+            MemberError error = MemberError.INVALID_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
         }
 
         StringBuilder imgCode = new StringBuilder();
@@ -190,10 +192,12 @@ public class NaBatBuService {
 
     public ServiceResult getNearDiseases(MapRequest mapRequest, String token) {
 
+        Member member;
         try {
-            Member member = memberService.validateMember(token);
-        } catch (MemberException e) {
-            return ServiceResult.fail(String.valueOf(e.getMemberError()), e.getMessage());
+            member = memberService.validateMember(token);
+        } catch (Exception e) {
+            MemberError error = MemberError.INVALID_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
         }
 
         /*

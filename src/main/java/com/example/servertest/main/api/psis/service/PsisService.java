@@ -2,7 +2,9 @@ package com.example.servertest.main.api.psis.service;
 
 import com.example.servertest.main.api.psis.model.response.PsisInfoService;
 import com.example.servertest.main.api.psis.model.response.PsisListService;
+import com.example.servertest.main.global.model.ServiceResult;
 import com.example.servertest.main.member.entity.Member;
+import com.example.servertest.main.member.exception.MemberError;
 import com.example.servertest.main.member.service.MemberService;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -24,8 +26,14 @@ import java.util.Map;
 public class PsisService {
     private final MemberService memberService;
 
-    public Map<String,?> returnResult(String urlBuilder, boolean type, String token) throws IOException {
-        Member member = memberService.validateMember(token);
+    public ServiceResult returnResult(String urlBuilder, boolean type, String token) throws IOException {
+        Member member;
+        try {
+            member = memberService.validateMember(token);
+        } catch (Exception e) {
+            MemberError error = MemberError.INVALID_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+        }
         URL url = new URL(urlBuilder);
 
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -60,7 +68,7 @@ public class PsisService {
             } catch (JAXBException e) {
                 e.printStackTrace();
             }
-            return result;
+            return ServiceResult.success(result);
         } else {
             // String 형식의 xml을 Java Object인 Response로 변환
             Map<String, PsisInfoService> result = new HashMap<>();
@@ -72,7 +80,7 @@ public class PsisService {
             } catch (JAXBException e) {
                 e.printStackTrace();
             }
-            return result;
+            return ServiceResult.success(result);
         }
     }
 }

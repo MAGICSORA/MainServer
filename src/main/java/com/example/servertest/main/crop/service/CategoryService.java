@@ -9,6 +9,7 @@ import com.example.servertest.main.crop.repository.CategoryRepository;
 import com.example.servertest.main.crop.repository.DiagnosisRecordRepository;
 import com.example.servertest.main.global.model.ServiceResult;
 import com.example.servertest.main.member.entity.Member;
+import com.example.servertest.main.member.exception.MemberError;
 import com.example.servertest.main.member.exception.MemberException;
 import com.example.servertest.main.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +33,9 @@ public class CategoryService {
         Member member;
         try {
             member = memberService.validateMember(token);
-        } catch (MemberException e) {
-            return ServiceResult.fail(String.valueOf(e.getMemberError()), e.getMessage());
+        } catch (Exception e) {
+            MemberError error = MemberError.INVALID_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
         }
 
         Category optionalCategory = categoryRepository.findByNameAndUserId(name, member.getId());
@@ -58,8 +60,9 @@ public class CategoryService {
         Member member;
         try {
             member = memberService.validateMember(token);
-        } catch (MemberException e) {
-            return ServiceResult.fail(String.valueOf(e.getMemberError()), e.getMessage());
+        } catch (Exception e) {
+            MemberError error = MemberError.INVALID_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
         }
 
         List<Category> categoryList = categoryRepository.findAllByUserId(member.getId());
@@ -78,8 +81,9 @@ public class CategoryService {
         Member member;
         try {
             member = memberService.validateMember(token);
-        } catch (MemberException e) {
-            return ServiceResult.fail(String.valueOf(e.getMemberError()), e.getMessage());
+        } catch (Exception e) {
+            MemberError error = MemberError.INVALID_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
         }
 
         Category category = categoryRepository.findByNameAndUserId(originalName, member.getId());
@@ -102,8 +106,9 @@ public class CategoryService {
         Member member;
         try {
             member = memberService.validateMember(token);
-        } catch (MemberException e) {
-            return ServiceResult.fail(String.valueOf(e.getMemberError()), e.getMessage());
+        } catch (Exception e) {
+            MemberError error = MemberError.INVALID_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
         }
 
         List<DiagnosisRecord> diagnosisRecordList = diagnosisRecordRepository.findAllByCategoryId(categoryId);
@@ -125,8 +130,9 @@ public class CategoryService {
         Member member;
         try {
             member = memberService.validateMember(token);
-        } catch (MemberException e) {
-            return ServiceResult.fail(String.valueOf(e.getMemberError()), e.getMessage());
+        } catch (Exception e) {
+            MemberError error = MemberError.INVALID_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
         }
 
         Optional<DiagnosisRecord> optionalDiagnosisRecord = diagnosisRecordRepository.findById(recordId);
@@ -142,8 +148,9 @@ public class CategoryService {
         Member member;
         try {
             member = memberService.validateMember(token);
-        } catch (MemberException e) {
-            return ServiceResult.fail(String.valueOf(e.getMemberError()), e.getMessage());
+        } catch (Exception e) {
+            MemberError error = MemberError.INVALID_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
         }
 
         List<DiagnosisRecord> diagnosisRecordList = diagnosisRecordRepository.findAllByCategoryId(categoryId);
