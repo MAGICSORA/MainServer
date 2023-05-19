@@ -79,9 +79,9 @@ public class MemberService {
         try {
             member = validateMember(token);
         } catch (Exception e) {
-//            MemberError error = MemberError.INVALID_TOKEN;
-//            return ServiceResult.fail(String.valueOf(error), error.getDescription());
-            e.printStackTrace();
+            MemberError error = MemberError.INVALID_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+//            e.printStackTrace();
         }
 
         return ServiceResult.success(MemberInfo.from(MemberDto.from(member)));

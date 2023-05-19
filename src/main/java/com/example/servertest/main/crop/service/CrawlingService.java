@@ -7,12 +7,14 @@ import com.example.servertest.main.crop.model.response.CropOccurInfoDto;
 import com.example.servertest.main.crop.repository.CropOccurInfoRepository;
 import com.example.servertest.main.global.model.ServiceResult;
 import com.example.servertest.main.member.entity.Member;
+import com.example.servertest.main.member.exception.MemberError;
 import com.example.servertest.main.member.exception.MemberException;
 import com.example.servertest.main.member.service.MemberService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -131,10 +133,16 @@ public class CrawlingService {
 
     public ServiceResult getNoticeList(String token) throws JsonProcessingException {
 
+        Member member = new Member();
         try {
-            Member member = memberService.validateMember(token);
-        } catch (MemberException e) {
-            return ServiceResult.fail(String.valueOf(e.getMemberError()), e.getMessage());
+            member = memberService.validateMember(token);
+        } catch (ExpiredJwtException e) {
+            MemberError error = MemberError.EXPIRED_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+//            e.printStackTrace();
+        } catch (Exception e) {
+            MemberError error = MemberError.INVALID_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
         }
 
         ObjectMapper objectMapper = new ObjectMapper();
