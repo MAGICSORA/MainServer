@@ -10,6 +10,7 @@ import com.example.servertest.main.global.jwtManage.service.JwtService;
 import com.example.servertest.main.global.model.ResponseResult;
 import com.example.servertest.main.global.model.ServiceResult;
 import com.example.servertest.main.member.entity.Member;
+import com.example.servertest.main.member.exception.MemberError;
 import com.example.servertest.main.member.exception.MemberException;
 import com.example.servertest.main.member.model.LoginMember;
 import com.example.servertest.main.member.model.RegisterMember;
@@ -98,6 +99,7 @@ public class MemberController {
 	@Operation(summary = "토큰으로 회원정보 조회")
 	@GetMapping("/currentUser")
 	public ResponseEntity<?> UserInfo(@RequestHeader("Authorization") String token) {
+
 		return ResponseResult.result(memberService.getMemberInfo(token));
 	}
 

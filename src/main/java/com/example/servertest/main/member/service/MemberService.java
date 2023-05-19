@@ -1,6 +1,7 @@
 package com.example.servertest.main.member.service;
 
 import com.example.servertest.main.global.jwtManage.jwt.TokenProvider;
+import com.example.servertest.main.global.model.ResponseResult;
 import com.example.servertest.main.global.model.ServiceResult;
 import com.example.servertest.main.member.entity.Member;
 import com.example.servertest.main.member.exception.MemberError;
@@ -8,6 +9,7 @@ import com.example.servertest.main.member.exception.MemberException;
 import com.example.servertest.main.member.model.*;
 import com.example.servertest.main.member.repository.MemberRepository;
 import com.example.servertest.main.member.type.MemberType;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -78,10 +80,13 @@ public class MemberService {
         Member member = new Member();
         try {
             member = validateMember(token);
+        } catch (ExpiredJwtException e) {
+            MemberError error = MemberError.EXPIRED_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+//            e.printStackTrace();
         } catch (Exception e) {
             MemberError error = MemberError.INVALID_TOKEN;
             return ServiceResult.fail(String.valueOf(error), error.getDescription());
-//            e.printStackTrace();
         }
 
         return ServiceResult.success(MemberInfo.from(MemberDto.from(member)));

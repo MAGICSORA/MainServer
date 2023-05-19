@@ -32,8 +32,8 @@ public class TokenProvider {
 
     //토큰 유효시간 설정
     private Long tokenValidTime = 240 * 60 * 1000L;
-//    private Long accessTokenValidTime = Duration.ofMinutes(30).toMillis(); //30분
-    private Long accessTokenValidTime = Duration.ofMinutes(2).toMillis(); //2분
+    private Long accessTokenValidTime = Duration.ofMinutes(30).toMillis(); //30분
+//    private Long accessTokenValidTime = Duration.ofMinutes(2).toMillis(); //2분
     private Long refreshTokenValidTime = Duration.ofDays(14).toMillis(); //2주
 
     //secretkey를 미리 인코딩 해준다.
