@@ -90,6 +90,31 @@ public class CategoryService {
         return ServiceResult.success(categoryResponseList);
     }
 
+    public ServiceResult getOneCategory(String token, String name) {
+
+        Member member = new Member();
+        try {
+            member = memberService.validateMember(token);
+        } catch (ExpiredJwtException e) {
+            MemberError error = MemberError.EXPIRED_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+//            e.printStackTrace();
+        } catch (Exception e) {
+            MemberError error = MemberError.INVALID_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+        }
+
+        Category category = categoryRepository.findByNameAndUserId(name, member.getId());
+        if (category == null) {
+            CategoryError error = CategoryError.CATEGORY_NOT_FOUND;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+        } else {
+            CategoryResponse categoryResponse = CategoryResponse.to(category);
+            categoryResponse.setCnt(diagnosisRecordRepository.countDiagnosisRecordByCategoryId(category.getId()));
+            return ServiceResult.success(categoryResponse);
+        }
+    }
+
     public ServiceResult updateCategory(Long id, String changeName, String changeMemo, String token) {
 
         Member member = new Member();
@@ -204,28 +229,5 @@ public class CategoryService {
         List<DiagnosisRecord> diagnosisRecordList = diagnosisRecordRepository.findAllByCategoryId(categoryId);
 
         return ServiceResult.success(diagnosisRecordList);
-    }
-
-    public ServiceResult getOneCategory(String token, String name) {
-
-        Member member = new Member();
-        try {
-            member = memberService.validateMember(token);
-        } catch (ExpiredJwtException e) {
-            MemberError error = MemberError.EXPIRED_TOKEN;
-            return ServiceResult.fail(String.valueOf(error), error.getDescription());
-//            e.printStackTrace();
-        } catch (Exception e) {
-            MemberError error = MemberError.INVALID_TOKEN;
-            return ServiceResult.fail(String.valueOf(error), error.getDescription());
-        }
-
-        Category category = categoryRepository.findByNameAndUserId(name, member.getId());
-        if (category == null) {
-            CategoryError error = CategoryError.CATEGORY_NOT_FOUND;
-            return ServiceResult.fail(String.valueOf(error), error.getDescription());
-        } else {
-            return ServiceResult.success(category);
-        }
     }
 }

@@ -1,14 +1,8 @@
 package com.example.servertest.main.nabatbu.category.controller;
 
-import com.example.servertest.main.nabatbu.cropInfo.ncpms.component.NcpmsManager;
-import com.example.servertest.main.nabatbu.cropInfo.ncpms.service.NcpmsService;
-import com.example.servertest.main.nabatbu.cropInfo.psis.component.PsisManager;
-import com.example.servertest.main.nabatbu.cropInfo.psis.service.PsisService;
+import com.example.servertest.main.global.model.ResponseResult;
 import com.example.servertest.main.nabatbu.category.service.CategoryService;
 import com.example.servertest.main.nabatbu.category.service.MyCropHistoryService;
-import com.example.servertest.main.nabatbu.cropInfo.service.CrawlingService;
-import com.example.servertest.main.global.model.ResponseResult;
-import com.example.servertest.main.test.service.TestService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +13,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/crop")
 public class CategoryController {
 
-    private final PsisManager psisManager;
-    private final PsisService psisService;
-    private final NcpmsManager ncpmsManager;
-    private final NcpmsService ncpmsService;
-    private final TestService testService;
-    private final CrawlingService crawlingService;
     private final CategoryService categoryService;
     private final MyCropHistoryService myCropHistoryService;
 

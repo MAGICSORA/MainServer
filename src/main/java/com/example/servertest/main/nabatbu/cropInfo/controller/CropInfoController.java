@@ -1,5 +1,9 @@
 package com.example.servertest.main.nabatbu.cropInfo.controller;
 
+import com.example.servertest.main.global.model.ResponseResult;
+import com.example.servertest.main.global.model.ServiceResult;
+import com.example.servertest.main.nabatbu.cropInfo.exception.NcpmsError;
+import com.example.servertest.main.nabatbu.cropInfo.exception.NcpmsException;
 import com.example.servertest.main.nabatbu.cropInfo.ncpms.component.NcpmsManager;
 import com.example.servertest.main.nabatbu.cropInfo.ncpms.model.request.RequestNcpmsSick;
 import com.example.servertest.main.nabatbu.cropInfo.ncpms.model.request.RequestNcpmsSickDetail;
@@ -8,14 +12,7 @@ import com.example.servertest.main.nabatbu.cropInfo.psis.component.PsisManager;
 import com.example.servertest.main.nabatbu.cropInfo.psis.model.request.RequestPsisInfo;
 import com.example.servertest.main.nabatbu.cropInfo.psis.model.request.RequestPsisList;
 import com.example.servertest.main.nabatbu.cropInfo.psis.service.PsisService;
-import com.example.servertest.main.nabatbu.category.service.CategoryService;
-import com.example.servertest.main.nabatbu.category.service.MyCropHistoryService;
-import com.example.servertest.main.nabatbu.cropInfo.exception.NcpmsError;
-import com.example.servertest.main.nabatbu.cropInfo.exception.NcpmsException;
 import com.example.servertest.main.nabatbu.cropInfo.service.CrawlingService;
-import com.example.servertest.main.global.model.ResponseResult;
-import com.example.servertest.main.global.model.ServiceResult;
-import com.example.servertest.main.test.service.TestService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -33,10 +30,7 @@ public class CropInfoController {
     private final PsisService psisService;
     private final NcpmsManager ncpmsManager;
     private final NcpmsService ncpmsService;
-    private final TestService testService;
     private final CrawlingService crawlingService;
-    private final CategoryService categoryService;
-    private final MyCropHistoryService myCropHistoryService;
 
     @Operation(summary = "농약 리스트 조회")
     @GetMapping("/psisList") //농약 리스트 조회
