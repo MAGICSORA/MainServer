@@ -16,6 +16,7 @@ public class CategoryResponse {
     private long userId;
     private String name;
     private int cnt;
+    private String memo;
     private LocalDateTime regDt;
 
     public static CategoryResponse to(Category category) {
@@ -23,6 +24,7 @@ public class CategoryResponse {
                 .id(category.getId())
                 .userId(category.getUserId())
                 .name(category.getName())
+                .memo(category.getMemo())
                 .regDt(category.getRegDt())
                 .build();
     }
