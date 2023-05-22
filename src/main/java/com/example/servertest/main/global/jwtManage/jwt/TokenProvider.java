@@ -2,10 +2,8 @@ package com.example.servertest.main.global.jwtManage.jwt;
 
 import com.example.servertest.main.global.jwtManage.entity.RefreshToken;
 import com.example.servertest.main.global.jwtManage.model.Token;
-import com.example.servertest.main.member.exception.MemberError;
-import com.example.servertest.main.member.exception.MemberException;
-import com.example.servertest.main.member.service.AuthorityService;
-import com.example.servertest.main.member.type.MemberType;
+import com.example.servertest.main.nabatbu.member.service.AuthorityService;
+import com.example.servertest.main.nabatbu.member.type.MemberType;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;

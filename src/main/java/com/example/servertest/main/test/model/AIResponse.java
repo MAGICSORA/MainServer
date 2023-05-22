@@ -1,6 +1,6 @@
 package com.example.servertest.main.test.model;
 
-import com.example.servertest.main.crop.model.response.DiagnosisOutput;
+import com.example.servertest.main.nabatbu.diagnosis.model.response.DiagnosisOutput;
 import lombok.*;
 
 import java.util.List;

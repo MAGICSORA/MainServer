@@ -1,10 +1,10 @@
 package com.example.servertest.main.test.controller;
 
-import com.example.servertest.main.crop.entity.DiseaseDetail;
-import com.example.servertest.main.crop.model.request.DiagnosisDto;
-import com.example.servertest.main.crop.repository.DiseaseDetailRepository;
-import com.example.servertest.main.crop.type.CropType;
-import com.example.servertest.main.crop.type.DiseaseCode;
+import com.example.servertest.main.nabatbu.cropInfo.entity.DiseaseDetail;
+import com.example.servertest.main.nabatbu.diagnosis.model.request.DiagnosisDto;
+import com.example.servertest.main.nabatbu.diagnosis.repository.DiseaseDetailRepository;
+import com.example.servertest.main.global.type.CropType;
+import com.example.servertest.main.global.type.DiseaseCode;
 import com.example.servertest.main.global.model.ResponseResult;
 import com.example.servertest.main.global.model.ServiceResult;
 import com.example.servertest.main.test.model.InputDiseaseDetail;
