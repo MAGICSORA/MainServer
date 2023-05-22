@@ -1,19 +1,13 @@
 package com.example.servertest.main.crop.service;
 
-import com.example.servertest.main.crop.entity.Category;
-import com.example.servertest.main.crop.entity.DiagnosisRecord;
-import com.example.servertest.main.crop.entity.DiagnosisResult;
-import com.example.servertest.main.crop.entity.SickList;
+import com.example.servertest.main.crop.entity.*;
 import com.example.servertest.main.crop.model.request.DiagnosisDto;
 import com.example.servertest.main.crop.model.request.MapRequest;
 import com.example.servertest.main.crop.model.request.SickListDto;
 import com.example.servertest.main.crop.model.response.DiagnosisOutput;
 import com.example.servertest.main.crop.model.response.DiagnosisResponse;
 import com.example.servertest.main.crop.model.response.ResponseDiagnosisRecord;
-import com.example.servertest.main.crop.repository.CategoryRepository;
-import com.example.servertest.main.crop.repository.DiagnosisRecordRepository;
-import com.example.servertest.main.crop.repository.DiagnosisResultRepository;
-import com.example.servertest.main.crop.repository.SickListRepository;
+import com.example.servertest.main.crop.repository.*;
 import com.example.servertest.main.global.model.ServiceResult;
 import com.example.servertest.main.member.entity.Member;
 import com.example.servertest.main.member.exception.MemberError;
@@ -43,6 +37,7 @@ public class NaBatBuService {
     private final FileService fileService;
     private final MemberService memberService;
     private final CategoryRepository categoryRepository;
+    private final MyCropHistoryRepository myCropHistoryRepository;
 
     public SickList saveSickList(SickListDto sickListDto) {
         SickList sickList = SickList.builder()
@@ -291,5 +286,36 @@ public class NaBatBuService {
 //            }
 //        }
         return ServiceResult.success(diagnosisResultList);
+    }
+
+    public ServiceResult deleteDiagnosisRecord(Long diagnosisRecordId, String token) {
+
+        Member member = new Member();
+        try {
+            member = memberService.validateMember(token);
+        } catch (ExpiredJwtException e) {
+            MemberError error = MemberError.EXPIRED_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+//            e.printStackTrace();
+        } catch (Exception e) {
+            MemberError error = MemberError.INVALID_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+        }
+
+        Optional<DiagnosisRecord> optionalDiagnosisRecord = diagnosisRecordRepository.findById(diagnosisRecordId);
+        DiagnosisRecord diagnosisRecord = optionalDiagnosisRecord.get();
+
+        //myCropHistory 삭제
+        List<MyCropHistory> myCropHistories = myCropHistoryRepository.findAllByDiagnosisRecord(diagnosisRecord);
+        myCropHistoryRepository.deleteAll(myCropHistories);
+
+        //diagnosisResult 삭제
+        List<DiagnosisResult> diagnosisResults = diagnosisResultRepository.findAllByDiagnosisRecord(diagnosisRecord);
+        diagnosisResultRepository.deleteAll(diagnosisResults);
+
+        //diagnosisRecord 삭제
+        diagnosisRecordRepository.delete(diagnosisRecord);
+
+        return ServiceResult.success("성공");
     }
 }

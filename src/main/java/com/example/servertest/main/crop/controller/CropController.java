@@ -89,6 +89,13 @@ public class CropController {
         return ResponseResult.result(naBatBuService.getDiagnosisRecord(diagnosisRecordId, token));
     }
 
+    @Operation(summary = "사용자 진단 기록 삭제")
+    @DeleteMapping("/diagnosisRecord/delete") //사용자 진단 기록 조회
+    public ResponseEntity<?> deleteDiagnosisRecord(@RequestParam Long diagnosisRecordId, @RequestHeader("Authorization") String token) {
+
+        return ResponseResult.result(naBatBuService.deleteDiagnosisRecord(diagnosisRecordId, token));
+    }
+
     @Operation(summary = "메인페이지 병해발생정보 리스트 저장 (스케줄러 자동화)")
     @PutMapping("/save/noticeList")//메인페이지 병해발생정보 리스트 저장
     public void saveNoticeList() {

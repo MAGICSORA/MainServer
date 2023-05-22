@@ -43,6 +43,11 @@ public class CategoryService {
             return ServiceResult.fail(String.valueOf(error), error.getDescription());
         }
 
+        if (name.length() > 20) {
+            CategoryError error = CategoryError.INVALID_NAME_LENGTH;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+        }
+
         Category optionalCategory = categoryRepository.findByNameAndUserId(name, member.getId());
         if (optionalCategory != null) {
             CategoryException e = new CategoryException(CategoryError.CATEGORY_ALREADY_EXIST);
@@ -104,10 +109,24 @@ public class CategoryService {
         Category category = optionalCategory.get();
 //        Category category = categoryRepository.findByNameAndUserId(originalName, member.getId());
 
-        Category category2 = categoryRepository.findByNameAndUserId(changeName, member.getId());
-        if (category2 != null) {
-            CategoryException e = new CategoryException(CategoryError.CATEGORY_ALREADY_EXIST);
-            return ServiceResult.fail(String.valueOf(e.getCategoryError()), e.getMessage());
+        //제목 길이제한
+        if (changeName.length() > 20 || changeName.length() < 1) {
+            CategoryError error = CategoryError.INVALID_NAME_LENGTH;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+        }
+
+        if(!category.getName().equals(changeName)) {
+            //바꾸려는 카테고리 설정
+            Category category2 = categoryRepository.findByNameAndUserId(changeName, member.getId());
+            if (category2 != null) {
+                CategoryException e = new CategoryException(CategoryError.CATEGORY_ALREADY_EXIST);
+                return ServiceResult.fail(String.valueOf(e.getCategoryError()), e.getMessage());
+            }
+        }
+
+        if (changeMemo.length() > 200) {
+            CategoryError error = CategoryError.INVALID_MEMO_LENGTH;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
         }
 
         category.setName(changeName);

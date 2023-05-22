@@ -1,15 +1,13 @@
 package com.example.servertest.main.member.entity;
 
-import java.time.LocalDateTime;
-
 import com.example.servertest.main.member.type.MemberType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
+
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,7 +24,11 @@ Member {
     private Long id;
 
     private String name;
+
+//    @Email
     private String email;
+
+//    @Size(min = 6)
     private String password;
 
     @Enumerated(EnumType.STRING)

@@ -33,6 +33,16 @@ public class MemberService {
 
     public ServiceResult register(RegisterMember.Request parameter) {
 
+        if (!parameter.getEmail().contains("@")) {
+            MemberError e = MemberError.MEMBER_EMAIL_INVALID;
+            return ServiceResult.fail(String.valueOf(e), e.getDescription());
+        }
+
+        if (parameter.getPassword().length() < 6) {
+            MemberError e = MemberError.MEMBER_PASSWORD_INVALID;
+            return ServiceResult.fail(String.valueOf(e), e.getDescription());
+        }
+
         Optional<Member> optionalMember = memberRepository.findByEmail(parameter.getEmail());
 
         if (optionalMember.isPresent()) {
@@ -40,11 +50,11 @@ public class MemberService {
             return ServiceResult.fail(String.valueOf(e), e.getDescription());
         }
 
-        Optional<Member> optionalMember1 = memberRepository.findByName(parameter.getName());
-        if (optionalMember1.isPresent()) {
-            MemberError e = MemberError.MEMBER_ALREADY_NAME;
-            return ServiceResult.fail(String.valueOf(e), e.getDescription());
-        }
+//        Optional<Member> optionalMember1 = memberRepository.findByName(parameter.getName());
+//        if (optionalMember1.isPresent()) {
+//            MemberError e = MemberError.MEMBER_ALREADY_NAME;
+//            return ServiceResult.fail(String.valueOf(e), e.getDescription());
+//        }
 
         String pw = BCrypt.hashpw(parameter.getPassword(), BCrypt.gensalt());
 

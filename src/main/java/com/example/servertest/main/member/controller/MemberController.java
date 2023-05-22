@@ -17,6 +17,8 @@ import com.example.servertest.main.member.model.WithDrawMember;
 import com.example.servertest.main.member.repository.MemberRepository;
 import com.example.servertest.main.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +28,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @RestController
