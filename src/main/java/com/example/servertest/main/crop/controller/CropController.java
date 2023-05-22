@@ -131,11 +131,17 @@ public class CropController {
         return ResponseResult.result(categoryService.getCategoryList(token));
     }
 
+    @Operation(summary = "카테고리 단일 조회")
+    @GetMapping("/category/name")
+    public ResponseEntity<?> getCategoryList(@RequestHeader("Authorization") String token, @RequestParam String name) {
+        return ResponseResult.result(categoryService.getOneCategory(token, name));
+    }
+
     @Operation(summary = "카테고리 변경")
     @PutMapping("/category/update")
-    public ResponseEntity<?> updateCategory(@RequestParam String originalName, @RequestParam String changeName, @RequestParam String changeMemo, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> updateCategory(@RequestParam Long id, @RequestParam String changeName, @RequestParam String changeMemo, @RequestHeader("Authorization") String token) {
 
-        return ResponseResult.result(categoryService.updateCategory(originalName, changeName, changeMemo, token));
+        return ResponseResult.result(categoryService.updateCategory(id, changeName, changeMemo, token));
     }
 
     @Operation(summary = "카테고리 삭제")

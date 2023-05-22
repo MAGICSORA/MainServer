@@ -86,7 +86,7 @@ public class CategoryService {
         return ServiceResult.success(categoryResponseList);
     }
 
-    public ServiceResult updateCategory(String originalName, String changeName, String changeMemo, String token) {
+    public ServiceResult updateCategory(Long id, String changeName, String changeMemo, String token) {
 
         Member member = new Member();
         try {
@@ -100,7 +100,9 @@ public class CategoryService {
             return ServiceResult.fail(String.valueOf(error), error.getDescription());
         }
 
-        Category category = categoryRepository.findByNameAndUserId(originalName, member.getId());
+        Optional<Category> optionalCategory = categoryRepository.findById(id);
+        Category category = optionalCategory.get();
+//        Category category = categoryRepository.findByNameAndUserId(originalName, member.getId());
 
         Category category2 = categoryRepository.findByNameAndUserId(changeName, member.getId());
         if (category2 != null) {
@@ -184,5 +186,28 @@ public class CategoryService {
         List<DiagnosisRecord> diagnosisRecordList = diagnosisRecordRepository.findAllByCategoryId(categoryId);
 
         return ServiceResult.success(diagnosisRecordList);
+    }
+
+    public ServiceResult getOneCategory(String token, String name) {
+
+        Member member = new Member();
+        try {
+            member = memberService.validateMember(token);
+        } catch (ExpiredJwtException e) {
+            MemberError error = MemberError.EXPIRED_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+//            e.printStackTrace();
+        } catch (Exception e) {
+            MemberError error = MemberError.INVALID_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+        }
+
+        Category category = categoryRepository.findByNameAndUserId(name, member.getId());
+        if (category == null) {
+            CategoryError error = CategoryError.CATEGORY_NOT_FOUND;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+        } else {
+            return ServiceResult.success(category);
+        }
     }
 }
