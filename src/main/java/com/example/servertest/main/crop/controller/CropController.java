@@ -133,9 +133,9 @@ public class CropController {
 
     @Operation(summary = "카테고리 변경")
     @PutMapping("/category/update")
-    public ResponseEntity<?> updateCategory(@RequestParam String originalName, @RequestParam String changeName, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> updateCategory(@RequestParam String originalName, @RequestParam String changeName, @RequestParam String changeMemo, @RequestHeader("Authorization") String token) {
 
-        return ResponseResult.result(categoryService.updateCategory(originalName, changeName, token));
+        return ResponseResult.result(categoryService.updateCategory(originalName, changeName, changeMemo, token));
     }
 
     @Operation(summary = "카테고리 삭제")

@@ -89,6 +89,8 @@ public class MemberService {
             return ServiceResult.fail(String.valueOf(error), error.getDescription());
         }
 
+//        Member member = validateMember(token);
+
         return ServiceResult.success(MemberInfo.from(MemberDto.from(member)));
     }
 

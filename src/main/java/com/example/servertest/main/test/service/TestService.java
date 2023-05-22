@@ -13,7 +13,6 @@ import com.example.servertest.main.crop.service.FileService;
 import com.example.servertest.main.global.model.ServiceResult;
 import com.example.servertest.main.member.entity.Member;
 import com.example.servertest.main.member.exception.MemberError;
-import com.example.servertest.main.member.exception.MemberException;
 import com.example.servertest.main.member.service.MemberService;
 import com.example.servertest.main.test.entity.TestEntity;
 import com.example.servertest.main.test.repository.TestRepository;

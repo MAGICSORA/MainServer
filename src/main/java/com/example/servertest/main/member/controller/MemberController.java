@@ -10,7 +10,6 @@ import com.example.servertest.main.global.jwtManage.service.JwtService;
 import com.example.servertest.main.global.model.ResponseResult;
 import com.example.servertest.main.global.model.ServiceResult;
 import com.example.servertest.main.member.entity.Member;
-import com.example.servertest.main.member.exception.MemberError;
 import com.example.servertest.main.member.exception.MemberException;
 import com.example.servertest.main.member.model.LoginMember;
 import com.example.servertest.main.member.model.RegisterMember;
@@ -37,86 +36,88 @@ import java.util.Optional;
 @RequestMapping("/member")
 public class MemberController {
 
-	private final MemberService memberService;
-	private final TokenProvider tokenProvider;
-	private final JwtService jwtService;
+    private final MemberService memberService;
+    private final TokenProvider tokenProvider;
+    private final JwtService jwtService;
 
-	private final MemberRepository memberRepository;
-	private final CategoryRepository categoryRepository;
+    private final MemberRepository memberRepository;
+    private final CategoryRepository categoryRepository;
 
-	@Operation(summary = "회원가입")
-	@PostMapping("/signUp")
-	public ResponseEntity<?> signUp(@RequestBody @Valid RegisterMember.Request request) {
+    @Operation(summary = "회원가입")
+    @PostMapping("/signUp")
+    public ResponseEntity<?> signUp(@RequestBody @Valid RegisterMember.Request request) {
 
-		System.out.println(request.toString());
-		ServiceResult result = memberService.register(request);
+        System.out.println(request.toString());
+        ServiceResult result = memberService.register(request);
 
-		Optional<Member> optionalMember = memberRepository.findByEmail(request.getEmail());
-		Member member = optionalMember.get();
+        if (!result.isFail()) {
+            Optional<Member> optionalMember = memberRepository.findByEmail(request.getEmail());
+            Member member = optionalMember.get();
+            categoryRepository.save(Category.builder()
+                    .userId(member.getId())
+                    .name("unclassified")
+                    .regDt(LocalDateTime.now())
+                    .memo("")
+                    .build());
+        }
 
-		categoryRepository.save(Category.builder()
-				.userId(member.getId())
-				.name("unclassified")
-				.regDt(LocalDateTime.now())
-				.build());
+        return ResponseResult.result(result);
+    }
 
-		return ResponseResult.result(result);
-	}
+    @Operation(summary = "로그인")
+    @PostMapping("/signIn")
+    public ResponseEntity<?> signIn(@RequestBody @Valid LoginMember loginMember) {
 
-	@Operation(summary = "로그인")
-	@PostMapping("/signIn")
-	public ResponseEntity<?> signIn(@RequestBody @Valid LoginMember loginMember) {
+        Member member;
+        try {
+            member = memberService.login(loginMember);
+        } catch (MemberException e) {
+            return ResponseResult.fail(String.valueOf(e.getMemberError()), e.getMessage());
+        }
 
-		Member member;
-		try {
-			member = memberService.login(loginMember);
-		} catch (MemberException e) {
-			return ResponseResult.fail(String.valueOf(e.getMemberError()), e.getMessage());
-		}
+        String email = member.getEmail();
+        String role = member.getType().toString();
 
-		String email = member.getEmail();
-		String role = member.getType().toString();
+        Token token = tokenProvider.createAccessToken(email, role);
 
-		Token token = tokenProvider.createAccessToken(email, role);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(JwtAuthenticationFilter.TOKEN_HEADER,
+                JwtAuthenticationFilter.TOKEN_PREFIX + token);
 
-		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.add(JwtAuthenticationFilter.TOKEN_HEADER,
-				JwtAuthenticationFilter.TOKEN_PREFIX + token);
-
-		jwtService.login(token);
+        jwtService.login(token);
 
 
-		return new ResponseEntity<>(token, httpHeaders, HttpStatus.OK);
-	}
+        return new ResponseEntity<>(token, httpHeaders, HttpStatus.OK);
+    }
 
-	@Operation(hidden = true)
-	@PostMapping("/withdraw/{memberId}")
-	public void withDrawMember(@PathVariable Long memberId,
-							   @RequestHeader("Authorization") String token, @RequestBody @Valid WithDrawMember request) {
-		memberService.withDrawMember(memberId, token, request);
-	}
+    @Operation(hidden = true)
+    @PostMapping("/withdraw/{memberId}")
+    public void withDrawMember(@PathVariable Long memberId,
+                               @RequestHeader("Authorization") String token, @RequestBody @Valid WithDrawMember request) {
+        memberService.withDrawMember(memberId, token, request);
+    }
 
-	@Operation(summary = "토큰으로 회원정보 조회")
-	@GetMapping("/currentUser")
-	public ResponseEntity<?> UserInfo(@RequestHeader("Authorization") String token) {
+    @Operation(summary = "토큰으로 회원정보 조회")
+    @GetMapping("/currentUser")
+    public ResponseEntity<?> UserInfo(@RequestHeader("Authorization") String token) {
 
-		return ResponseResult.result(memberService.getMemberInfo(token));
-	}
+        return ResponseResult.result(memberService.getMemberInfo(token));
+    }
 
-	@Operation(summary = "토큰 재발급")
-	@PostMapping("/refresh")
-	public ResponseEntity<RefreshApiResponseMessage> validateRefreshToken(@RequestBody HashMap<String, String> bodyJson){
+    @Operation(summary = "토큰 재발급")
+    @PostMapping("/refresh")
+    public ResponseEntity<RefreshApiResponseMessage> validateRefreshToken(@RequestBody HashMap<String, String> bodyJson) {
 
-		log.info("refresh controller 실행");
-		Map<String, String> map = jwtService.validateRefreshToken(bodyJson.get("refreshToken"));
+        log.info("refresh controller 실행");
+        Map<String, String> map = jwtService.validateRefreshToken(bodyJson.get("refreshToken"));
 //		System.out.println(map);
 
-		if(map.get("status").equals("402")){
-			log.info("RefreshController - Refresh Token이 만료.");
-			return new ResponseEntity(map, HttpStatus.UNAUTHORIZED);
-		}
+        if (map.get("status").equals("402")) {
+            log.info("RefreshController - Refresh Token이 만료.");
+            return new ResponseEntity(map, HttpStatus.UNAUTHORIZED);
+        }
 
-		log.info("RefreshController - Refresh Token이 유효.");
-		return new ResponseEntity(map, HttpStatus.OK);
-	}
+        log.info("RefreshController - Refresh Token이 유효.");
+        return new ResponseEntity(map, HttpStatus.OK);
+    }
 }

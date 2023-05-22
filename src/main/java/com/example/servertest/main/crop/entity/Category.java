@@ -25,5 +25,8 @@ public class Category {
 
     @Column
     private LocalDateTime regDt;
+
+    @Column
+    private String memo;
 }
 

@@ -2,14 +2,12 @@ package com.example.servertest.main.global.jwtManage.jwt;
 
 import com.example.servertest.main.global.jwtManage.entity.RefreshToken;
 import com.example.servertest.main.global.jwtManage.model.Token;
+import com.example.servertest.main.member.exception.MemberError;
+import com.example.servertest.main.member.exception.MemberException;
 import com.example.servertest.main.member.service.AuthorityService;
 import com.example.servertest.main.member.type.MemberType;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,7 +31,7 @@ public class TokenProvider {
     //토큰 유효시간 설정
     private Long tokenValidTime = 240 * 60 * 1000L;
     private Long accessTokenValidTime = Duration.ofMinutes(30).toMillis(); //30분
-//    private Long accessTokenValidTime = Duration.ofMinutes(2).toMillis(); //2분
+//    private Long accessTokenValidTime = Duration.ofMinutes(1).toMillis(); //1분
     private Long refreshTokenValidTime = Duration.ofDays(14).toMillis(); //2주
 
     //secretkey를 미리 인코딩 해준다.
@@ -75,9 +73,9 @@ public class TokenProvider {
     }
 
     // Request의 Header에서 token 값을 가져 옴
-    public String resolveToken(HttpServletRequest request) {
-        return request.getHeader("JWT");
-    }
+//    public String resolveToken(HttpServletRequest request) {
+//        return request.getHeader("JWT");
+//    }
 
     // 토큰의 유효성 + 만료일자 확인  // -> 토큰이 expire되지 않았는지 True/False로 반환해줌.
     public boolean validateToken(String jwtToken) {
@@ -151,8 +149,6 @@ public class TokenProvider {
             System.out.println("test1");
             e.printStackTrace();
             //refresh 토큰이 만료되었을 경우, 로그인이 필요합니다.
-
-
             return null;
         }
         System.out.println("test2");

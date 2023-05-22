@@ -53,6 +53,7 @@ public class CategoryService {
                 .userId(member.getId())
                 .name(name)
                 .regDt(LocalDateTime.now())
+                .memo("")
                 .build();
 
         categoryRepository.save(category);
@@ -85,7 +86,7 @@ public class CategoryService {
         return ServiceResult.success(categoryResponseList);
     }
 
-    public ServiceResult updateCategory(String originalName, String changeName, String token) {
+    public ServiceResult updateCategory(String originalName, String changeName, String changeMemo, String token) {
 
         Member member = new Member();
         try {
@@ -109,6 +110,8 @@ public class CategoryService {
 
         category.setName(changeName);
         category.setRegDt(LocalDateTime.now());
+        category.setMemo(changeMemo);
+
         categoryRepository.save(category);
 
         return ServiceResult.success(category);
