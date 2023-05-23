@@ -6,7 +6,7 @@ import com.example.servertest.main.nabatbu.diagnosis.entity.DiagnosisRecord;
 import com.example.servertest.main.nabatbu.diagnosis.entity.DiagnosisResult;
 import com.example.servertest.main.nabatbu.diagnosis.repository.DiagnosisRecordRepository;
 import com.example.servertest.main.nabatbu.diagnosis.repository.DiagnosisResultRepository;
-import com.example.servertest.main.nabatbu.diagnosis.repository.SickListRepository;
+import com.example.servertest.main.nabatbu.cropInfo.repository.SickListRepository;
 import com.example.servertest.main.nabatbu.diagnosis.service.FileService;
 import com.example.servertest.main.nabatbu.map.model.request.MapRequest;
 import com.example.servertest.main.global.model.ServiceResult;

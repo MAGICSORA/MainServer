@@ -1,6 +1,7 @@
 package com.example.servertest.main.test.controller;
 
 import com.example.servertest.main.nabatbu.cropInfo.entity.DiseaseDetail;
+import com.example.servertest.main.nabatbu.cropInfo.service.CrawlingService;
 import com.example.servertest.main.nabatbu.diagnosis.model.request.DiagnosisDto;
 import com.example.servertest.main.nabatbu.diagnosis.repository.DiseaseDetailRepository;
 import com.example.servertest.main.global.type.CropType;
@@ -29,6 +30,7 @@ import java.util.Optional;
 public class TestController {
 
     private final TestService testService;
+    private final CrawlingService crawlingService;
     private final DiseaseDetailRepository diseaseDetailRepository;
 
     @GetMapping("/save")
@@ -112,6 +114,7 @@ public class TestController {
     }
 
     @PostMapping("/diagnosis/flask")
+    @Operation(summary = "더미데이터로 병해진단 테스트")
     public ResponseEntity<?> test77(
             @RequestPart(value = "requestInput") DiagnosisDto diagnosisDto
             , @RequestPart(value = "image") MultipartFile file, @RequestHeader("Authorization") String token) throws IOException {
@@ -119,5 +122,24 @@ public class TestController {
         ServiceResult result = testService.returnDiagnosisResult(diagnosisDto, file, token);
 
         return ResponseResult.result(result);
+    }
+
+    @Operation(hidden = true)
+    @PostMapping("/save/codes")
+    public ResponseEntity<?> test88(@RequestParam int start, @RequestParam int count) throws IOException, InterruptedException {
+//        ServiceResult result = testService.save(start, count);
+        return null;
+    }
+
+    @PostMapping("/save/codes/2")
+    @Operation(summary = "NCPMS API호출을 위한 sickKey 저장")
+    public ResponseEntity<?> test99(@RequestParam int idx, @RequestParam int count) throws IOException, InterruptedException {
+//        String url = crawlingService.getUrl2(idx);
+        String url;
+        for (int i = 0; i < count; i++) {
+            url = crawlingService.getUrl2(idx + i);
+            crawlingService.save2(url);
+        }
+        return null;
     }
 }

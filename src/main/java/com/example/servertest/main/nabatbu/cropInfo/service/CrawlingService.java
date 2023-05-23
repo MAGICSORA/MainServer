@@ -1,20 +1,22 @@
 package com.example.servertest.main.nabatbu.cropInfo.service;
 
+import com.example.servertest.main.global.model.ServiceResult;
 import com.example.servertest.main.nabatbu.cropInfo.entity.CropOccurInfo;
 import com.example.servertest.main.nabatbu.cropInfo.exception.CropError;
 import com.example.servertest.main.nabatbu.cropInfo.exception.CropException;
 import com.example.servertest.main.nabatbu.cropInfo.model.response.CropOccurInfoDto;
 import com.example.servertest.main.nabatbu.cropInfo.repository.CropOccurInfoRepository;
-import com.example.servertest.main.global.model.ServiceResult;
 import com.example.servertest.main.nabatbu.member.entity.Member;
 import com.example.servertest.main.nabatbu.member.exception.MemberError;
 import com.example.servertest.main.nabatbu.member.service.MemberService;
+import com.example.servertest.main.test.service.TestService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -27,6 +29,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class CrawlingService {
@@ -34,6 +37,7 @@ public class CrawlingService {
     private static final String url = "https://ncpms.rda.go.kr/npms/NewIndcUserListR.np";
     private final CropOccurInfoRepository cropOccurInfoRepository;
     private final MemberService memberService;
+    private final TestService testService;
 
     public String getIndex() {
         Connection conn = Jsoup.connect(url);
@@ -63,6 +67,13 @@ public class CrawlingService {
                 "&sCrtpsnNm=&sIndcSj=";
     }
 
+    public String getUrl2(int idx) {
+        return "https://ncpms.rda.go.kr/npms/SicknsInfoListRM.np?" +
+                "sSearchWord=&sKncrCode01=&sKncrCode02=&sKncrCode=" +
+                "&sch2=&sch3=&sSearchOpt=&pageIndex=" + idx +
+                "&sicknsListNo=D00000007";
+    }
+
     public void updateAllData(String url) {
         Connection conn = Jsoup.connect(url);
 
@@ -71,12 +82,9 @@ public class CrawlingService {
             document = conn.get();
         } catch (IOException exception) {
             CropException e = new CropException(CropError.FAILED_TO_GET_DATA);
-//            return ServiceResult.fail(String.valueOf(e.getCropError()), e.getMessage());
         }
 
         CropOccurInfoDto dto = getDataList(document);
-
-//        String str = new Gson().toJson(list);
 
         CropOccurInfo cropOccurInfo = CropOccurInfo.builder()
                 .forecastListSize(dto.getForecastListSize())
@@ -90,8 +98,6 @@ public class CrawlingService {
 
         cropOccurInfoRepository.deleteAll();
         cropOccurInfoRepository.save(cropOccurInfo);
-
-//        return ServiceResult.success(dto);
     }
 
     private CropOccurInfoDto getDataList(Document document) {
@@ -147,11 +153,13 @@ public class CrawlingService {
         ObjectMapper objectMapper = new ObjectMapper();
 
         CropOccurInfo cropOccurInfo = cropOccurInfoRepository.findTopByOrderByIdDesc();
-//        DiagnosisItem[] items = objectMapper.readValue(diagnosisItems, DiagnosisItem[].class);
 
-        List warningList = objectMapper.readValue(cropOccurInfo.getWarningList(), new TypeReference<List>() {});
-        List watchList = objectMapper.readValue(cropOccurInfo.getWatchList(), new TypeReference<List>() {});
-        List forecastList = objectMapper.readValue(cropOccurInfo.getForecastList(), new TypeReference<List>() {});
+        List warningList = objectMapper.readValue(cropOccurInfo.getWarningList(), new TypeReference<List>() {
+        });
+        List watchList = objectMapper.readValue(cropOccurInfo.getWatchList(), new TypeReference<List>() {
+        });
+        List forecastList = objectMapper.readValue(cropOccurInfo.getForecastList(), new TypeReference<List>() {
+        });
         CropOccurInfoDto cropOccurInfoDto = CropOccurInfoDto.builder()
                 .warningListSize(cropOccurInfo.getWarningListSize())
                 .warningList(warningList)
@@ -162,5 +170,35 @@ public class CrawlingService {
                 .build();
 
         return ServiceResult.success(cropOccurInfoDto);
+    }
+
+    public void save2(String url) throws IOException, InterruptedException {
+        System.out.println(url);
+        Connection conn = Jsoup.connect(url);
+
+        Document document = null;
+        try {
+            document = conn.get();
+        } catch (IOException exception) {
+            CropException e = new CropException(CropError.FAILED_TO_GET_DATA);
+        }
+
+        Elements selects = document.getElementsByClass("tabelRound")
+                .select("tbody").select("tr");
+        int first;
+        StringBuilder sb = new StringBuilder();
+
+        int cnt = 0;
+        for (Element item : selects.select("td")) {
+            if (cnt % 5 == 2) {
+                Thread.sleep(500);
+                sb.append(item.toString());
+                first = sb.indexOf("(");
+                testService.save(sb.substring(first + 2, first + 11));
+                sb.setLength(0);
+            }
+            cnt++;
+        }
+
     }
 }

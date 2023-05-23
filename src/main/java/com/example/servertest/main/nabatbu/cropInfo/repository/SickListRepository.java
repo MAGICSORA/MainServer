@@ -1,4 +1,4 @@
-package com.example.servertest.main.nabatbu.diagnosis.repository;
+package com.example.servertest.main.nabatbu.cropInfo.repository;
 
 import com.example.servertest.main.nabatbu.cropInfo.entity.SickList;
 import java.util.List;
