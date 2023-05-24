@@ -16,11 +16,26 @@ public class SickDetailResponse {
     private String infectionRoute;
 
     public static SickDetailResponse from(NcpmsSickDetailService item) {
-        return SickDetailResponse.builder()
+        SickDetailResponse response =  SickDetailResponse.builder()
                 .developmentCondition(item.getDevelopmentCondition())
                 .symptoms(item.getSymptoms())
                 .preventionMethod(item.getPreventionMethod())
                 .infectionRoute(item.getInfectionRoute())
                 .build();
+
+        if (response.developmentCondition == "") {
+            response.developmentCondition = "해당 정보가 존재하지 않습니다.";
+        }
+        if (response.symptoms == "") {
+            response.symptoms = "해당 정보가 존재하지 않습니다.";
+        }
+        if (response.preventionMethod == "") {
+            response.preventionMethod = "해당 정보가 존재하지 않습니다.";
+        }
+        if (response.infectionRoute == "") {
+            response.infectionRoute = "해당 정보가 존재하지 않습니다.";
+        }
+
+        return response;
     }
 }
