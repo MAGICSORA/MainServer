@@ -210,7 +210,7 @@ public class CategoryService {
             return memberService.checkToken(token);
         }
 
-        List<DiagnosisRecord> diagnosisRecordList = diagnosisRecordRepository.findAllByCategoryId(categoryId);
+        List<DiagnosisRecord> diagnosisRecordList = diagnosisRecordRepository.findAllByCategoryIdOrderByRegDateDesc(categoryId);
 
         return ServiceResult.success(diagnosisRecordList);
     }
