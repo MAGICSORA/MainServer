@@ -1,5 +1,8 @@
 package com.example.servertest.main.nabatbu.diagnosis.service;
 
+import com.example.servertest.main.global.model.ServiceResult;
+import com.example.servertest.main.nabatbu.category.entity.Category;
+import com.example.servertest.main.nabatbu.category.entity.MyCropHistory;
 import com.example.servertest.main.nabatbu.category.repository.CategoryRepository;
 import com.example.servertest.main.nabatbu.category.repository.MyCropHistoryRepository;
 import com.example.servertest.main.nabatbu.diagnosis.entity.DiagnosisRecord;
@@ -8,12 +11,8 @@ import com.example.servertest.main.nabatbu.diagnosis.model.request.DiagnosisDto;
 import com.example.servertest.main.nabatbu.diagnosis.model.response.DiagnosisOutput;
 import com.example.servertest.main.nabatbu.diagnosis.model.response.DiagnosisResponse;
 import com.example.servertest.main.nabatbu.diagnosis.model.response.ResponseDiagnosisRecord;
-import com.example.servertest.main.nabatbu.category.entity.Category;
-import com.example.servertest.main.nabatbu.category.entity.MyCropHistory;
 import com.example.servertest.main.nabatbu.diagnosis.repository.DiagnosisRecordRepository;
 import com.example.servertest.main.nabatbu.diagnosis.repository.DiagnosisResultRepository;
-import com.example.servertest.main.nabatbu.cropInfo.repository.SickListRepository;
-import com.example.servertest.main.global.model.ServiceResult;
 import com.example.servertest.main.nabatbu.member.entity.Member;
 import com.example.servertest.main.nabatbu.member.exception.MemberError;
 import com.example.servertest.main.nabatbu.member.service.MemberService;
@@ -36,11 +35,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DiagnosisService {
 
-    private final SickListRepository sickListRepository;
-    private final DiagnosisRecordRepository diagnosisRecordRepository;
-    private final DiagnosisResultRepository diagnosisResultRepository;
     private final FileService fileService;
     private final MemberService memberService;
+
+    private final DiagnosisRecordRepository diagnosisRecordRepository;
+    private final DiagnosisResultRepository diagnosisResultRepository;
     private final CategoryRepository categoryRepository;
     private final MyCropHistoryRepository myCropHistoryRepository;
 

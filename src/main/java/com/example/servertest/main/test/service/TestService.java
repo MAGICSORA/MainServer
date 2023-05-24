@@ -1,6 +1,8 @@
 package com.example.servertest.main.test.service;
 
+import com.example.servertest.main.global.model.ServiceResult;
 import com.example.servertest.main.nabatbu.category.entity.Category;
+import com.example.servertest.main.nabatbu.category.repository.CategoryRepository;
 import com.example.servertest.main.nabatbu.cropInfo.entity.SickList;
 import com.example.servertest.main.nabatbu.cropInfo.ncpms.component.NcpmsManager;
 import com.example.servertest.main.nabatbu.cropInfo.ncpms.model.response.NcpmsSickDetailService;
@@ -11,11 +13,9 @@ import com.example.servertest.main.nabatbu.diagnosis.entity.DiagnosisResult;
 import com.example.servertest.main.nabatbu.diagnosis.model.request.DiagnosisDto;
 import com.example.servertest.main.nabatbu.diagnosis.model.response.DiagnosisOutput;
 import com.example.servertest.main.nabatbu.diagnosis.model.response.DiagnosisResponse;
-import com.example.servertest.main.nabatbu.category.repository.CategoryRepository;
 import com.example.servertest.main.nabatbu.diagnosis.repository.DiagnosisRecordRepository;
 import com.example.servertest.main.nabatbu.diagnosis.repository.DiagnosisResultRepository;
 import com.example.servertest.main.nabatbu.diagnosis.service.FileService;
-import com.example.servertest.main.global.model.ServiceResult;
 import com.example.servertest.main.nabatbu.member.entity.Member;
 import com.example.servertest.main.nabatbu.member.exception.MemberError;
 import com.example.servertest.main.nabatbu.member.service.MemberService;
@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -137,7 +136,7 @@ public class TestService {
         StringBuilder imagePath = new StringBuilder();
         imagePath.append("http://15.164.23.13:8080/image/");
 //        imagePath.append("http://localhost:8080/image/");
-        imagePath.append(member.getName());
+        imagePath.append(member.getEmail());
         imagePath.append("/");
         imagePath.append(imgCode);
 

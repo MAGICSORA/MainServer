@@ -26,9 +26,10 @@ import static com.example.servertest.main.global.jwtManage.jwt.JwtAuthentication
 @RequiredArgsConstructor
 public class MemberService {
 
-    private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
+
+    private final MemberRepository memberRepository;
 
     public ServiceResult register(RegisterMember.Request parameter) {
 

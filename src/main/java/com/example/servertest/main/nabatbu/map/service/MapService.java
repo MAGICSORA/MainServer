@@ -29,11 +29,12 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class MapService {
 
+    private final FileService fileService;
+    private final MemberService memberService;
+
     private final SickListRepository sickListRepository;
     private final DiagnosisRecordRepository diagnosisRecordRepository;
     private final DiagnosisResultRepository diagnosisResultRepository;
-    private final FileService fileService;
-    private final MemberService memberService;
     private final CategoryRepository categoryRepository;
     private final MyCropHistoryRepository myCropHistoryRepository;
 
