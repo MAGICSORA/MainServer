@@ -6,6 +6,7 @@ import com.example.servertest.main.nabatbu.category.repository.CategoryRepositor
 import com.example.servertest.main.nabatbu.cropInfo.entity.SickList;
 import com.example.servertest.main.nabatbu.cropInfo.ncpms.component.NcpmsManager;
 import com.example.servertest.main.nabatbu.cropInfo.ncpms.model.response.NcpmsSickDetailService;
+import com.example.servertest.main.nabatbu.cropInfo.ncpms.model.response.NcpmsSickService;
 import com.example.servertest.main.nabatbu.cropInfo.ncpms.service.NcpmsService;
 import com.example.servertest.main.nabatbu.cropInfo.repository.SickListRepository;
 import com.example.servertest.main.nabatbu.diagnosis.entity.DiagnosisRecord;
@@ -239,7 +240,9 @@ public class TestService {
                 return null;
             }
             System.out.println("cropName: " + cropName + "/ sickNameKor: " + sickNameKor);
-            sickListRepository.save(SickList.builder().sickKey(sickKey).cropName(cropName).sickNameEng(sickNameEng).sickNameKor(sickNameKor).build());
+            String img = save2(cropName, sickNameKor);
+
+            sickListRepository.save(SickList.builder().sickKey(sickKey).cropName(cropName).sickNameEng(sickNameEng).sickNameKor(sickNameKor).thumbImg(img).build());
 
         } catch (JAXBException e) {
             e.printStackTrace();
@@ -249,5 +252,33 @@ public class TestService {
 //        return null;
 //}
         return null;
+    }
+
+    public String save2(String cropName, String sickNameKor) throws IOException {
+        String url = ncpmsManager.makeNcpmsSickSearchRequestUrl(cropName, sickNameKor, "50", "");
+
+//        Map<String, NcpmsSickService> result = new HashMap<>();
+//        System.out.println(url);
+        if (ncpmsService.returnResult(url, true) == null) {
+            return null;
+        }
+        Map<String, NcpmsSickService> result = (Map<String, NcpmsSickService>) ncpmsService.returnResult(url, true).getObject();
+
+        NcpmsSickService ncpmsSickService = result.get("response");
+//        System.out.println(ncpmsSickService);
+
+        String out = null;
+        for (NcpmsSickService.ListB.ItemN item : ncpmsSickService.getList().getItem()) {
+//            System.out.println(url);
+            if (item.getCropName().equals(cropName) && item.getSickNameKor().equals(sickNameKor)) {
+//                System.out.println(item.getThumbImg());
+                out = item.getThumbImg();
+//                SickList sickList = sickListRepository.findBySickNameKorAndCropName(sickNameKor, cropName);
+//                sickList.setThumbImg(out);
+//                sickListRepository.save(sickList);
+                break;
+            }
+        }
+        return out;
     }
 }

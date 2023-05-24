@@ -214,7 +214,15 @@ public class CrawlingService {
                 Thread.sleep(500);
                 sb.append(item.toString());
                 first = sb.indexOf("(");
-                testService.save(sb.substring(first + 2, first + 11));
+                String sickKey = sb.substring(first + 2, first + 11);
+//                testService.save(sb.substring(first + 2, first + 11));
+                SickList sickList = sickListRepository.findBySickKey(sickKey);
+                String cropName = sickList.getCropName();
+                String sickNameKor = sickList.getSickNameKor();
+                String thumbImg = testService.save2(cropName, sickNameKor);
+                sickList.setThumbImg(thumbImg);
+                sickListRepository.save(sickList);
+                System.out.println("cropName: " + cropName + "/sickNameKor: " + sickNameKor);
                 sb.setLength(0);
             }
             cnt++;
