@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SickListRepository extends JpaRepository<SickList, String> {
 
-    List<SickList> findByCropNameContainingAndSickNameKorContaining(
+    List<SickList> findAllByCropNameContainingAndSickNameKorContaining(
         String cropName, String sickName);
 }

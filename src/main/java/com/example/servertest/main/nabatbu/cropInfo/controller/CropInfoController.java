@@ -13,6 +13,7 @@ import com.example.servertest.main.nabatbu.cropInfo.psis.model.request.RequestPs
 import com.example.servertest.main.nabatbu.cropInfo.psis.model.request.RequestPsisList;
 import com.example.servertest.main.nabatbu.cropInfo.psis.service.PsisService;
 import com.example.servertest.main.nabatbu.cropInfo.service.CrawlingService;
+import com.example.servertest.main.nabatbu.cropInfo.service.CropInfoService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -27,10 +28,12 @@ import java.io.IOException;
 public class CropInfoController {
 
     private final PsisManager psisManager;
-    private final PsisService psisService;
     private final NcpmsManager ncpmsManager;
+
+    private final PsisService psisService;
     private final NcpmsService ncpmsService;
     private final CrawlingService crawlingService;
+    private final CropInfoService cropInfoService;
 
     @Operation(summary = "농약 리스트 조회")
     @GetMapping("/psisList") //농약 리스트 조회
@@ -68,8 +71,8 @@ public class CropInfoController {
         return ResponseResult.result(crawlingService.getNoticeList(token));
     }
 
-    @Operation(summary = "병 리스트 검색")
-    @GetMapping("/sickList") //병 리스트 검색
+    @Operation(summary = "NCPMS - 병 리스트 검색")
+    @GetMapping("/ncpms/sickList") //병 리스트 검색
     public ResponseEntity<?> ncpmcParser(@RequestBody RequestNcpmsSick request) {
         String urlBuilder = ncpmsManager.makeNcpmsSickSearchRequestUrl(request.getCropName(), request.getSickNameKor(), request.getDisplayCount(), request.getStartPoint());
 
@@ -77,14 +80,14 @@ public class CropInfoController {
         try {
             result = ncpmsService.returnResult(urlBuilder, true);
         } catch (Exception e) {
-            NcpmsException exception = new NcpmsException(NcpmsError.NO_DATA_EXIST);
+            NcpmsException exception = new NcpmsException(NcpmsError.NO_DATA_EXISTS);
             result = ServiceResult.fail(String.valueOf(exception.getNcpmsError()), exception.getMessage());
         }
         return ResponseResult.result(result);
     }
 
-    @Operation(summary = "병 상세정보 검색")
-    @GetMapping("/sickDetail") //병 상세 검색
+    @Operation(summary = "NCPMS - 병 상세정보 검색")
+    @GetMapping("/ncpms/sickDetail") //병 상세 검색
     public ResponseEntity<?> ncpmcParser2(@RequestBody RequestNcpmsSickDetail request) {
         String urlBuilder = ncpmsManager.makeNcpmsSickDetailSearchRequestUrl(request.getSickKey());
 
@@ -92,9 +95,34 @@ public class CropInfoController {
         try {
             result = ncpmsService.returnResult(urlBuilder, false);
         } catch (Exception e) {
-            NcpmsException exception = new NcpmsException(NcpmsError.NO_DATA_EXIST);
+            NcpmsException exception = new NcpmsException(NcpmsError.NO_DATA_EXISTS);
             result = ServiceResult.fail(String.valueOf(exception.getNcpmsError()), exception.getMessage());
         }
+        return ResponseResult.result(result);
+    }
+
+    @Operation(summary = "병 리스트 검색")
+    @GetMapping("/sickList") //병 리스트 검색
+    public ResponseEntity<?> searchSickList(@RequestHeader("Authorization") String token, @RequestParam String cropName, @RequestParam String sickNameKor) {
+
+        ServiceResult result = cropInfoService.sickList(token, cropName, sickNameKor);
+        return ResponseResult.result(result);
+    }
+
+    @Operation(summary = "병 상세정보 검색")
+    @GetMapping("/sickDetail") //병 상세 검색
+    public ResponseEntity<?> searchSickDetail(@RequestHeader("Authorization") String token, @RequestParam String sickKey) {
+        String urlBuilder = ncpmsManager.makeNcpmsSickDetailSearchRequestUrl(sickKey);
+
+//        ServiceResult result;
+//        try {
+//            result = ncpmsService.returnResult(urlBuilder, false);
+//        } catch (Exception e) {
+//            NcpmsException exception = new NcpmsException(NcpmsError.NO_DATA_EXIST);
+//            result = ServiceResult.fail(String.valueOf(exception.getNcpmsError()), exception.getMessage());
+//        }
+
+        ServiceResult result = cropInfoService.sickDetail(token, urlBuilder);
         return ResponseResult.result(result);
     }
 }

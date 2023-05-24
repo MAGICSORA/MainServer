@@ -134,4 +134,18 @@ public class MemberService {
         return memberRepository.findByEmail(tokenProvider.getUserPk(token))
                 .orElseThrow(() -> new MemberException(MemberError.MEMBER_NOT_FOUND)).getName();
     }
+
+    public ServiceResult checkToken(String token) {
+        Member member = new Member();
+        try {
+            member = validateMember(token);
+        } catch (ExpiredJwtException e) {
+            MemberError error = MemberError.EXPIRED_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+        } catch (Exception e) {
+            MemberError error = MemberError.INVALID_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+        }
+        return ServiceResult.success();
+    }
 }

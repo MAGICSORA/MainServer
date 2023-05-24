@@ -192,16 +192,8 @@ public class CategoryService {
 
     public ServiceResult updateRecordCategory(String token, Long recordId, Long categoryId) {
 
-        Member member = new Member();
-        try {
-            member = memberService.validateMember(token);
-        } catch (ExpiredJwtException e) {
-            MemberError error = MemberError.EXPIRED_TOKEN;
-            return ServiceResult.fail(String.valueOf(error), error.getDescription());
-//            e.printStackTrace();
-        } catch (Exception e) {
-            MemberError error = MemberError.INVALID_TOKEN;
-            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+        if (memberService.checkToken(token).isFail()) {
+            return memberService.checkToken(token);
         }
 
         Optional<DiagnosisRecord> optionalDiagnosisRecord = diagnosisRecordRepository.findById(recordId);
@@ -214,16 +206,8 @@ public class CategoryService {
 
     public ServiceResult getDiagnosisOfCategory(String token, Long categoryId) {
 
-        Member member = new Member();
-        try {
-            member = memberService.validateMember(token);
-        } catch (ExpiredJwtException e) {
-            MemberError error = MemberError.EXPIRED_TOKEN;
-            return ServiceResult.fail(String.valueOf(error), error.getDescription());
-//            e.printStackTrace();
-        } catch (Exception e) {
-            MemberError error = MemberError.INVALID_TOKEN;
-            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+        if (memberService.checkToken(token).isFail()) {
+            return memberService.checkToken(token);
         }
 
         List<DiagnosisRecord> diagnosisRecordList = diagnosisRecordRepository.findAllByCategoryId(categoryId);

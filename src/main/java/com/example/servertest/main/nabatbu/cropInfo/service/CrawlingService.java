@@ -138,16 +138,8 @@ public class CrawlingService {
 
     public ServiceResult getNoticeList(String token) throws JsonProcessingException {
 
-        Member member = new Member();
-        try {
-            member = memberService.validateMember(token);
-        } catch (ExpiredJwtException e) {
-            MemberError error = MemberError.EXPIRED_TOKEN;
-            return ServiceResult.fail(String.valueOf(error), error.getDescription());
-//            e.printStackTrace();
-        } catch (Exception e) {
-            MemberError error = MemberError.INVALID_TOKEN;
-            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+        if (memberService.checkToken(token).isFail()) {
+            return memberService.checkToken(token);
         }
 
         ObjectMapper objectMapper = new ObjectMapper();
