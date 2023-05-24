@@ -2,19 +2,19 @@ package com.example.servertest.main.nabatbu.cropInfo.service;
 
 import com.example.servertest.main.global.model.ServiceResult;
 import com.example.servertest.main.nabatbu.cropInfo.entity.CropOccurInfo;
+import com.example.servertest.main.nabatbu.cropInfo.entity.SickList;
 import com.example.servertest.main.nabatbu.cropInfo.exception.CropError;
 import com.example.servertest.main.nabatbu.cropInfo.exception.CropException;
+import com.example.servertest.main.nabatbu.cropInfo.model.response.CropOccurDto;
 import com.example.servertest.main.nabatbu.cropInfo.model.response.CropOccurInfoDto;
 import com.example.servertest.main.nabatbu.cropInfo.repository.CropOccurInfoRepository;
-import com.example.servertest.main.nabatbu.member.entity.Member;
-import com.example.servertest.main.nabatbu.member.exception.MemberError;
+import com.example.servertest.main.nabatbu.cropInfo.repository.SickListRepository;
 import com.example.servertest.main.nabatbu.member.service.MemberService;
 import com.example.servertest.main.test.service.TestService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Connection;
@@ -27,7 +27,9 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -35,9 +37,12 @@ import java.util.List;
 public class CrawlingService {
 
     private static final String url = "https://ncpms.rda.go.kr/npms/NewIndcUserListR.np";
-    private final CropOccurInfoRepository cropOccurInfoRepository;
+
     private final MemberService memberService;
     private final TestService testService;
+
+    private final CropOccurInfoRepository cropOccurInfoRepository;
+    private final SickListRepository sickListRepository;
 
     public String getIndex() {
         Connection conn = Jsoup.connect(url);
@@ -146,19 +151,59 @@ public class CrawlingService {
 
         CropOccurInfo cropOccurInfo = cropOccurInfoRepository.findTopByOrderByIdDesc();
 
-        List warningList = objectMapper.readValue(cropOccurInfo.getWarningList(), new TypeReference<List>() {
+        List<String> warningList = objectMapper.readValue(cropOccurInfo.getWarningList(), new TypeReference<List>() {
         });
-        List watchList = objectMapper.readValue(cropOccurInfo.getWatchList(), new TypeReference<List>() {
+        List<String> watchList = objectMapper.readValue(cropOccurInfo.getWatchList(), new TypeReference<List>() {
         });
-        List forecastList = objectMapper.readValue(cropOccurInfo.getForecastList(), new TypeReference<List>() {
+        List<String> forecastList = objectMapper.readValue(cropOccurInfo.getForecastList(), new TypeReference<List>() {
         });
+
+        List<CropOccurDto> warningListInput = new ArrayList<>();
+        List<CropOccurDto> watchListInput = new ArrayList<>();
+        List<CropOccurDto> forecastListInput = new ArrayList<>();
+        for (Object item : warningList) {
+            String key = (String) item;
+            String cropName = key.substring(key.indexOf("-") + 1, key.indexOf(")"));
+            String sickName = key.substring(key.indexOf(")") + 1, key.length());
+            SickList sickList = sickListRepository.findBySickNameKorAndCropName(sickName, cropName);
+            if (sickList == null) {
+                warningListInput.add(CropOccurDto.builder().cropName(cropName).sickNameKor(sickName).sickKey(null).build());
+            } else {
+                warningListInput.add(CropOccurDto.builder().cropName(cropName).sickNameKor(sickName).sickKey(sickList.getSickKey()).build());
+            }
+        }
+
+        for (Object item : watchList) {
+            String key = (String) item;
+            String cropName = key.substring(key.indexOf("-") + 1, key.indexOf(")"));
+            String sickName = key.substring(key.indexOf(")") + 1, key.length());
+            SickList sickList = sickListRepository.findBySickNameKorAndCropName(sickName, cropName);
+            if (sickList == null) {
+                watchListInput.add(CropOccurDto.builder().cropName(cropName).sickNameKor(sickName).sickKey(null).build());
+            } else {
+                watchListInput.add(CropOccurDto.builder().cropName(cropName).sickNameKor(sickName).sickKey(sickList.getSickKey()).build());
+            }
+        }
+
+        for (Object item : forecastList) {
+            String key = (String) item;
+            String cropName = key.substring(key.indexOf("-") + 1, key.indexOf(")"));
+            String sickName = key.substring(key.indexOf(")") + 1, key.length());
+            SickList sickList = sickListRepository.findBySickNameKorAndCropName(sickName, cropName);
+            if (sickList == null) {
+                forecastListInput.add(CropOccurDto.builder().cropName(cropName).sickNameKor(sickName).sickKey(null).build());
+            } else {
+                forecastListInput.add(CropOccurDto.builder().cropName(cropName).sickNameKor(sickName).sickKey(sickList.getSickKey()).build());
+            }
+        }
+
         CropOccurInfoDto cropOccurInfoDto = CropOccurInfoDto.builder()
                 .warningListSize(cropOccurInfo.getWarningListSize())
-                .warningList(warningList)
+                .warningList(warningListInput)
                 .watchListSize(cropOccurInfo.getWatchListSize())
-                .watchList(watchList)
+                .watchList(watchListInput)
                 .forecastListSize(cropOccurInfo.getForecastListSize())
-                .forecastList(forecastList)
+                .forecastList(forecastListInput)
                 .build();
 
         return ServiceResult.success(cropOccurInfoDto);

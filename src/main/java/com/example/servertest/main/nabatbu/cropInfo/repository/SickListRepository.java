@@ -10,4 +10,6 @@ public interface SickListRepository extends JpaRepository<SickList, String> {
 
     List<SickList> findAllByCropNameContainingAndSickNameKorContaining(
         String cropName, String sickName);
+
+    SickList findBySickNameKorAndCropName(String sickNameKor, String cropName);
 }

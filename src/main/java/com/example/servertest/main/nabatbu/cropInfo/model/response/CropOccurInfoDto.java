@@ -2,6 +2,7 @@ package com.example.servertest.main.nabatbu.cropInfo.model.response;
 
 import lombok.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Getter
@@ -13,11 +14,11 @@ import java.util.List;
 public class CropOccurInfoDto {
 
     int warningListSize;
-    List warningList;
+    List<CropOccurDto> warningList;
 
     int watchListSize;
-    List watchList;
+    List<CropOccurDto> watchList;
 
     int forecastListSize;
-    List forecastList;
+    List<CropOccurDto> forecastList;
 }
