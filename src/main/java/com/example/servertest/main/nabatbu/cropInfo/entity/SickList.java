@@ -24,4 +24,7 @@ public class SickList {
 
     @Column
     private String sickNameEng;
+
+    @Column
+    private String thumbImg;
 }

@@ -27,9 +27,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -78,6 +76,8 @@ public class CrawlingService {
                 "&sch2=&sch3=&sSearchOpt=&pageIndex=" + idx +
                 "&sicknsListNo=D00000007";
     }
+
+//    public String getUrl3(String cropName, )
 
     public void updateAllData(String url) {
         Connection conn = Jsoup.connect(url);
@@ -161,41 +161,10 @@ public class CrawlingService {
         List<CropOccurDto> warningListInput = new ArrayList<>();
         List<CropOccurDto> watchListInput = new ArrayList<>();
         List<CropOccurDto> forecastListInput = new ArrayList<>();
-        for (Object item : warningList) {
-            String key = (String) item;
-            String cropName = key.substring(key.indexOf("-") + 1, key.indexOf(")"));
-            String sickName = key.substring(key.indexOf(")") + 1, key.length());
-            SickList sickList = sickListRepository.findBySickNameKorAndCropName(sickName, cropName);
-            if (sickList == null) {
-                warningListInput.add(CropOccurDto.builder().cropName(cropName).sickNameKor(sickName).sickKey(null).build());
-            } else {
-                warningListInput.add(CropOccurDto.builder().cropName(cropName).sickNameKor(sickName).sickKey(sickList.getSickKey()).build());
-            }
-        }
 
-        for (Object item : watchList) {
-            String key = (String) item;
-            String cropName = key.substring(key.indexOf("-") + 1, key.indexOf(")"));
-            String sickName = key.substring(key.indexOf(")") + 1, key.length());
-            SickList sickList = sickListRepository.findBySickNameKorAndCropName(sickName, cropName);
-            if (sickList == null) {
-                watchListInput.add(CropOccurDto.builder().cropName(cropName).sickNameKor(sickName).sickKey(null).build());
-            } else {
-                watchListInput.add(CropOccurDto.builder().cropName(cropName).sickNameKor(sickName).sickKey(sickList.getSickKey()).build());
-            }
-        }
-
-        for (Object item : forecastList) {
-            String key = (String) item;
-            String cropName = key.substring(key.indexOf("-") + 1, key.indexOf(")"));
-            String sickName = key.substring(key.indexOf(")") + 1, key.length());
-            SickList sickList = sickListRepository.findBySickNameKorAndCropName(sickName, cropName);
-            if (sickList == null) {
-                forecastListInput.add(CropOccurDto.builder().cropName(cropName).sickNameKor(sickName).sickKey(null).build());
-            } else {
-                forecastListInput.add(CropOccurDto.builder().cropName(cropName).sickNameKor(sickName).sickKey(sickList.getSickKey()).build());
-            }
-        }
+        extractFor(warningList, warningListInput);
+        extractFor(watchList, watchListInput);
+        extractFor(forecastList, forecastListInput);
 
         CropOccurInfoDto cropOccurInfoDto = CropOccurInfoDto.builder()
                 .warningListSize(cropOccurInfo.getWarningListSize())
@@ -207,6 +176,20 @@ public class CrawlingService {
                 .build();
 
         return ServiceResult.success(cropOccurInfoDto);
+    }
+
+    private void extractFor(List<String> forecastList, List<CropOccurDto> listInput) {
+        for (Object item : forecastList) {
+            String key = (String) item;
+            String cropName = key.substring(key.indexOf("-") + 1, key.indexOf(")"));
+            String sickName = key.substring(key.indexOf(")") + 1, key.length());
+            SickList sickList = sickListRepository.findBySickNameKorAndCropName(sickName, cropName);
+            if (sickList == null) {
+                listInput.add(CropOccurDto.builder().cropName(cropName).sickNameKor(sickName).sickKey(null).build());
+            } else {
+                listInput.add(CropOccurDto.builder().cropName(cropName).sickNameKor(sickName).sickKey(sickList.getSickKey()).build());
+            }
+        }
     }
 
     public void save2(String url) throws IOException, InterruptedException {

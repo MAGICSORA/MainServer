@@ -104,7 +104,7 @@ public class TestService {
 //        Optional<Member> optionalMember = memberRepository.findById(diagnosisDto.getUserId());
 //        Member member = optionalMember.get(); //이미지 경로를 위한 member
 
-        BufferedImage image = fileService.handleFileUpload(file, member.getName(), String.valueOf(imgCode));//이미지 저장
+        BufferedImage image = fileService.handleFileUpload(file, member.getEmail(), String.valueOf(imgCode));//이미지 저장
 
         /*
         RestTemplate restTemplate = new RestTemplate();

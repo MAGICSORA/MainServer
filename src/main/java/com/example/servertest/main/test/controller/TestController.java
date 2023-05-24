@@ -1,6 +1,9 @@
 package com.example.servertest.main.test.controller;
 
 import com.example.servertest.main.nabatbu.cropInfo.entity.DiseaseDetail;
+import com.example.servertest.main.nabatbu.cropInfo.ncpms.component.NcpmsManager;
+import com.example.servertest.main.nabatbu.cropInfo.ncpms.model.response.NcpmsSickService;
+import com.example.servertest.main.nabatbu.cropInfo.ncpms.service.NcpmsService;
 import com.example.servertest.main.nabatbu.cropInfo.service.CrawlingService;
 import com.example.servertest.main.nabatbu.diagnosis.model.request.DiagnosisDto;
 import com.example.servertest.main.nabatbu.diagnosis.repository.DiseaseDetailRepository;
@@ -21,7 +24,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -31,6 +36,9 @@ public class TestController {
 
     private final TestService testService;
     private final CrawlingService crawlingService;
+    private final NcpmsService ncpmsService;
+    private final NcpmsManager ncpmsManager;
+
     private final DiseaseDetailRepository diseaseDetailRepository;
 
     @GetMapping("/save")
@@ -140,6 +148,20 @@ public class TestController {
             url = crawlingService.getUrl2(idx + i);
             crawlingService.save2(url);
         }
+        return null;
+    }
+
+    @GetMapping("/save/codes/3")
+    @Operation(summary = "병해 썸이미지 반환")
+    public ResponseEntity<?> test99(@RequestParam String cropName, @RequestParam String sickNameKor) throws IOException, InterruptedException {
+
+        String url = ncpmsManager.makeNcpmsSickSearchRequestUrl(cropName, sickNameKor, "1", "1");
+
+//        Map<String, NcpmsSickService> result = new HashMap<>();
+        Map<String, NcpmsSickService> result = (Map<String, NcpmsSickService>) ncpmsService.returnResult(url, true).getObject();
+        NcpmsSickService ncpmsSickService = result.get("response");
+        System.out.println(ncpmsSickService.getList().getItem().get(0).getThumbImg());
+
         return null;
     }
 }
