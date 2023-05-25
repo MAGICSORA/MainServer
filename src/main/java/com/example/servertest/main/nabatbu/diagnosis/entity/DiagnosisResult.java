@@ -1,5 +1,6 @@
 package com.example.servertest.main.nabatbu.diagnosis.entity;
 
+import com.example.servertest.main.nabatbu.diagnosis.model.response.DiagnosisResultOutput;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,6 +25,9 @@ public class DiagnosisResult {
 
     @Column
     private int diseaseCode;
+
+    @Column
+    private String sickKey;
 
     @Column
     private double accuracy;

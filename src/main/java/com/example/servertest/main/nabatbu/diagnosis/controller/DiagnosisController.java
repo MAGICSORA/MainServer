@@ -24,12 +24,13 @@ public class DiagnosisController {
 
     @Operation(summary = "진단요청")
     @PostMapping("/diagnosis") //진단 요청
-    public ResponseEntity<?> returnDiagnosis(
-            @RequestPart(value = "requestInput") DiagnosisDto diagnosisDto
+    public ResponseEntity<?> request(@RequestPart(value = "requestInput") DiagnosisDto diagnosisDto
             , @RequestPart(value = "image") MultipartFile file, @RequestHeader("Authorization") String token) throws IOException {
-        ServiceResult result = testService.returnDiagnosisResult(diagnosisDto, file, token);
+
+        ServiceResult result = diagnosisService.request(diagnosisDto, file, token);
 
         return ResponseResult.result(result);
+
     }
 
     @Operation(summary = "사용자 진단 기록 조회")

@@ -8,19 +8,31 @@ import com.example.servertest.main.nabatbu.category.repository.MyCropHistoryRepo
 import com.example.servertest.main.nabatbu.diagnosis.entity.DiagnosisRecord;
 import com.example.servertest.main.nabatbu.diagnosis.entity.DiagnosisResult;
 import com.example.servertest.main.nabatbu.diagnosis.model.request.DiagnosisDto;
+import com.example.servertest.main.nabatbu.diagnosis.model.request.DiagnosisRequest;
 import com.example.servertest.main.nabatbu.diagnosis.model.response.DiagnosisOutput;
 import com.example.servertest.main.nabatbu.diagnosis.model.response.DiagnosisResponse;
+import com.example.servertest.main.nabatbu.diagnosis.model.response.DiagnosisResultOutput;
 import com.example.servertest.main.nabatbu.diagnosis.model.response.ResponseDiagnosisRecord;
 import com.example.servertest.main.nabatbu.diagnosis.repository.DiagnosisRecordRepository;
 import com.example.servertest.main.nabatbu.diagnosis.repository.DiagnosisResultRepository;
 import com.example.servertest.main.nabatbu.member.entity.Member;
 import com.example.servertest.main.nabatbu.member.exception.MemberError;
 import com.example.servertest.main.nabatbu.member.service.MemberService;
+import com.example.servertest.main.test.model.AIResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.image.BufferedImage;
@@ -43,19 +55,22 @@ public class DiagnosisService {
     private final CategoryRepository categoryRepository;
     private final MyCropHistoryRepository myCropHistoryRepository;
 
-    public ServiceResult returnDiagnosisResult(DiagnosisDto diagnosisDto, MultipartFile file, String token) throws IOException {
+    public ServiceResult request(DiagnosisDto diagnosisDto, MultipartFile file, String token) throws IOException {
 
         Member member = new Member();
         try {
             member = memberService.validateMember(token);
         } catch (ExpiredJwtException e) {
             MemberError error = MemberError.EXPIRED_TOKEN;
-            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+//            return ServiceResult.fail(String.valueOf(error), error.getDescription());
 //            e.printStackTrace();
         } catch (Exception e) {
             MemberError error = MemberError.INVALID_TOKEN;
-            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+//            return ServiceResult.fail(String.valueOf(error), error.getDescription());
         }
+
+        RestTemplate restTemplate = new RestTemplate();
+        ObjectMapper mapper = new ObjectMapper();
 
         StringBuilder imgCode = new StringBuilder();
         imgCode.append(member.getId());
@@ -67,20 +82,21 @@ public class DiagnosisService {
         } else {
             cnt = 1L;
         }
+        imgCode.append(cnt);
 
-        imgCode.append(cnt); //저장 이미지 파일 명 설정
+        BufferedImage image = fileService.handleFileUpload(file, member.getEmail(), String.valueOf(imgCode));//이미지 저장
 
-//        Optional<Member> optionalMember = memberRepository.findById(diagnosisDto.getUserId());
-//        Member member = optionalMember.get(); //이미지 경로를 위한 member
+        DiagnosisRequest diagnosisRequest = DiagnosisRequest.builder().cropImageId(String.valueOf(imgCode)).cropType(diagnosisDto.getCropType()).build();
 
-        BufferedImage image = fileService.handleFileUpload(file, member.getName(), String.valueOf(imgCode));//이미지 저장
+        String data = mapper.writeValueAsString(diagnosisRequest);
 
-        //DiagnosisResultFromModel diagnosisResultFromModel = flaskService.request(imageCode, diagnosisDto.getCropType(), image);
-        //진단 요청
+        ResponseEntity<AIResponse> responseEntity = restTemplate.postForEntity("http://3.35.146.68:5000/predict", getRequest(data, file), AIResponse.class);
+        AIResponse aiResponse = responseEntity.getBody();
 
         StringBuilder imagePath = new StringBuilder();
         imagePath.append("http://15.164.23.13:8080/image/");
-        imagePath.append(member.getName());
+//        imagePath.append("http://localhost:8080/image/");
+        imagePath.append(member.getEmail());
         imagePath.append("/");
         imagePath.append(imgCode);
 
@@ -102,47 +118,58 @@ public class DiagnosisService {
                 .build();
 
         diagnosisRecordRepository.save(diagnosisRecord);
+        List<DiagnosisOutput> diagnosisResults = aiResponse.getDiagnoseResults();
+        List<DiagnosisResultOutput> outputList = new ArrayList<>();
 
-        DiagnosisResult diagnosisResult1 = DiagnosisResult.builder()
-                .responseCode(1)
-                .diagnosisRecord(diagnosisRecord)
-                .diseaseCode(0)
-                .accuracy(0.81F)
-                .boxX1(0.5F)
-                .boxX2(0.5F)
-                .boxY1(0.5F)
-                .boxY2(0.5F)
-                .build();
+        for (DiagnosisOutput item : diagnosisResults) {
 
-        DiagnosisResult diagnosisResult2 = DiagnosisResult.builder()
-                .responseCode(1)
-                .diagnosisRecord(diagnosisRecord)
-                .diseaseCode(2)
-                .accuracy(0.86F)
-                .boxX1(0.5F)
-                .boxX2(0.5F)
-                .boxY1(0.5F)
-                .boxY2(0.5F)
-                .build();
+            DiagnosisResultOutput tmp = DiagnosisResultOutput.from(item);
+            outputList.add(tmp);
 
-        DiagnosisResult diagnosisResult3 = DiagnosisResult.builder()
-                .responseCode(1)
-                .diagnosisRecord(diagnosisRecord)
-                .build();
+            DiagnosisResult diagnosisResult = DiagnosisResult.builder()
+                    .responseCode(aiResponse.getResponseCode())
+                    .diagnosisRecord(diagnosisRecord)
+                    .diseaseCode(item.getDiseaseCode())
+                    .accuracy(item.getAccuracy())
+                    .boxX1(item.getBbox().get(0))
+                    .boxY1(item.getBbox().get(1))
+                    .boxX2(item.getBbox().get(2))
+                    .boxY2(item.getBbox().get(3))
+                    .sickKey(tmp.getSickKey())
+                    .build();
+            diagnosisResultRepository.save(diagnosisResult);
+        }
 
         DiagnosisResponse diagnosisResponse = DiagnosisResponse.builder()
+                .diagnosisRecordId(diagnosisRecord.getId())
                 .responseCode(1)
                 .cropType(diagnosisDto.getCropType())
                 .regDate(diagnosisDto.getRegDate())
-                .diagnosisResults(List.of(DiagnosisOutput.to(diagnosisResult1), DiagnosisOutput.to(diagnosisResult2), DiagnosisOutput.to(diagnosisResult3)))
+                .diagnosisResults(outputList)
                 .imagePath(imagePath.toString())
                 .build();
 
-        diagnosisResultRepository.save(diagnosisResult1);
-        diagnosisResultRepository.save(diagnosisResult2);
-        diagnosisResultRepository.save(diagnosisResult3);
-
         return ServiceResult.success(diagnosisResponse);
+    }
+
+    private HttpEntity<MultiValueMap<String, Object>> getRequest(final String data, final MultipartFile file) throws IOException {
+
+        ByteArrayResource fileResource = new ByteArrayResource(file.getBytes()) {
+            // 기존 ByteArrayResource의 getFilename 메서드 override
+            @Override
+            public String getFilename() {
+                return "requestFile.wav";
+            }
+        };
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("data", data);
+        body.add("file", fileResource);
+
+        return new HttpEntity<>(body, headers);
     }
 
     public ServiceResult getDiagnosisRecord(Long diagnosisRecordId, String token) throws JsonProcessingException {
@@ -164,18 +191,19 @@ public class DiagnosisService {
 
         List<DiagnosisResult> diagnosisResults = diagnosisResultRepository.findAllByDiagnosisRecord(diagnosisRecord);
 
-        List<DiagnosisOutput> diagnosisOutputs = new ArrayList<>();
+        List<DiagnosisResultOutput> diagnosisOutputs = new ArrayList<>();
+
         for (DiagnosisResult diagnosisResult : diagnosisResults) {
-            diagnosisOutputs.add(DiagnosisOutput.to(diagnosisResult));
+            diagnosisOutputs.add(DiagnosisResultOutput.builder()
+                    .diseaseCode(diagnosisResult.getDiseaseCode())
+                    .sickKey(diagnosisResult.getSickKey())
+                    .accuracy(diagnosisResult.getAccuracy())
+                    .boxX1(diagnosisResult.getBoxX1())
+                    .boxY1(diagnosisResult.getBoxY1())
+                    .boxX2(diagnosisResult.getBoxX2())
+                    .boxY2(diagnosisResult.getBoxY2())
+                    .build());
         }
-
-//        String diagnosisItems = diagnosisResult.getDiagnosisItems();
-//        diagnosisItems = diagnosisItems.replace("DiagnosisItem", "");
-//        System.out.println(diagnosisItems);
-
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        DiagnosisItemtmp[] items = objectMapper.readValue(diagnosisItems, DiagnosisItemtmp[].class);
-
         ResponseDiagnosisRecord result = ResponseDiagnosisRecord.builder()
                 .userLatitude(diagnosisRecord.getUserLatitude())
                 .userLongitude(diagnosisRecord.getUserLongitude())

@@ -251,7 +251,7 @@ public class TestService {
                     .boxX2(item.getBbox().get(2))
                     .boxY2(item.getBbox().get(3))
                     .build();
-            diagnosisResults.add(DiagnosisOutput.to(diagnosisResult));
+//            diagnosisResults.add(DiagnosisOutput.to(diagnosisResult));
             diagnosisResultRepository.save(diagnosisResult);
         }
 
@@ -341,7 +341,7 @@ public class TestService {
                     .boxX2(item.getBbox().get(2))
                     .boxY2(item.getBbox().get(3))
                     .build();
-            diagnosisResults.add(DiagnosisOutput.to(diagnosisResult));
+//            diagnosisResults.add(DiagnosisOutput.to(diagnosisResult));
             diagnosisResultRepository.save(diagnosisResult);
         }
 

@@ -12,6 +12,4 @@ public class RequestPsisInfo {
 
     private String pestiCode;
     private String diseaseUseSeq;
-    private String displayCount;
-    private String startPoint;
 }

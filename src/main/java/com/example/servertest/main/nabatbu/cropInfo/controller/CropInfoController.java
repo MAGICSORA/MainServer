@@ -40,16 +40,16 @@ public class CropInfoController {
     public ResponseEntity<?> krxParser2(@RequestBody RequestPsisList request, @RequestHeader("Authorization") String token) throws IOException {
         String urlBuilder = psisManager.makePsisListRequestUrl(request.getCropName(), request.getDiseaseWeedName(), request.getDisplayCount(), request.getStartPoint());
 
-        System.out.println(urlBuilder);
+//        System.out.println(urlBuilder);
         return ResponseResult.result(psisService.returnResult(urlBuilder, true, token));
     }
 
     @Operation(summary = "농약 상세정보 조회")
     @GetMapping("/psisDetail") //농약 상세정보 조회
     public ResponseEntity<?> krxParser3(@RequestBody RequestPsisInfo request, @RequestHeader("Authorization") String token) throws IOException {
-        String urlBuilder = psisManager.makePsisInfoRequestUrl(request.getPestiCode(), request.getDiseaseUseSeq(), request.getDisplayCount(), request.getStartPoint());
+        String urlBuilder = psisManager.makePsisInfoRequestUrl(request.getPestiCode(), request.getDiseaseUseSeq());
 
-        System.out.println(urlBuilder);
+//        System.out.println(urlBuilder);
         return ResponseResult.result(psisService.returnResult(urlBuilder, false, token));
     }
 

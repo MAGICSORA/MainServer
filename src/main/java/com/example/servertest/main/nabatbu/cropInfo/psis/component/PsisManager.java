@@ -22,13 +22,11 @@ public class PsisManager {
                 "&startPoint=" + startPoint;
     }
 
-    public String makePsisInfoRequestUrl(String pestiCode, String diseaseCode, String displayCount, String startPoint) {
+    public String makePsisInfoRequestUrl(String pestiCode, String diseaseCode) {
         return BASE_URL + "?" +
                 "apiKey=" + apiKey +
                 "&serviceCode=SVC02&pestiCode=" + pestiCode +
-                "&diseaseUseSeq=" + diseaseCode +
-                "&displayCount=" + displayCount +
-                "&startPoint=" + startPoint;
+                "&diseaseUseSeq=" + diseaseCode;
     }
 
 
