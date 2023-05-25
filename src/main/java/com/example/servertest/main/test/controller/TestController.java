@@ -110,17 +110,6 @@ public class TestController {
         return ResponseEntity.ok(diseaseDetail);
     }
 
-    @PostMapping("/diagnosis/flask")
-    @Operation(summary = "더미데이터로 병해진단 테스트")
-    public ResponseEntity<?> test77(
-            @RequestPart(value = "requestInput") DiagnosisDto diagnosisDto
-            , @RequestPart(value = "image") MultipartFile file, @RequestHeader("Authorization") String token) throws IOException {
-
-        ServiceResult result = testService.returnDiagnosisResult(diagnosisDto, file, token);
-
-        return ResponseResult.result(result);
-    }
-
     @PostMapping("/save/codes/2")
     @Operation(summary = "NCPMS API호출을 위한 sickKey, imagePath 저장")
     public ResponseEntity<?> test99(@RequestParam int idx, @RequestParam int count) throws IOException, InterruptedException {
@@ -132,9 +121,24 @@ public class TestController {
         return null;
     }
 
+    @PostMapping("/diagnosis/flask")
+    @Operation(summary = "더미데이터로 병해진단 테스트")
+    public ResponseEntity<?> test77(
+            @RequestPart(value = "requestInput") DiagnosisDto diagnosisDto
+            , @RequestPart(value = "image") MultipartFile file, @RequestHeader("Authorization") String token) throws IOException {
+
+        ServiceResult result = testService.returnDiagnosisResult(diagnosisDto, file, token);
+
+        return ResponseResult.result(result);
+    }
+
     @PostMapping("/test/flask")
-    public ResponseEntity<String> request(@RequestPart(value = "data") DiagnosisRequest data
-            , @RequestPart(value = "file") MultipartFile file) throws IOException {
-        return testService.request(data, file);
+    public ResponseEntity<?> request(@RequestPart(value = "requestInput") DiagnosisDto diagnosisDto
+            , @RequestPart(value = "image") MultipartFile file, @RequestHeader("Authorization") String token) throws IOException {
+
+        ServiceResult result = testService.request(diagnosisDto, file, token);
+
+        return ResponseResult.result(result);
+
     }
 }

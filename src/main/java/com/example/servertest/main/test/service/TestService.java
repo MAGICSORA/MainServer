@@ -82,6 +82,76 @@ public class TestService {
         testRepository.delete(test);
     }
 
+    public ServiceResult save(String sickKey) throws IOException, InterruptedException {
+
+        System.out.println(sickKey);
+        String urlBuilder = ncpmsManager.makeNcpmsSickDetailSearchRequestUrl(sickKey);
+        URL url = new URL(urlBuilder);
+
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Content-type", "application/json");
+
+        BufferedReader rd;
+        if (conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
+            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        } else {
+            rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+        }
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = rd.readLine()) != null) {
+            sb.append(line);
+        }
+        rd.close();
+        conn.disconnect();
+
+        // String 형식의 xml
+        String xml = sb.toString();
+
+        Map<String, NcpmsSickDetailService> result = new HashMap<>();
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(NcpmsSickDetailService.class); // JAXB Context 생성
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();  // Unmarshaller Object 생성
+            NcpmsSickDetailService apiResponse = (NcpmsSickDetailService) unmarshaller.unmarshal(new StringReader(xml)); // unmarshall 메서드 호출
+            result.put("response", apiResponse);
+            String cropName = apiResponse.getCropName();
+            String sickNameKor = apiResponse.getSickNameKor();
+            String sickNameEng = apiResponse.getSickNameEng();
+            if (cropName == null || sickNameEng == null || sickNameKor == null) {
+                return null;
+            }
+            System.out.println("cropName: " + cropName + "/ sickNameKor: " + sickNameKor);
+            String img = save2(cropName, sickNameKor);
+
+            sickListRepository.save(SickList.builder().sickKey(sickKey).cropName(cropName).sickNameEng(sickNameEng).sickNameKor(sickNameKor).thumbImg(img).build());
+
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String save2(String cropName, String sickNameKor) throws IOException {
+        String url = ncpmsManager.makeNcpmsSickSearchRequestUrl(cropName, sickNameKor, "50", "");
+
+        if (ncpmsService.returnResult(url, true) == null) {
+            return null;
+        }
+        Map<String, NcpmsSickService> result = (Map<String, NcpmsSickService>) ncpmsService.returnResult(url, true).getObject();
+
+        NcpmsSickService ncpmsSickService = result.get("response");
+
+        String out = null;
+        for (NcpmsSickService.ListB.ItemN item : ncpmsSickService.getList().getItem()) {
+            if (item.getCropName().equals(cropName) && item.getSickNameKor().equals(sickNameKor)) {
+                out = item.getThumbImg();
+                break;
+            }
+        }
+        return out;
+    }
+
     public ServiceResult returnDiagnosisResult(DiagnosisDto diagnosisDto, MultipartFile file, String token) throws IOException {
 
         Member member = new Member();
@@ -170,7 +240,7 @@ public class TestService {
         diagnosisRecordRepository.save(diagnosisRecord);
         List<DiagnosisOutput> diagnosisResults = new ArrayList<>();
 
-        for (DiagnosisOutput item : aiResponse.getDiagnosisResults()) {
+        for (DiagnosisOutput item : aiResponse.getDiagnoseResults()) {
             DiagnosisResult diagnosisResult = DiagnosisResult.builder()
                     .responseCode(aiResponse.getResponseCode())
                     .diagnosisRecord(diagnosisRecord)
@@ -185,29 +255,6 @@ public class TestService {
             diagnosisResultRepository.save(diagnosisResult);
         }
 
-//        DiagnosisResult diagnosisResult1 = DiagnosisResult.builder()
-//                .responseCode(1)
-//                .diagnosisRecord(diagnosisRecord)
-//                .diseaseCode(1)
-//                .accuracy(0.89F)
-//                .boxX1(0.01F)
-//                .boxX2(0.01F)
-//                .boxY1(0.02F)
-//                .boxY2(0.02F)
-//                .build();
-//
-//        DiagnosisResult diagnosisResult2 = DiagnosisResult.builder()
-//                .responseCode(1)
-//                .diagnosisRecord(diagnosisRecord)
-//                .diseaseCode(1)
-//                .accuracy(0.89F)
-//                .boxX1(0.01F)
-//                .boxX2(0.01F)
-//                .boxY1(0.02F)
-//                .boxY2(0.02F)
-//                .build();
-//
-//
         DiagnosisResponse diagnosisResponse = DiagnosisResponse.builder()
                 .diagnosisRecordId(diagnosisRecord.getId())
                 .responseCode(1)
@@ -217,89 +264,97 @@ public class TestService {
                 .imagePath(imagePath.toString())
                 .build();
 
-//        diagnosisResultRepository.save(diagnosisResult1);
-//        diagnosisResultRepository.save(diagnosisResult2);
-//        diagnosisResultRepository.save(diagnosisResult3);
-
         return ServiceResult.success(diagnosisResponse);
     }
 
-    public ServiceResult save(String sickKey) throws IOException, InterruptedException {
+    public ServiceResult request(DiagnosisDto diagnosisDto, MultipartFile file, String token) throws IOException {
 
-        System.out.println(sickKey);
-        String urlBuilder = ncpmsManager.makeNcpmsSickDetailSearchRequestUrl(sickKey);
-        URL url = new URL(urlBuilder);
-
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-        conn.setRequestProperty("Content-type", "application/json");
-
-        BufferedReader rd;
-        if (conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
-            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        } else {
-            rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
-        }
-        StringBuilder sb = new StringBuilder();
-        String line;
-        while ((line = rd.readLine()) != null) {
-            sb.append(line);
-        }
-        rd.close();
-        conn.disconnect();
-
-        // String 형식의 xml
-        String xml = sb.toString();
-
-        Map<String, NcpmsSickDetailService> result = new HashMap<>();
+        Member member = new Member();
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(NcpmsSickDetailService.class); // JAXB Context 생성
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();  // Unmarshaller Object 생성
-            NcpmsSickDetailService apiResponse = (NcpmsSickDetailService) unmarshaller.unmarshal(new StringReader(xml)); // unmarshall 메서드 호출
-            result.put("response", apiResponse);
-            String cropName = apiResponse.getCropName();
-            String sickNameKor = apiResponse.getSickNameKor();
-            String sickNameEng = apiResponse.getSickNameEng();
-            if (cropName == null || sickNameEng == null || sickNameKor == null) {
-                return null;
-            }
-            System.out.println("cropName: " + cropName + "/ sickNameKor: " + sickNameKor);
-            String img = save2(cropName, sickNameKor);
-
-            sickListRepository.save(SickList.builder().sickKey(sickKey).cropName(cropName).sickNameEng(sickNameEng).sickNameKor(sickNameKor).thumbImg(img).build());
-
-        } catch (JAXBException e) {
-            e.printStackTrace();
+            member = memberService.validateMember(token);
+        } catch (ExpiredJwtException e) {
+            MemberError error = MemberError.EXPIRED_TOKEN;
+//            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+//            e.printStackTrace();
+        } catch (Exception e) {
+            MemberError error = MemberError.INVALID_TOKEN;
+//            return ServiceResult.fail(String.valueOf(error), error.getDescription());
         }
-        return null;
-    }
-
-    public String save2(String cropName, String sickNameKor) throws IOException {
-        String url = ncpmsManager.makeNcpmsSickSearchRequestUrl(cropName, sickNameKor, "50", "");
-
-        if (ncpmsService.returnResult(url, true) == null) {
-            return null;
-        }
-        Map<String, NcpmsSickService> result = (Map<String, NcpmsSickService>) ncpmsService.returnResult(url, true).getObject();
-
-        NcpmsSickService ncpmsSickService = result.get("response");
-
-        String out = null;
-        for (NcpmsSickService.ListB.ItemN item : ncpmsSickService.getList().getItem()) {
-            if (item.getCropName().equals(cropName) && item.getSickNameKor().equals(sickNameKor)) {
-                out = item.getThumbImg();
-                break;
-            }
-        }
-        return out;
-    }
-
-    public ResponseEntity<String> request(DiagnosisRequest data1, MultipartFile file) throws IOException {
 
         RestTemplate restTemplate = new RestTemplate();
         ObjectMapper mapper = new ObjectMapper();
-        String data = mapper.writeValueAsString(data1);
-        return restTemplate.postForEntity("http://3.35.146.68:5000/predict", getRequest(data, file), String.class);
+
+        StringBuilder imgCode = new StringBuilder();
+        imgCode.append(member.getId());
+        imgCode.append("-");
+
+        Long cnt;
+        if (diagnosisRecordRepository.count() != 0) {
+            cnt = diagnosisRecordRepository.findTopByOrderByIdDesc().getId() + 1;
+        } else {
+            cnt = 1L;
+        }
+        imgCode.append(cnt);
+
+        DiagnosisRequest diagnosisRequest = DiagnosisRequest.builder().cropImageId(String.valueOf(imgCode)).cropType(diagnosisDto.getCropType()).build();
+
+        String data = mapper.writeValueAsString(diagnosisRequest);
+
+        ResponseEntity<AIResponse> responseEntity = restTemplate.postForEntity("http://3.35.146.68:5000/predict", getRequest(data, file), AIResponse.class);
+        AIResponse aiResponse = responseEntity.getBody();
+
+        StringBuilder imagePath = new StringBuilder();
+        imagePath.append("http://15.164.23.13:8080/image/");
+//        imagePath.append("http://localhost:8080/image/");
+        imagePath.append(member.getEmail());
+        imagePath.append("/");
+        imagePath.append(imgCode);
+
+        Category category = categoryRepository.findByNameAndUserId("unclassified", member.getId());
+
+        if (category == null) {
+            Exception e = new Exception("실패");
+            return ServiceResult.fail(e.getMessage(), e.getMessage());
+        }
+
+        DiagnosisRecord diagnosisRecord = DiagnosisRecord.builder()
+                .userId(member.getId())
+                .userLatitude(diagnosisDto.getUserLatitude())
+                .userLongitude(diagnosisDto.getUserLongitude())
+                .regDate(LocalDateTime.now())
+                .cropType(diagnosisDto.getCropType())
+                .imagePath(imagePath.toString())
+                .categoryId(category.getId())
+                .build();
+
+        diagnosisRecordRepository.save(diagnosisRecord);
+        List<DiagnosisOutput> diagnosisResults = new ArrayList<>();
+
+        for (DiagnosisOutput item : aiResponse.getDiagnoseResults()) {
+            DiagnosisResult diagnosisResult = DiagnosisResult.builder()
+                    .responseCode(aiResponse.getResponseCode())
+                    .diagnosisRecord(diagnosisRecord)
+                    .diseaseCode(item.getDiseaseCode())
+                    .accuracy(item.getAccuracy())
+                    .boxX1(item.getBbox().get(0))
+                    .boxY1(item.getBbox().get(1))
+                    .boxX2(item.getBbox().get(2))
+                    .boxY2(item.getBbox().get(3))
+                    .build();
+            diagnosisResults.add(DiagnosisOutput.to(diagnosisResult));
+            diagnosisResultRepository.save(diagnosisResult);
+        }
+
+        DiagnosisResponse diagnosisResponse = DiagnosisResponse.builder()
+                .diagnosisRecordId(diagnosisRecord.getId())
+                .responseCode(1)
+                .cropType(diagnosisDto.getCropType())
+                .regDate(diagnosisDto.getRegDate())
+                .diagnosisResults(diagnosisResults)
+                .imagePath(imagePath.toString())
+                .build();
+
+        return ServiceResult.success(diagnosisResponse);
     }
 
     private HttpEntity<MultiValueMap<String, Object>> getRequest(final String data, final MultipartFile file) throws IOException {
