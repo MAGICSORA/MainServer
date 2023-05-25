@@ -10,11 +10,12 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class DiagnosisOutput {
 
-    private int diseaseCode;
     private double accuracy;
     private List<Double> bbox;
+    private int diseaseCode;
 //    private double boxX2;
 //    private double boxY1;
 //    private double boxY2;

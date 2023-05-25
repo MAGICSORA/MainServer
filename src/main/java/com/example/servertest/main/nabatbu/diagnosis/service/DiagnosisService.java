@@ -57,16 +57,16 @@ public class DiagnosisService {
 
     public ServiceResult request(DiagnosisDto diagnosisDto, MultipartFile file, String token) throws IOException {
 
-        Member member = new Member();
+        Member member;
         try {
             member = memberService.validateMember(token);
         } catch (ExpiredJwtException e) {
             MemberError error = MemberError.EXPIRED_TOKEN;
-//            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
 //            e.printStackTrace();
         } catch (Exception e) {
             MemberError error = MemberError.INVALID_TOKEN;
-//            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
         }
 
         RestTemplate restTemplate = new RestTemplate();
@@ -90,8 +90,13 @@ public class DiagnosisService {
 
         String data = mapper.writeValueAsString(diagnosisRequest);
 
-        ResponseEntity<AIResponse> responseEntity = restTemplate.postForEntity("http://3.35.146.68:5000/predict", getRequest(data, file), AIResponse.class);
-        AIResponse aiResponse = responseEntity.getBody();
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity("http://3.35.146.68:5000/predict", getRequest(data, file), String.class);
+        System.out.println(responseEntity.getBody().toString());
+        System.out.println("test1");
+
+        AIResponse aiResponse = mapper.readValue(responseEntity.getBody(),AIResponse.class);
+        System.out.println("test2");
+        System.out.println(aiResponse);
 
         StringBuilder imagePath = new StringBuilder();
         imagePath.append("http://15.164.23.13:8080/image/");
