@@ -77,8 +77,6 @@ public class CrawlingService {
                 "&sicknsListNo=D00000007";
     }
 
-//    public String getUrl3(String cropName, )
-
     public void updateAllData(String url) {
         Connection conn = Jsoup.connect(url);
 
@@ -215,7 +213,6 @@ public class CrawlingService {
                 sb.append(item.toString());
                 first = sb.indexOf("(");
                 String sickKey = sb.substring(first + 2, first + 11);
-//                testService.save(sb.substring(first + 2, first + 11));
                 SickList sickList = sickListRepository.findBySickKey(sickKey);
                 String cropName = sickList.getCropName();
                 String sickNameKor = sickList.getSickNameKor();

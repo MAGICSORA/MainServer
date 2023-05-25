@@ -235,7 +235,6 @@ public class TestService {
             String cropName = apiResponse.getCropName();
             String sickNameKor = apiResponse.getSickNameKor();
             String sickNameEng = apiResponse.getSickNameEng();
-//                String sickNameEng = apiResponse.getSickNameEng();
             if (cropName == null || sickNameEng == null || sickNameKor == null) {
                 return null;
             }
@@ -247,35 +246,23 @@ public class TestService {
         } catch (JAXBException e) {
             e.printStackTrace();
         }
-
-//    }
-//        return null;
-//}
         return null;
     }
 
     public String save2(String cropName, String sickNameKor) throws IOException {
         String url = ncpmsManager.makeNcpmsSickSearchRequestUrl(cropName, sickNameKor, "50", "");
 
-//        Map<String, NcpmsSickService> result = new HashMap<>();
-//        System.out.println(url);
         if (ncpmsService.returnResult(url, true) == null) {
             return null;
         }
         Map<String, NcpmsSickService> result = (Map<String, NcpmsSickService>) ncpmsService.returnResult(url, true).getObject();
 
         NcpmsSickService ncpmsSickService = result.get("response");
-//        System.out.println(ncpmsSickService);
 
         String out = null;
         for (NcpmsSickService.ListB.ItemN item : ncpmsSickService.getList().getItem()) {
-//            System.out.println(url);
             if (item.getCropName().equals(cropName) && item.getSickNameKor().equals(sickNameKor)) {
-//                System.out.println(item.getThumbImg());
                 out = item.getThumbImg();
-//                SickList sickList = sickListRepository.findBySickNameKorAndCropName(sickNameKor, cropName);
-//                sickList.setThumbImg(out);
-//                sickListRepository.save(sickList);
                 break;
             }
         }

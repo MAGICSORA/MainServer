@@ -27,20 +27,14 @@ public class NcpmsService {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Content-type", "application/json");
-//        conn.addRequestProperty("Content-type", "application/xml");
 
         BufferedReader rd;
-//        System.out.println(conn.getResponseCode());
         if (conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
             rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
         } else {
             return null;
-//            System.out.println("hi");
-//            rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
-//            System.out.println("hi2");
         }
 
-//        rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
         StringBuilder sb = new StringBuilder();
         String line;
         while ((line = rd.readLine()) != null) {

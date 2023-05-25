@@ -32,25 +32,25 @@ public class PsisListService {
         @ToString
         public static class Item {
 
-            private int pestiCode;
-            private int diseaseUseSeq;
-            private String cropName;
-            private String diseaseWeedName;
-            private String useName;
-            private String pestiKorName;
-            private String pestiBrandName;
-            private String compName;
-            private String engName;
-            private String cmpaItmNm;
-            private String indictSymbl;
-            private String applyFirstRegDate;
-            private String cropCd;
-            private String cropLrclCd;
-            private String cropLrclNm;
-            private String pestiUse;
-            private String dilutUnit;
-            private String useSuittime;
-            private String useNum;
+            private int pestiCode; //농약품목코드 상세정보 조회키
+            private int diseaseUseSeq; //병해충사용방법 상세정보 조회키
+            private String cropName; //작물명
+            private String diseaseWeedName; //적용병해충
+            private String useName; //용도
+            private String pestiKorName; //품목
+            private String pestiBrandName; //상표명
+            private String compName; //회사명
+            private String engName; //주성분 함량
+            private String cmpaItmNm; //제조수입구분
+            private String indictSymbl; //작용기작
+            private String applyFirstRegDate; //회사등록일
+            private String cropCd; //작물코드
+            private String cropLrclCd; //작물분류코드
+            private String cropLrclNm; //작물분류명
+            private String pestiUse; //사용방법
+            private String dilutUnit; //희석배수(10a당 사용량)
+            private String useSuittime; //안전사용기준(수확~일전)
+            private String useNum; //안전사용기준(~회 이내)
             private String wafindex;
         }
     }

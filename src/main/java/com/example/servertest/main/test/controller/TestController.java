@@ -1,34 +1,31 @@
 package com.example.servertest.main.test.controller;
 
+import com.example.servertest.main.global.model.ResponseResult;
+import com.example.servertest.main.global.model.ServiceResult;
+import com.example.servertest.main.global.type.CropType;
+import com.example.servertest.main.global.type.DiseaseCode;
 import com.example.servertest.main.nabatbu.cropInfo.entity.DiseaseDetail;
-import com.example.servertest.main.nabatbu.cropInfo.entity.SickList;
 import com.example.servertest.main.nabatbu.cropInfo.ncpms.component.NcpmsManager;
-import com.example.servertest.main.nabatbu.cropInfo.ncpms.model.response.NcpmsSickService;
 import com.example.servertest.main.nabatbu.cropInfo.ncpms.service.NcpmsService;
 import com.example.servertest.main.nabatbu.cropInfo.repository.SickListRepository;
 import com.example.servertest.main.nabatbu.cropInfo.service.CrawlingService;
 import com.example.servertest.main.nabatbu.diagnosis.model.request.DiagnosisDto;
 import com.example.servertest.main.nabatbu.diagnosis.repository.DiseaseDetailRepository;
-import com.example.servertest.main.global.type.CropType;
-import com.example.servertest.main.global.type.DiseaseCode;
-import com.example.servertest.main.global.model.ResponseResult;
-import com.example.servertest.main.global.model.ServiceResult;
 import com.example.servertest.main.test.model.InputDiseaseDetail;
 import com.example.servertest.main.test.service.TestService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.IOUtils;
-import org.springframework.http.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -112,18 +109,6 @@ public class TestController {
         return ResponseEntity.ok(diseaseDetail);
     }
 
-    @GetMapping("/flask")
-    public ResponseEntity<?> test66() {
-        HttpHeaders header = new HttpHeaders();
-        HttpEntity<?> entity = new HttpEntity<>(header);
-
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> responseEntity = restTemplate.exchange("http://15.164.23.13:8080/test/hi"
-                , HttpMethod.GET, entity, String.class);
-
-        return responseEntity;
-    }
-
     @PostMapping("/diagnosis/flask")
     @Operation(summary = "더미데이터로 병해진단 테스트")
     public ResponseEntity<?> test77(
@@ -135,17 +120,9 @@ public class TestController {
         return ResponseResult.result(result);
     }
 
-    @Operation(hidden = true)
-    @PostMapping("/save/codes")
-    public ResponseEntity<?> test88(@RequestParam int start, @RequestParam int count) throws IOException, InterruptedException {
-//        ServiceResult result = testService.save(start, count);
-        return null;
-    }
-
     @PostMapping("/save/codes/2")
-    @Operation(summary = "NCPMS API호출을 위한 sickKey 저장")
+    @Operation(summary = "NCPMS API호출을 위한 sickKey, imagePath 저장")
     public ResponseEntity<?> test99(@RequestParam int idx, @RequestParam int count) throws IOException, InterruptedException {
-//        String url = crawlingService.getUrl2(idx);
         String url;
         for (int i = 0; i < count; i++) {
             url = crawlingService.getUrl2(idx + i);
@@ -153,17 +130,4 @@ public class TestController {
         }
         return null;
     }
-
-    @GetMapping("/save/codes/3")
-    @Operation(summary = "병해 썸이미지 반환")
-    public ResponseEntity<?> test100(@RequestParam int start, @RequestParam int count) throws IOException, InterruptedException {
-
-//        SickList sickList = sickListRepository.findBy
-//        testService.save2(cropName, sickNameKor);
-
-//        return ResponseEntity.ok(out);
-        return null;
-    }
-
-
 }
