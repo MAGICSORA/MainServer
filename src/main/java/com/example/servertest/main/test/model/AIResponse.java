@@ -13,5 +13,6 @@ import java.util.List;
 public class AIResponse {
 
     private int responseCode;
-    private List<DiagnosisOutput> diagnosisResult;
+    private List<DiagnosisOutput> diagnosisResults;
+    private String cropImageId;
 }

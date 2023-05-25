@@ -10,6 +10,7 @@ import com.example.servertest.main.nabatbu.cropInfo.ncpms.service.NcpmsService;
 import com.example.servertest.main.nabatbu.cropInfo.repository.SickListRepository;
 import com.example.servertest.main.nabatbu.cropInfo.service.CrawlingService;
 import com.example.servertest.main.nabatbu.diagnosis.model.request.DiagnosisDto;
+import com.example.servertest.main.nabatbu.diagnosis.model.request.DiagnosisRequest;
 import com.example.servertest.main.nabatbu.diagnosis.repository.DiseaseDetailRepository;
 import com.example.servertest.main.test.model.InputDiseaseDetail;
 import com.example.servertest.main.test.service.TestService;
@@ -129,5 +130,11 @@ public class TestController {
             crawlingService.save2(url);
         }
         return null;
+    }
+
+    @PostMapping("/test/flask")
+    public ResponseEntity<String> request(@RequestPart(value = "data") DiagnosisRequest data
+            , @RequestPart(value = "file") MultipartFile file) throws IOException {
+        return testService.request(data, file);
     }
 }

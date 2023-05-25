@@ -26,17 +26,17 @@ public class DiagnosisResult {
     private int diseaseCode;
 
     @Column
-    private float accuracy;
+    private double accuracy;
 
     @Column
-    private float boxX1;
+    private double boxX1;
 
     @Column
-    private float boxX2;
+    private double boxX2;
 
     @Column
-    private float boxY1;
+    private double boxY1;
 
     @Column
-    private float boxY2;
+    private double boxY2;
 }

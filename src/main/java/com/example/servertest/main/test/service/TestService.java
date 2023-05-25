@@ -12,6 +12,7 @@ import com.example.servertest.main.nabatbu.cropInfo.repository.SickListRepositor
 import com.example.servertest.main.nabatbu.diagnosis.entity.DiagnosisRecord;
 import com.example.servertest.main.nabatbu.diagnosis.entity.DiagnosisResult;
 import com.example.servertest.main.nabatbu.diagnosis.model.request.DiagnosisDto;
+import com.example.servertest.main.nabatbu.diagnosis.model.request.DiagnosisRequest;
 import com.example.servertest.main.nabatbu.diagnosis.model.response.DiagnosisOutput;
 import com.example.servertest.main.nabatbu.diagnosis.model.response.DiagnosisResponse;
 import com.example.servertest.main.nabatbu.diagnosis.repository.DiagnosisRecordRepository;
@@ -21,16 +22,22 @@ import com.example.servertest.main.nabatbu.member.entity.Member;
 import com.example.servertest.main.nabatbu.member.exception.MemberError;
 import com.example.servertest.main.nabatbu.member.service.MemberService;
 import com.example.servertest.main.test.entity.TestEntity;
+import com.example.servertest.main.test.model.AIResponse;
 import com.example.servertest.main.test.repository.TestRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -105,17 +112,20 @@ public class TestService {
 //        Optional<Member> optionalMember = memberRepository.findById(diagnosisDto.getUserId());
 //        Member member = optionalMember.get(); //이미지 경로를 위한 member
 
-        BufferedImage image = fileService.handleFileUpload(file, member.getEmail(), String.valueOf(imgCode));//이미지 저장
+//        BufferedImage image = fileService.handleFileUpload(file, member.getEmail(), String.valueOf(imgCode));//이미지 저장
 
-        /*
+        DiagnosisRequest diagnosisRequest = DiagnosisRequest.builder().cropImageId(String.valueOf(imgCode)).cropType(diagnosisDto.getCropType()).build();
+
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://3.35.146.68:5000/predict";
 
         HttpHeaders header = new HttpHeaders();
+        header.setContentType(MediaType.MULTIPART_FORM_DATA);
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("cropImage", file);
-        body.add("cropType", diagnosisDto.getCropType());
-        body.add("cropImageId", imgCode);
+        ByteArrayResource fileResource = new ByteArrayResource(file.getBytes());
+        body.add("file", fileResource);
+        body.add("data", diagnosisRequest.toString());
+//        body.add("cropImageId", imgCode);
 //        String requestBody = "{}";
 
         HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(body, header);
@@ -132,7 +142,6 @@ public class TestService {
         }
 
         AIResponse aiResponse = responseEntity.getBody();
-        */
 
         StringBuilder imagePath = new StringBuilder();
         imagePath.append("http://15.164.23.13:8080/image/");
@@ -159,41 +168,57 @@ public class TestService {
                 .build();
 
         diagnosisRecordRepository.save(diagnosisRecord);
+        List<DiagnosisOutput> diagnosisResults = new ArrayList<>();
 
-        DiagnosisResult diagnosisResult1 = DiagnosisResult.builder()
-                .responseCode(1)
-                .diagnosisRecord(diagnosisRecord)
-                .diseaseCode(1)
-                .accuracy(0.89F)
-                .boxX1(0.01F)
-                .boxX2(0.01F)
-                .boxY1(0.02F)
-                .boxY2(0.02F)
-                .build();
+        for (DiagnosisOutput item : aiResponse.getDiagnosisResults()) {
+            DiagnosisResult diagnosisResult = DiagnosisResult.builder()
+                    .responseCode(aiResponse.getResponseCode())
+                    .diagnosisRecord(diagnosisRecord)
+                    .diseaseCode(item.getDiseaseCode())
+                    .accuracy(item.getAccuracy())
+                    .boxX1(item.getBbox().get(0))
+                    .boxY1(item.getBbox().get(1))
+                    .boxX2(item.getBbox().get(2))
+                    .boxY2(item.getBbox().get(3))
+                    .build();
+            diagnosisResults.add(DiagnosisOutput.to(diagnosisResult));
+            diagnosisResultRepository.save(diagnosisResult);
+        }
 
-        DiagnosisResult diagnosisResult2 = DiagnosisResult.builder()
-                .responseCode(1)
-                .diagnosisRecord(diagnosisRecord)
-                .diseaseCode(1)
-                .accuracy(0.89F)
-                .boxX1(0.01F)
-                .boxX2(0.01F)
-                .boxY1(0.02F)
-                .boxY2(0.02F)
-                .build();
-
-
+//        DiagnosisResult diagnosisResult1 = DiagnosisResult.builder()
+//                .responseCode(1)
+//                .diagnosisRecord(diagnosisRecord)
+//                .diseaseCode(1)
+//                .accuracy(0.89F)
+//                .boxX1(0.01F)
+//                .boxX2(0.01F)
+//                .boxY1(0.02F)
+//                .boxY2(0.02F)
+//                .build();
+//
+//        DiagnosisResult diagnosisResult2 = DiagnosisResult.builder()
+//                .responseCode(1)
+//                .diagnosisRecord(diagnosisRecord)
+//                .diseaseCode(1)
+//                .accuracy(0.89F)
+//                .boxX1(0.01F)
+//                .boxX2(0.01F)
+//                .boxY1(0.02F)
+//                .boxY2(0.02F)
+//                .build();
+//
+//
         DiagnosisResponse diagnosisResponse = DiagnosisResponse.builder()
                 .diagnosisRecordId(diagnosisRecord.getId())
                 .responseCode(1)
                 .cropType(diagnosisDto.getCropType())
                 .regDate(diagnosisDto.getRegDate())
-                .diagnosisResults(List.of(DiagnosisOutput.to(diagnosisResult1), DiagnosisOutput.to(diagnosisResult2)))
+                .diagnosisResults(diagnosisResults)
                 .imagePath(imagePath.toString())
                 .build();
 
-        diagnosisResultRepository.save(diagnosisResult1);
-        diagnosisResultRepository.save(diagnosisResult2);
+//        diagnosisResultRepository.save(diagnosisResult1);
+//        diagnosisResultRepository.save(diagnosisResult2);
 //        diagnosisResultRepository.save(diagnosisResult3);
 
         return ServiceResult.success(diagnosisResponse);
@@ -267,5 +292,34 @@ public class TestService {
             }
         }
         return out;
+    }
+
+    public ResponseEntity<String> request(DiagnosisRequest data1, MultipartFile file) throws IOException {
+
+        RestTemplate restTemplate = new RestTemplate();
+        ObjectMapper mapper = new ObjectMapper();
+        String data = mapper.writeValueAsString(data1);
+        return restTemplate.postForEntity("http://3.35.146.68:5000/predict", getRequest(data, file), String.class);
+    }
+
+    private HttpEntity<MultiValueMap<String, Object>> getRequest(final String data, final MultipartFile file) throws IOException {
+
+        ByteArrayResource fileResource = new ByteArrayResource(file.getBytes()) {
+            // 기존 ByteArrayResource의 getFilename 메서드 override
+            @Override
+            public String getFilename() {
+                return "requestFile.wav";
+            }
+        };
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("data", data);
+        // body.add("file", file);
+        body.add("file", fileResource);
+
+        return new HttpEntity<>(body, headers);
     }
 }
