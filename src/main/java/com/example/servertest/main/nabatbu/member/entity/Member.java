@@ -35,4 +35,6 @@ Member {
     private LocalDateTime regDt;
     private LocalDateTime updateDt;
 
+    private int authLevel;
+
 }

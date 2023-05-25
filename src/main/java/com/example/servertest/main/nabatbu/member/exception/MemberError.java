@@ -19,7 +19,8 @@ public enum MemberError {
     , EXPIRED_TOKEN("만료된 토큰입니다.")
     , TOKEN_EMPTY("토큰이 없습니다.")
     , MEMBER_EMAIL_INVALID("올바른 형식의 이메일 주소여야 합니다.")
-    , MEMBER_PASSWORD_INVALID("비밀번호는 6자리 이상이여야 합니다.");
+    , MEMBER_PASSWORD_INVALID("비밀번호는 6자리 이상이여야 합니다.")
+    , INVALID_AUTH("잘못된 접근 권한입니다.");
 
     private final String description;
 }

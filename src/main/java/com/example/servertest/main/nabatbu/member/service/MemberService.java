@@ -66,6 +66,7 @@ public class MemberService {
                                 .name(parameter.getName())
                                 .regDt(LocalDateTime.now())
                                 .type(MemberType.ROLE_READWRITE)
+                                .authLevel(1)
                                 .build()))));
     }
 
