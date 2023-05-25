@@ -260,7 +260,7 @@ public class TestService {
                 .responseCode(1)
                 .cropType(diagnosisDto.getCropType())
                 .regDate(diagnosisDto.getRegDate())
-                .diagnosisResults(diagnosisResults)
+//                .diagnosisResults(diagnosisResults)
                 .imagePath(imagePath.toString())
                 .build();
 
@@ -350,7 +350,7 @@ public class TestService {
                 .responseCode(1)
                 .cropType(diagnosisDto.getCropType())
                 .regDate(diagnosisDto.getRegDate())
-                .diagnosisResults(diagnosisResults)
+//                .diagnosisResults(diagnosisResults)
                 .imagePath(imagePath.toString())
                 .build();
 
