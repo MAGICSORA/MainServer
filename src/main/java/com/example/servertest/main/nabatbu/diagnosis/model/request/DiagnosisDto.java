@@ -14,6 +14,6 @@ public class DiagnosisDto {
     // -> token
     private double userLatitude;
     private double userLongitude;
-    private LocalDateTime regDate;
+//    private LocalDateTime regDate;
     private int cropType;
 }

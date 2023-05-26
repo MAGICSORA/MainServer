@@ -52,7 +52,7 @@ public class ReplyController {
     }
 
     @Operation(summary = "사용자 자신의 답변 내역 수정")
-    @DeleteMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<?> updateReply(@RequestHeader("Authorization") String token, @RequestParam Long replyId, @RequestParam String contents) {
 
         ServiceResult result = replyService.update(token, replyId, contents);

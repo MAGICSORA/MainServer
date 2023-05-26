@@ -259,7 +259,7 @@ public class TestService {
                 .diagnosisRecordId(diagnosisRecord.getId())
                 .responseCode(1)
                 .cropType(diagnosisDto.getCropType())
-                .regDate(diagnosisDto.getRegDate())
+                .regDate(LocalDateTime.now())
 //                .diagnosisResults(diagnosisResults)
                 .imagePath(imagePath.toString())
                 .build();
@@ -349,7 +349,7 @@ public class TestService {
                 .diagnosisRecordId(diagnosisRecord.getId())
                 .responseCode(1)
                 .cropType(diagnosisDto.getCropType())
-                .regDate(diagnosisDto.getRegDate())
+//                .regDate(diagnosisDto.getRegDate())
 //                .diagnosisResults(diagnosisResults)
                 .imagePath(imagePath.toString())
                 .build();

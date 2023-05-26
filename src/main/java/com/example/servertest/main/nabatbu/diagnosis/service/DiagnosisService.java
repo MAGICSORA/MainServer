@@ -5,6 +5,8 @@ import com.example.servertest.main.nabatbu.category.entity.Category;
 import com.example.servertest.main.nabatbu.category.entity.MyCropHistory;
 import com.example.servertest.main.nabatbu.category.repository.CategoryRepository;
 import com.example.servertest.main.nabatbu.category.repository.MyCropHistoryRepository;
+import com.example.servertest.main.nabatbu.cropInfo.exception.CropError;
+import com.example.servertest.main.nabatbu.cropInfo.exception.CropException;
 import com.example.servertest.main.nabatbu.diagnosis.entity.DiagnosisRecord;
 import com.example.servertest.main.nabatbu.diagnosis.entity.DiagnosisResult;
 import com.example.servertest.main.nabatbu.diagnosis.model.request.DiagnosisDto;
@@ -21,6 +23,7 @@ import com.example.servertest.main.nabatbu.member.service.MemberService;
 import com.example.servertest.main.test.model.AIResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -94,7 +97,17 @@ public class DiagnosisService {
         System.out.println(responseEntity.getBody().toString());
         System.out.println("test1");
 
-        AIResponse aiResponse = mapper.readValue(responseEntity.getBody(),AIResponse.class);
+//        if (mapper.readValue(responseEntity.getBody(), AIResponse.class).getDiagnoseResults().equals("")) {
+//            CropError error = CropError.NOTHING_DETECTED;
+//            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+//        }
+        AIResponse aiResponse = new AIResponse();
+        try {
+            aiResponse = mapper.readValue(responseEntity.getBody(), AIResponse.class);
+        } catch (UnrecognizedPropertyException e) {
+            CropError error = CropError.NOTHING_DETECTED;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+        }
         System.out.println("test2");
         System.out.println(aiResponse);
 
@@ -149,7 +162,7 @@ public class DiagnosisService {
                 .diagnosisRecordId(diagnosisRecord.getId())
                 .responseCode(1)
                 .cropType(diagnosisDto.getCropType())
-                .regDate(diagnosisDto.getRegDate())
+                .regDate(LocalDateTime.now())
                 .diagnosisResults(outputList)
                 .imagePath(imagePath.toString())
                 .build();

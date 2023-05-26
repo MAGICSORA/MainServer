@@ -3,6 +3,7 @@ package com.example.servertest.main.nabatbu.inquiry.service;
 import com.example.servertest.main.global.model.ServiceResult;
 import com.example.servertest.main.nabatbu.inquiry.entity.Inquiry;
 import com.example.servertest.main.nabatbu.inquiry.entity.Reply;
+import com.example.servertest.main.nabatbu.inquiry.exception.InquiryError;
 import com.example.servertest.main.nabatbu.inquiry.model.request.RequestReply;
 import com.example.servertest.main.nabatbu.inquiry.model.response.ReplyListResponse;
 import com.example.servertest.main.nabatbu.inquiry.repository.InquiryRepository;
@@ -43,6 +44,12 @@ public class ReplyService {
 
         if (member.getAuthLevel() != 2) {
             MemberError error = MemberError.INVALID_AUTH;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+        }
+
+        Optional<Inquiry> optionalInquiry = inquiryRepository.findById(requestReply.getInquiryId());
+        if (optionalInquiry.isEmpty()) {
+            InquiryError error = InquiryError.INQUIRY_NOT_FOUND;
             return ServiceResult.fail(String.valueOf(error), error.getDescription());
         }
 
