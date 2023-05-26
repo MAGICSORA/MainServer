@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Pageable;
 import java.io.IOException;
 
 @RestController
@@ -103,9 +104,9 @@ public class CropInfoController {
 
     @Operation(summary = "병 리스트 검색")
     @GetMapping("/sickList") //병 리스트 검색
-    public ResponseEntity<?> searchSickList(@RequestHeader("Authorization") String token, @RequestParam String cropName, @RequestParam String sickNameKor) {
+    public ResponseEntity<?> searchSickList(@RequestHeader("Authorization") String token, @RequestParam String cropName, @RequestParam String sickNameKor, @RequestParam int displayCount, @RequestParam int startPoint) {
 
-        ServiceResult result = cropInfoService.sickList(token, cropName, sickNameKor);
+        ServiceResult result = cropInfoService.sickList(token, cropName, sickNameKor, displayCount, startPoint);
         return ResponseResult.result(result);
     }
 
