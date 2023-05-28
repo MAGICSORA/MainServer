@@ -39,6 +39,7 @@ public class MapService {
     private final MyCropHistoryRepository myCropHistoryRepository;
 
     public ServiceResult getNearDiseases(MapRequest mapRequest, String token) {
+//        System.out.println(mapRequest);
 
         Member member = new Member();
         try {
@@ -46,45 +47,50 @@ public class MapService {
         } catch (ExpiredJwtException e) {
             MemberError error = MemberError.EXPIRED_TOKEN;
             return ServiceResult.fail(String.valueOf(error), error.getDescription());
-//            e.printStackTrace();
         } catch (Exception e) {
             MemberError error = MemberError.INVALID_TOKEN;
             return ServiceResult.fail(String.valueOf(error), error.getDescription());
         }
 
-        /*
-        0.1099585
-        0.08874
-        */
         double latitude = mapRequest.getLatitude();
         double longitude = mapRequest.getLongitude();
 
-        List<DiagnosisRecord> diagnosisRecordList1 = diagnosisRecordRepository.findAllByUserLatitudeBetween(latitude - 0.1099585F, latitude + 0.1099585F);
-        List<DiagnosisRecord> diagnosisRecordList2 = diagnosisRecordRepository.findAllByUserLongitudeBetween(longitude - 0.08874F, longitude + 0.08874F);
+        List<DiagnosisRecord> diagnosisRecordList1 = diagnosisRecordRepository.findAllByUserLatitudeBetween(latitude - 0.1099585, latitude + 0.1099585);
+        List<DiagnosisRecord> diagnosisRecordList2 = diagnosisRecordRepository.findAllByUserLongitudeBetween(longitude - 0.08874, longitude + 0.08874);
         diagnosisRecordList1.addAll(diagnosisRecordList2);
 
         Set<DiagnosisRecord> diagnosisRecordSet = new HashSet<>(diagnosisRecordList1);
+
+//        System.out.println(diagnosisRecordSet.size());
+//        System.out.println(mapRequest.getDate());
 
         List<DiagnosisResult> diagnosisResultList = new ArrayList<>();
 
         for (DiagnosisRecord item : diagnosisRecordSet) {
             if (item.getRegDate().isBefore(mapRequest.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime())) {
+//                System.out.println(item.getId());
                 continue;
             }
+//            System.out.println(item.getCropType());
             List<DiagnosisResult> diagnosisResults = diagnosisResultRepository.findAllByDiagnosisRecord(item);
+//            System.out.println(diagnosisResults.size());
 
             if (item.getCropType() == 0){
-                if(!mapRequest.getMapSheepCropList().get(0).isOn()){
+                if(!mapRequest.getMapSheepCropList().get(0).getIsOn()){
+//                    System.out.println(mapRequest.getMapSheepCropList().get(0).getIsOn());
+//                    System.out.println("isOff");
                     continue;
                 }else {
                     for (DiagnosisResult result : diagnosisResults) {
                         if (result.getAccuracy() >= mapRequest.getMapSheepCropList().get(0).getAccuracy()) {
+//                            System.out.println(result);
                             diagnosisResultList.add(result);
                         }
+//                        System.out.println("lower accuracy");
                     }
                 }
             } else if (item.getCropType() == 1){
-                if(!mapRequest.getMapSheepCropList().get(1).isOn()){
+                if(!mapRequest.getMapSheepCropList().get(1).getIsOn()){
                     continue;
                 }else {
                     for (DiagnosisResult result : diagnosisResults) {
@@ -94,7 +100,7 @@ public class MapService {
                     }
                 }
             } else if (item.getCropType() == 2){
-                if(!mapRequest.getMapSheepCropList().get(2).isOn()){
+                if(!mapRequest.getMapSheepCropList().get(2).getIsOn()){
                     continue;
                 }else {
                     for (DiagnosisResult result : diagnosisResults) {
@@ -104,7 +110,7 @@ public class MapService {
                     }
                 }
             } else if (item.getCropType() == 3){
-                if(!mapRequest.getMapSheepCropList().get(3).isOn()){
+                if(!mapRequest.getMapSheepCropList().get(3).getIsOn()){
                     continue;
                 }else {
                     for (DiagnosisResult result : diagnosisResults) {

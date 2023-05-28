@@ -7,9 +7,10 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class MapSheepCrop {
 
     int cropType;
     float accuracy;
-    boolean isOn;
+    Boolean isOn;
 }
