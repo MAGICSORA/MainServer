@@ -122,11 +122,6 @@ public class MapService {
             }
         }
 
-//        for (DiagnosisRecord item : diagnosisRecordSet) {
-//            if (StaticMethod.distance(item.getUserLatitude(), item.getUserLongitude(), latitude, longitude) > 1000) {
-//                diagnosisRecordSet.remove(item);
-//            }
-//        }
         return ServiceResult.success(diagnosisResultList);
     }
 }

@@ -162,6 +162,7 @@ public class DiagnosisService {
                 .diagnosisRecordId(diagnosisRecord.getId())
                 .responseCode(1)
                 .cropType(diagnosisDto.getCropType())
+                .categoryId(diagnosisRecord.getCategoryId())
                 .regDate(LocalDateTime.now())
                 .diagnosisResults(outputList)
                 .imagePath(imagePath.toString())
@@ -230,6 +231,7 @@ public class DiagnosisService {
                 .userId((int) diagnosisRecord.getUserId())
                 .imagePath(diagnosisRecord.getImagePath())
                 .cropType(diagnosisRecord.getCropType())
+                .categoryId(diagnosisRecord.getCategoryId())
                 .build();
 
         return ServiceResult.success(result);
