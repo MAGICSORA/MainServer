@@ -16,7 +16,7 @@ public class MapController {
     private final MapService mapService;
 
     @Operation(summary = "반경 2km 병해 진단 기록 조회 -> 구현중")
-    @GetMapping("/nearDisease") //반경 2km
+    @PostMapping("/nearDisease") //반경 2km
     public ResponseEntity getNearDiseases(@RequestBody MapRequest mapRequest, @RequestHeader("Authorization") String token) {
         return ResponseResult.result(mapService.getNearDiseases(mapRequest, token));
     }
