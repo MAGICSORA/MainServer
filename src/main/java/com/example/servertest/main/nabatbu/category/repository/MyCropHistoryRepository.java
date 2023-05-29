@@ -10,5 +10,6 @@ import java.util.List;
 @Repository
 public interface MyCropHistoryRepository extends JpaRepository<MyCropHistory, Long> {
 
+    List<MyCropHistory> findAllByDiagnosisRecordOrderByUpdateDtDesc(DiagnosisRecord diagnosisRecord);
     List<MyCropHistory> findAllByDiagnosisRecord(DiagnosisRecord diagnosisRecord);
 }

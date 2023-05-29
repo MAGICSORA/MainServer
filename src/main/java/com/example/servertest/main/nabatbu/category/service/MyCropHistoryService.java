@@ -70,7 +70,7 @@ public class MyCropHistoryService {
         Optional<DiagnosisRecord> optionalDiagnosisRecord = diagnosisRecordRepository.findById(diagnosisRecordId);
         DiagnosisRecord diagnosisRecord = optionalDiagnosisRecord.get();
 
-        List<MyCropHistory> myCropHistoryList = myCropHistoryRepository.findAllByDiagnosisRecord(diagnosisRecord);
+        List<MyCropHistory> myCropHistoryList = myCropHistoryRepository.findAllByDiagnosisRecordOrderByUpdateDtDesc(diagnosisRecord);
 
         return ServiceResult.success(myCropHistoryList);
     }
