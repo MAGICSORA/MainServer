@@ -267,4 +267,54 @@ public class DiagnosisService {
 
         return ServiceResult.success("성공");
     }
+
+    public ServiceResult getDiagnosisRecordList(String token) {
+
+        Member member = new Member();
+        try {
+            member = memberService.validateMember(token);
+        } catch (ExpiredJwtException e) {
+            MemberError error = MemberError.EXPIRED_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+//            e.printStackTrace();
+        } catch (Exception e) {
+            MemberError error = MemberError.INVALID_TOKEN;
+            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+        }
+
+        List<DiagnosisRecord> diagnosisRecordList = diagnosisRecordRepository.findAllByUserIdOrderByRegDateDesc(member.getId());
+//        DiagnosisRecord diagnosisRecord = optionalDiagnosisRecord.get();
+
+        List<ResponseDiagnosisRecord> responseDiagnosisRecords = new ArrayList<>();
+        for (DiagnosisRecord diagnosisRecord : diagnosisRecordList) {
+            List<DiagnosisResult> diagnosisResults = diagnosisResultRepository.findAllByDiagnosisRecord(diagnosisRecord);
+
+            List<DiagnosisResultOutput> diagnosisOutputs = new ArrayList<>();
+
+            for (DiagnosisResult diagnosisResult : diagnosisResults) {
+                diagnosisOutputs.add(DiagnosisResultOutput.builder()
+                        .diseaseCode(diagnosisResult.getDiseaseCode())
+                        .sickKey(diagnosisResult.getSickKey())
+                        .accuracy(diagnosisResult.getAccuracy())
+                        .boxX1(diagnosisResult.getBoxX1())
+                        .boxY1(diagnosisResult.getBoxY1())
+                        .boxX2(diagnosisResult.getBoxX2())
+                        .boxY2(diagnosisResult.getBoxY2())
+                        .build());
+            }
+            ResponseDiagnosisRecord result = ResponseDiagnosisRecord.builder()
+                    .userLatitude(diagnosisRecord.getUserLatitude())
+                    .userLongitude(diagnosisRecord.getUserLongitude())
+                    .regDate(diagnosisRecord.getRegDate())
+                    .diagnosisResults(diagnosisOutputs)
+                    .userId((int) diagnosisRecord.getUserId())
+                    .imagePath(diagnosisRecord.getImagePath())
+                    .cropType(diagnosisRecord.getCropType())
+                    .categoryId(diagnosisRecord.getCategoryId())
+                    .build();
+            responseDiagnosisRecords.add(result);
+        }
+
+        return ServiceResult.success(responseDiagnosisRecords);
+    }
 }

@@ -18,4 +18,6 @@ public interface DiagnosisRecordRepository extends JpaRepository<DiagnosisRecord
     List<DiagnosisRecord> findAllByCategoryIdOrderByRegDateDesc(Long categoryId);
 
     int countDiagnosisRecordByCategoryId(Long categoryId);
+
+    List<DiagnosisRecord> findAllByUserIdOrderByRegDateDesc(Long userId);
 }

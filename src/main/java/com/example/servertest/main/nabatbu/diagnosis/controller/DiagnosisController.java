@@ -33,6 +33,13 @@ public class DiagnosisController {
 
     }
 
+    @Operation(summary = "사용자 진단 기록 리스트 조회")
+    @GetMapping("/list/diagnosisRecord") //사용자 진단 기록 조회
+    public ResponseEntity<?> diagnosisRecordList(@RequestHeader("Authorization") String token) {
+
+        return ResponseResult.result(diagnosisService.getDiagnosisRecordList(token));
+    }
+
     @Operation(summary = "사용자 진단 기록 조회")
     @GetMapping("/diagnosisRecord") //사용자 진단 기록 조회
     public ResponseEntity<?> diagnosisRecord(@RequestParam Long diagnosisRecordId, @RequestHeader("Authorization") String token) throws JsonProcessingException {
