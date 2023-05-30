@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 public class InquiryListResponse {
 
-    private List<Inquiry> inquiryList;
+    private List<InquiryList> inquiryList;
     private int cnt;
 
 //    public static InquiryListResponse from(Inquiry item) {

@@ -5,6 +5,7 @@ import com.example.servertest.main.nabatbu.inquiry.entity.Inquiry;
 import com.example.servertest.main.nabatbu.inquiry.entity.Reply;
 import com.example.servertest.main.nabatbu.inquiry.model.request.RequestInquiry;
 import com.example.servertest.main.nabatbu.inquiry.model.response.InquiryDetailResponse;
+import com.example.servertest.main.nabatbu.inquiry.model.response.InquiryList;
 import com.example.servertest.main.nabatbu.inquiry.model.response.InquiryListResponse;
 import com.example.servertest.main.nabatbu.inquiry.repository.InquiryRepository;
 import com.example.servertest.main.nabatbu.inquiry.repository.ReplyRepository;
@@ -69,13 +70,29 @@ public class InquiryService {
         }
 
         List<Inquiry> inquiryList = inquiryRepository.findAllByUserIdOrderByRegDateDesc(member.getId());
-        InquiryListResponse inquiryListResponse = InquiryListResponse.builder()
-                .inquiryList(inquiryList)
-                .cnt(inquiryList.size())
-                .build();
+
+        List<InquiryDetailResponse> inquiryDetailResponseList = new ArrayList<>();
+        for (Inquiry inquiry : inquiryList) {
+            Optional<Reply> reply = Optional.ofNullable(replyRepository.findByInquiryId(inquiry.getId()));
+            Long replyId = -1L;
+            if (reply.isPresent()) {
+                replyId = reply.get().getId();
+            }
+            InquiryDetailResponse inquiryDetailResponse = InquiryDetailResponse.builder()
+                    .id(inquiry.getId())
+                    .userId(inquiry.getUserId())
+                    .diagnosisRecordId(inquiry.getDiagnosisRecordId())
+                    .title(inquiry.getTitle())
+                    .contents(inquiry.getContents())
+                    .regDate(inquiry.getRegDate())
+                    .replyId(replyId)
+                    .build();
+            inquiryDetailResponseList.add(inquiryDetailResponse);
+        }
+
 //        List<InquiryListResponse> inquiryListResponseList = new ArrayList<>();
 
-        return ServiceResult.success(inquiryListResponse);
+        return ServiceResult.success(inquiryDetailResponseList);
     }
 
     public ServiceResult getInquiryDetail(String token, Long inquiryId) {
