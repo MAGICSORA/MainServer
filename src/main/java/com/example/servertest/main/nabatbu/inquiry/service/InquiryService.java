@@ -3,6 +3,7 @@ package com.example.servertest.main.nabatbu.inquiry.service;
 import com.example.servertest.main.global.model.ServiceResult;
 import com.example.servertest.main.nabatbu.inquiry.entity.Inquiry;
 import com.example.servertest.main.nabatbu.inquiry.model.request.RequestInquiry;
+import com.example.servertest.main.nabatbu.inquiry.model.response.InquiryDetailResponse;
 import com.example.servertest.main.nabatbu.inquiry.model.response.InquiryListResponse;
 import com.example.servertest.main.nabatbu.inquiry.repository.InquiryRepository;
 import com.example.servertest.main.nabatbu.inquiry.repository.ReplyRepository;
@@ -26,6 +27,7 @@ public class InquiryService {
 
     private final InquiryRepository inquiryRepository;
     private final ReplyRepository replyRepository;
+
     public ServiceResult register(String token, RequestInquiry requestInquiry) {
 
         Member member;
@@ -92,7 +94,18 @@ public class InquiryService {
         Optional<Inquiry> optionalInquiry = inquiryRepository.findById(inquiryId);
         Inquiry inquiry = optionalInquiry.get();
 
-        return ServiceResult.success(inquiry);
+        Long replyId = replyRepository.findByInquiryId(inquiry.getId()).getId();
+        InquiryDetailResponse inquiryDetailResponse = InquiryDetailResponse.builder()
+                .id(inquiry.getId())
+                .userId(inquiry.getUserId())
+                .diagnosisRecordId(inquiry.getDiagnosisRecordId())
+                .title(inquiry.getTitle())
+                .contents(inquiry.getContents())
+                .regDate(inquiry.getRegDate())
+                .replyId(replyId)
+                .build();
+
+        return ServiceResult.success(inquiryDetailResponse);
     }
 
     public ServiceResult deleteInquiry(String token, Long inquiryId) {
