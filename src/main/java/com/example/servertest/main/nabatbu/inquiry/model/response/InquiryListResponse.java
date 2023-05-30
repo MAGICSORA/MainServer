@@ -15,6 +15,7 @@ public class InquiryListResponse {
     private long inquiryId;
     private String title;
     private LocalDateTime regDate;
+    private int cnt;
 
     public static InquiryListResponse from(Inquiry item) {
         return InquiryListResponse.builder()

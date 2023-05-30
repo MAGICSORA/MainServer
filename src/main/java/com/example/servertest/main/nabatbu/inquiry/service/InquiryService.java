@@ -5,6 +5,7 @@ import com.example.servertest.main.nabatbu.inquiry.entity.Inquiry;
 import com.example.servertest.main.nabatbu.inquiry.model.request.RequestInquiry;
 import com.example.servertest.main.nabatbu.inquiry.model.response.InquiryListResponse;
 import com.example.servertest.main.nabatbu.inquiry.repository.InquiryRepository;
+import com.example.servertest.main.nabatbu.inquiry.repository.ReplyRepository;
 import com.example.servertest.main.nabatbu.member.entity.Member;
 import com.example.servertest.main.nabatbu.member.exception.MemberError;
 import com.example.servertest.main.nabatbu.member.service.MemberService;
@@ -24,6 +25,7 @@ public class InquiryService {
     private final MemberService memberService;
 
     private final InquiryRepository inquiryRepository;
+    private final ReplyRepository replyRepository;
     public ServiceResult register(String token, RequestInquiry requestInquiry) {
 
         Member member;
@@ -66,6 +68,8 @@ public class InquiryService {
         List<Inquiry> inquiryList = inquiryRepository.findAllByUserId(member.getId());
         List<InquiryListResponse> inquiryListResponseList = new ArrayList<>();
         for (Inquiry inquiry : inquiryList) {
+            InquiryListResponse inquiryListResponse = InquiryListResponse.from(inquiry);
+            inquiryListResponse.setCnt(replyRepository.countByInquiryId(inquiryListResponse.getInquiryId()));
             inquiryListResponseList.add(InquiryListResponse.from(inquiry));
         }
 

@@ -1,6 +1,5 @@
 package com.example.servertest.main.nabatbu.diagnosis.entity;
 
-import com.example.servertest.main.nabatbu.diagnosis.model.response.DiagnosisResultOutput;
 import jakarta.persistence.*;
 import lombok.*;
 

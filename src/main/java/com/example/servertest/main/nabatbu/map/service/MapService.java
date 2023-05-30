@@ -51,7 +51,7 @@ public class MapService {
         double latitude = mapRequest.getLatitude();
         double longitude = mapRequest.getLongitude();
 
-        List<DiagnosisRecord> diagnosisRecordList1 = diagnosisRecordRepository.findAllByUserLatitudeBetween(latitude - 0.1099585, latitude + 0.1099585);
+        List<DiagnosisRecord> diagnosisRecordList1 = diagnosisRecordRepository.findAllByUserLatitudeBetween(latitude - 0.0199585, latitude + 0.0199585);
         List<DiagnosisRecord> diagnosisRecordList2 = diagnosisRecordRepository.findAllByUserLongitudeBetween(longitude - 0.08874, longitude + 0.08874);
         diagnosisRecordList1.addAll(diagnosisRecordList2);
 

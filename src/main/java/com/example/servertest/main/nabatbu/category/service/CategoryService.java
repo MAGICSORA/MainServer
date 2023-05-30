@@ -36,7 +36,6 @@ public class CategoryService {
         } catch (ExpiredJwtException e) {
             MemberError error = MemberError.EXPIRED_TOKEN;
             return ServiceResult.fail(String.valueOf(error), error.getDescription());
-//            e.printStackTrace();
         } catch (Exception e) {
             MemberError error = MemberError.INVALID_TOKEN;
             return ServiceResult.fail(String.valueOf(error), error.getDescription());
@@ -73,7 +72,6 @@ public class CategoryService {
         } catch (ExpiredJwtException e) {
             MemberError error = MemberError.EXPIRED_TOKEN;
             return ServiceResult.fail(String.valueOf(error), error.getDescription());
-//            e.printStackTrace();
         } catch (Exception e) {
             MemberError error = MemberError.INVALID_TOKEN;
             return ServiceResult.fail(String.valueOf(error), error.getDescription());
@@ -98,7 +96,6 @@ public class CategoryService {
         } catch (ExpiredJwtException e) {
             MemberError error = MemberError.EXPIRED_TOKEN;
             return ServiceResult.fail(String.valueOf(error), error.getDescription());
-//            e.printStackTrace();
         } catch (Exception e) {
             MemberError error = MemberError.INVALID_TOKEN;
             return ServiceResult.fail(String.valueOf(error), error.getDescription());
@@ -123,7 +120,6 @@ public class CategoryService {
         } catch (ExpiredJwtException e) {
             MemberError error = MemberError.EXPIRED_TOKEN;
             return ServiceResult.fail(String.valueOf(error), error.getDescription());
-//            e.printStackTrace();
         } catch (Exception e) {
             MemberError error = MemberError.INVALID_TOKEN;
             return ServiceResult.fail(String.valueOf(error), error.getDescription());
@@ -140,7 +136,6 @@ public class CategoryService {
         }
 
         if(!category.getName().equals(changeName)) {
-            //바꾸려는 카테고리 설정
             Category category2 = categoryRepository.findByNameAndUserId(changeName, member.getId());
             if (category2 != null) {
                 CategoryException e = new CategoryException(CategoryError.CATEGORY_ALREADY_EXIST);
@@ -170,7 +165,6 @@ public class CategoryService {
         } catch (ExpiredJwtException e) {
             MemberError error = MemberError.EXPIRED_TOKEN;
             return ServiceResult.fail(String.valueOf(error), error.getDescription());
-//            e.printStackTrace();
         } catch (Exception e) {
             MemberError error = MemberError.INVALID_TOKEN;
             return ServiceResult.fail(String.valueOf(error), error.getDescription());
@@ -183,7 +177,6 @@ public class CategoryService {
                 diagnosisRecordRepository.save(item);
             }
         }
-
         Category category = categoryRepository.findByIdAndUserId(categoryId, member.getId());
         categoryRepository.delete(category);
 
@@ -195,7 +188,6 @@ public class CategoryService {
         if (memberService.checkToken(token).isFail()) {
             return memberService.checkToken(token);
         }
-
         Optional<DiagnosisRecord> optionalDiagnosisRecord = diagnosisRecordRepository.findById(recordId);
         DiagnosisRecord diagnosisRecord = optionalDiagnosisRecord.get();
         diagnosisRecord.setCategoryId(categoryId);
@@ -209,8 +201,8 @@ public class CategoryService {
         if (memberService.checkToken(token).isFail()) {
             return memberService.checkToken(token);
         }
-
         List<DiagnosisRecord> diagnosisRecordList = diagnosisRecordRepository.findAllByCategoryIdOrderByRegDateDesc(categoryId);
+
 
         return ServiceResult.success(diagnosisRecordList);
     }
