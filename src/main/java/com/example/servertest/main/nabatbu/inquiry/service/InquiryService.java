@@ -68,15 +68,14 @@ public class InquiryService {
             return ServiceResult.fail(String.valueOf(error), error.getDescription());
         }
 
-        List<Inquiry> inquiryList = inquiryRepository.findAllByUserId(member.getId());
-        List<InquiryListResponse> inquiryListResponseList = new ArrayList<>();
-        for (Inquiry inquiry : inquiryList) {
-            InquiryListResponse inquiryListResponse = InquiryListResponse.from(inquiry);
-            inquiryListResponse.setCnt(replyRepository.countByInquiryId(inquiryListResponse.getInquiryId()));
-            inquiryListResponseList.add(InquiryListResponse.from(inquiry));
-        }
+        List<Inquiry> inquiryList = inquiryRepository.findAllByUserIdOrderByRegDateDesc(member.getId());
+        InquiryListResponse inquiryListResponse = InquiryListResponse.builder()
+                .inquiryList(inquiryList)
+                .cnt(inquiryList.size())
+                .build();
+//        List<InquiryListResponse> inquiryListResponseList = new ArrayList<>();
 
-        return ServiceResult.success(inquiryListResponseList);
+        return ServiceResult.success(inquiryListResponse);
     }
 
     public ServiceResult getInquiryDetail(String token, Long inquiryId) {

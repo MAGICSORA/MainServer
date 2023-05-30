@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
 
-    List<Inquiry> findAllByUserId(Long userId);
+    List<Inquiry> findAllByUserIdOrderByRegDateDesc(Long userId);
 }

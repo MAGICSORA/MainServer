@@ -6,22 +6,21 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
 @Builder
 public class InquiryListResponse {
 
-    private long inquiryId;
-    private String title;
-    private LocalDateTime regDate;
+    private List<Inquiry> inquiryList;
     private int cnt;
 
-    public static InquiryListResponse from(Inquiry item) {
-        return InquiryListResponse.builder()
-                .inquiryId(item.getId())
-                .title(item.getTitle())
-                .regDate(item.getRegDate())
-                .build();
-    }
+//    public static InquiryListResponse from(Inquiry item) {
+//        return InquiryListResponse.builder()
+//                .inquiryId(item.getId())
+//                .title(item.getTitle())
+//                .regDate(item.getRegDate())
+//                .build();
+//    }
 }
