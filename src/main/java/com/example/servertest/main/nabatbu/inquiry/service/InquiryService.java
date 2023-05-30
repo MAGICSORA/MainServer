@@ -2,6 +2,7 @@ package com.example.servertest.main.nabatbu.inquiry.service;
 
 import com.example.servertest.main.global.model.ServiceResult;
 import com.example.servertest.main.nabatbu.inquiry.entity.Inquiry;
+import com.example.servertest.main.nabatbu.inquiry.entity.Reply;
 import com.example.servertest.main.nabatbu.inquiry.model.request.RequestInquiry;
 import com.example.servertest.main.nabatbu.inquiry.model.response.InquiryDetailResponse;
 import com.example.servertest.main.nabatbu.inquiry.model.response.InquiryListResponse;
@@ -94,7 +95,11 @@ public class InquiryService {
         Optional<Inquiry> optionalInquiry = inquiryRepository.findById(inquiryId);
         Inquiry inquiry = optionalInquiry.get();
 
-        Long replyId = replyRepository.findByInquiryId(inquiry.getId()).getId();
+        Reply reply = replyRepository.findByInquiryId(inquiry.getId());
+        Long replyId = null;
+        if(reply!=null){
+            replyId = reply.getId();
+        }
         InquiryDetailResponse inquiryDetailResponse = InquiryDetailResponse.builder()
                 .id(inquiry.getId())
                 .userId(inquiry.getUserId())
