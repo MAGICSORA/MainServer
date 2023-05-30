@@ -95,10 +95,10 @@ public class InquiryService {
         Optional<Inquiry> optionalInquiry = inquiryRepository.findById(inquiryId);
         Inquiry inquiry = optionalInquiry.get();
 
-        Reply reply = replyRepository.findByInquiryId(inquiry.getId());
-        Long replyId = null;
-        if(reply!=null){
-            replyId = reply.getId();
+        Optional<Reply> reply = Optional.ofNullable(replyRepository.findByInquiryId(inquiry.getId()));
+        Long replyId = -1L;
+        if (reply.isPresent()) {
+            replyId = reply.get().getId();
         }
         InquiryDetailResponse inquiryDetailResponse = InquiryDetailResponse.builder()
                 .id(inquiry.getId())
