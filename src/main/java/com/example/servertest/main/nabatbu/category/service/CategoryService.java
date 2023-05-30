@@ -1,13 +1,16 @@
 package com.example.servertest.main.nabatbu.category.service;
 
 import com.example.servertest.main.nabatbu.category.entity.Category;
+import com.example.servertest.main.nabatbu.category.model.DiagnosisOfCategoryResponse;
 import com.example.servertest.main.nabatbu.diagnosis.entity.DiagnosisRecord;
 import com.example.servertest.main.nabatbu.category.exception.CategoryError;
 import com.example.servertest.main.nabatbu.category.exception.CategoryException;
 import com.example.servertest.main.nabatbu.category.model.CategoryResponse;
 import com.example.servertest.main.nabatbu.category.repository.CategoryRepository;
+import com.example.servertest.main.nabatbu.diagnosis.entity.DiagnosisResult;
 import com.example.servertest.main.nabatbu.diagnosis.repository.DiagnosisRecordRepository;
 import com.example.servertest.main.global.model.ServiceResult;
+import com.example.servertest.main.nabatbu.diagnosis.repository.DiagnosisResultRepository;
 import com.example.servertest.main.nabatbu.member.entity.Member;
 import com.example.servertest.main.nabatbu.member.exception.MemberError;
 import com.example.servertest.main.nabatbu.member.service.MemberService;
@@ -27,6 +30,7 @@ public class CategoryService {
     private final MemberService memberService;
     private final CategoryRepository categoryRepository;
     private final DiagnosisRecordRepository diagnosisRecordRepository;
+    private final DiagnosisResultRepository diagnosisResultRepository;
 
     public ServiceResult registerCategory(String name, String token) {
 
@@ -202,8 +206,17 @@ public class CategoryService {
             return memberService.checkToken(token);
         }
         List<DiagnosisRecord> diagnosisRecordList = diagnosisRecordRepository.findAllByCategoryIdOrderByRegDateDesc(categoryId);
+        List<DiagnosisOfCategoryResponse> diagnosisOfCategoryResponses = new ArrayList<>();
 
+        for (DiagnosisRecord item : diagnosisRecordList) {
+            List<DiagnosisResult> list = diagnosisResultRepository.findAllByDiagnosisRecord(item);
+            DiagnosisOfCategoryResponse diagnosisOfCategoryResponse = DiagnosisOfCategoryResponse.builder()
+                    .diagnosisRecord(item)
+                    .diagnosisResultList(list)
+                    .build();
+            diagnosisOfCategoryResponses.add(diagnosisOfCategoryResponse);
+        }
 
-        return ServiceResult.success(diagnosisRecordList);
+        return ServiceResult.success(diagnosisOfCategoryResponses);
     }
 }
