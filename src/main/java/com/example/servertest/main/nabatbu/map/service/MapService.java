@@ -29,14 +29,10 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class MapService {
 
-    private final FileService fileService;
     private final MemberService memberService;
 
-    private final SickListRepository sickListRepository;
     private final DiagnosisRecordRepository diagnosisRecordRepository;
     private final DiagnosisResultRepository diagnosisResultRepository;
-    private final CategoryRepository categoryRepository;
-    private final MyCropHistoryRepository myCropHistoryRepository;
 
     public ServiceResult getNearDiseases(MapRequest mapRequest, String token) {
 //        System.out.println(mapRequest);

@@ -37,7 +37,7 @@ public class CropInfoController {
     private final CropInfoService cropInfoService;
 
     @Operation(summary = "농약 리스트 조회")
-    @GetMapping("/psisList") //농약 리스트 조회
+    @PostMapping("/psisList") //농약 리스트 조회
     public ResponseEntity<?> krxParser2(@RequestBody RequestPsisList request, @RequestHeader("Authorization") String token) throws IOException {
         String urlBuilder = psisManager.makePsisListRequestUrl(request.getCropName(), request.getDiseaseWeedName(), request.getDisplayCount(), request.getStartPoint());
 
@@ -46,7 +46,7 @@ public class CropInfoController {
     }
 
     @Operation(summary = "농약 상세정보 조회")
-    @GetMapping("/psisDetail") //농약 상세정보 조회
+    @PostMapping("/psisDetail") //농약 상세정보 조회
     public ResponseEntity<?> krxParser3(@RequestBody RequestPsisInfo request, @RequestHeader("Authorization") String token) throws IOException {
         String urlBuilder = psisManager.makePsisInfoRequestUrl(request.getPestiCode(), request.getDiseaseUseSeq());
 
