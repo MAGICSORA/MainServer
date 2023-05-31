@@ -176,8 +176,9 @@ public class CategoryService {
 
         List<DiagnosisRecord> diagnosisRecordList = diagnosisRecordRepository.findAllByCategoryId(categoryId);
         if (diagnosisRecordList.size()!=0) {
+            Category category = categoryRepository.findByNameAndUserId("unclassified", member.getId());
             for (DiagnosisRecord item : diagnosisRecordList) {
-                item.setCategoryId(0);
+                item.setCategoryId(category.getId());
                 diagnosisRecordRepository.save(item);
             }
         }
