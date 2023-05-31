@@ -17,6 +17,7 @@ public class ResponseDiagnosisRecord {
     private double userLongitude;
     private int cropType;
     private long categoryId;
+    private long diagnosisRecordId;
     private List<DiagnosisResultOutput> diagnosisResults;
     private String imagePath;
     private LocalDateTime regDate;

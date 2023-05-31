@@ -224,6 +224,7 @@ public class DiagnosisService {
                     .build());
         }
         ResponseDiagnosisRecord result = ResponseDiagnosisRecord.builder()
+                .diagnosisRecordId(diagnosisRecord.getId())
                 .userLatitude(diagnosisRecord.getUserLatitude())
                 .userLongitude(diagnosisRecord.getUserLongitude())
                 .regDate(diagnosisRecord.getRegDate())
@@ -303,6 +304,7 @@ public class DiagnosisService {
                         .build());
             }
             ResponseDiagnosisRecord result = ResponseDiagnosisRecord.builder()
+                    .diagnosisRecordId(diagnosisRecord.getId())
                     .userLatitude(diagnosisRecord.getUserLatitude())
                     .userLongitude(diagnosisRecord.getUserLongitude())
                     .regDate(diagnosisRecord.getRegDate())
