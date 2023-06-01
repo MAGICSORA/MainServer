@@ -27,6 +27,14 @@ public class ReplyController {
         return ResponseResult.result(result);
     }
 
+    @Operation(summary = "일반 사용자의 문의 목록 조회")
+    @GetMapping("/show/list")
+    public ResponseEntity<?> showList(@RequestHeader("Authorization") String token) {
+
+        ServiceResult result = replyService.showList(token);
+        return ResponseResult.result(result);
+    }
+
     @Operation(summary = "사용자 자신의 답변 목록 조회")
     @GetMapping("/list")
     public ResponseEntity<?> getReplyList(@RequestHeader("Authorization") String token) {

@@ -11,6 +11,7 @@ public class MemberInfo {
 
     private String name;
     private String email;
+    private int authLevel;
 //    private MemberType type;
 
     public static MemberInfo from(MemberDto memberDto) {
@@ -18,6 +19,7 @@ public class MemberInfo {
         return MemberInfo.builder()
                 .name(memberDto.getName())
                 .email(memberDto.getEmail())
+//                .authLevel(memberDto.get)
 //                .type(memberDto.getType())
                 .build();
     }

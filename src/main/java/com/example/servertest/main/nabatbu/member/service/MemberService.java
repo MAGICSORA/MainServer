@@ -101,6 +101,8 @@ public class MemberService {
         }
 
 //        Member member = validateMember(token);
+        MemberInfo memberInfo = MemberInfo.from(MemberDto.from(member));
+        memberInfo.setAuthLevel(member.getAuthLevel());
 
         return ServiceResult.success(MemberInfo.from(MemberDto.from(member)));
     }
