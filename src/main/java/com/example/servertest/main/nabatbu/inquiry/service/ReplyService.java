@@ -223,6 +223,6 @@ public class ReplyService {
                 .stream()
                 .sorted(Comparator.comparing(InquiryDetailResponse::getRegDate).reversed())
                 .collect(Collectors.toList());
-        return ServiceResult.success(inquiryDetailResponseList);
+        return ServiceResult.success(inquiryDetailResponseListDesc);
     }
 }
