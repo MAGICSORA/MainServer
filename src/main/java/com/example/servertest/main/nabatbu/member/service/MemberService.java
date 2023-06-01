@@ -104,7 +104,7 @@ public class MemberService {
         MemberInfo memberInfo = MemberInfo.from(MemberDto.from(member));
         memberInfo.setAuthLevel(member.getAuthLevel());
 
-        return ServiceResult.success(MemberInfo.from(MemberDto.from(member)));
+        return ServiceResult.success(memberInfo);
     }
 
     public void withDrawMember(Long memberId, String token, WithDrawMember request) {
