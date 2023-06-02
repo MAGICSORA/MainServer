@@ -1,6 +1,7 @@
 package com.example.servertest.main.nabatbu.admin.service;
 
 import com.example.servertest.main.global.model.ServiceResult;
+import com.example.servertest.main.nabatbu.admin.model.MemberListResponse;
 import com.example.servertest.main.nabatbu.member.entity.Member;
 import com.example.servertest.main.nabatbu.member.exception.MemberError;
 import com.example.servertest.main.nabatbu.member.repository.MemberRepository;
@@ -47,7 +48,9 @@ List<InquiryDetailResponse> inquiryDetailResponseListDesc = inquiryDetailRespons
  */
         PageRequest page = PageRequest.of(pageNum, 10);
         Slice<Member> memberList = memberRepository.findByEmailContainingAndNameContainingOrderByRegDtAsc(email, name, page);
-        return ServiceResult.success(memberList);
+        int cnt = memberRepository.countByEmailContainingAndNameContaining(email, name);
+
+        return ServiceResult.success(MemberListResponse.builder().memberList(memberList).cnt(cnt).build());
     }
 
     public ServiceResult setMemberAuth(String token, Long userId, int setLevel) {

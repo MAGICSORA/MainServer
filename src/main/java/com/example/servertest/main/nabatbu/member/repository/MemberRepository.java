@@ -14,4 +14,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 	Optional<Member> findByEmail(String email);
 	Optional<Member> findByName(String name);
 	Slice<Member> findByEmailContainingAndNameContainingOrderByRegDtAsc(String email, String name, Pageable pageable);
+	int countByEmailContainingAndNameContaining(String email, String name);
 }
