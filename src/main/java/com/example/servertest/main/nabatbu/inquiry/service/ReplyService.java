@@ -115,10 +115,10 @@ public class ReplyService {
             return ServiceResult.fail(String.valueOf(error), error.getDescription());
         }
 
-        if (member.getAuthLevel() != 2) {
-            MemberError error = MemberError.INVALID_AUTH;
-            return ServiceResult.fail(String.valueOf(error), error.getDescription());
-        }
+//        if (member.getAuthLevel() != 2) {
+//            MemberError error = MemberError.INVALID_AUTH;
+//            return ServiceResult.fail(String.valueOf(error), error.getDescription());
+//        }
 
         Optional<Reply> optionalReply = replyRepository.findById(replyId);
         Reply reply = optionalReply.get();
