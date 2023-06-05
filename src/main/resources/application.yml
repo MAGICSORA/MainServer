@@ -54,3 +54,12 @@ springdoc:
     path: swaggerDocs
     tags-sorter: alpha            # alpha: 알파벳 순 태그 정렬, method: HTTP Method 순 정렬
     operations-sorter: alpha      # alpha: 알파벳 순 태그 정렬, method: HTTP Method 순 정렬
+
+server:
+  ssl:
+    key-store: keystore.p12
+    key-store-password: dlcjf0409
+    key-store-type: PKCS12
+    key-alias: tomcat
+    enabled: true
+#  port: 443
