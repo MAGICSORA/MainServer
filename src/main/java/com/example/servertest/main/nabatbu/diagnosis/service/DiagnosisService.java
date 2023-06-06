@@ -112,7 +112,7 @@ public class DiagnosisService {
         System.out.println(aiResponse);
 
         StringBuilder imagePath = new StringBuilder();
-        imagePath.append("http://15.164.23.13:8080/image/");
+        imagePath.append("https://mybatboo.kr:443/image/");
 //        imagePath.append("http://localhost:8080/image/");
         imagePath.append(member.getEmail());
         imagePath.append("/");
